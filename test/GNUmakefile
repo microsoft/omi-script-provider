@@ -7,7 +7,9 @@ MKDEP:=-MD
 
 
 LOCAL_DIR:=$(shell pwd)
-TOP?=$(shell cd ..; pwd)
+TOP?=$(shell cd ../..; pwd)
+SCRIPTPROVIDER_DIR:=$(shell cd ..; pwd)
+SCRIPTPROVIDER_BIN:=$(SCRIPTPROVIDER_DIR)/bin
 
 
 include $(TOP)/omi/Unix/output/omi.mak
@@ -17,34 +19,35 @@ include $(TOP)/omi/Unix/output/config.mak
 BIN_PATH:=$(LOCAL_DIR)/bin
 
 
-PROVIDER=ScriptProvider
-LIBRARY=lib$(PROVIDER).so
+EXECUTABLE:=Test
 
 
-$(BIN_PATH)/$(LIBRARY) :
+$(BIN_PATH)/$(EXECUTABLE) :
 
 
 INCLUDE_PATH+=$(INCDIR)
+INCLUDE_PATH+=$(SCRIPTPROVIDER_DIR)
+INCLUDE_PATH+=$(SRCDIR)
+INCLUDE_PATH+=$(SRCDIR)/common
 
 
-CPPFLAGS+=$(addprefix -I,$(INCLUDE_PATH))
+INCLUDES+=$(addprefix -I,$(INCLUDE_PATH))
 
 
-SOURCES:=client.cpp
-SOURCES+=debug_tags.cpp
-SOURCES+=mi_context.cpp
-SOURCES+=mi_function_table.cpp
-SOURCES+=mi_instance.cpp
-SOURCES+=mi_main.cpp
-SOURCES+=mi_memory_helper.cpp
-SOURCES+=mi_module.cpp
-SOURCES+=mi_schema.cpp
-SOURCES+=mi_script_extensions.cpp
-SOURCES+=mi_value.cpp
-SOURCES+=server.cpp
-SOURCES+=server_protocol.cpp
-SOURCES+=shared_protocol.cpp
-SOURCES+=socket_wrapper.cpp
+SOURCES:=main.cpp
+SOURCES+=test_helper.cpp
+SOURCES+=traits_test.cpp
+SOURCES+=repeat_test.cpp
+SOURCES+=default_delete_test.cpp
+SOURCES+=internal_counted_ptr_test.cpp
+SOURCES+=unique_ptr_test.cpp
+SOURCES+=mi_type_test.cpp
+SOURCES+=mi_script_extensions_test.cpp
+SOURCES+=mi_memory_helper_test.cpp
+SOURCES+=socket_wrapper_test.cpp
+SOURCES+=shared_protocol_test.cpp
+SOURCES+=mi_value_test.cpp
+SOURCES+=getopt_test.cpp
 
 
 OBJECTS:=$(SOURCES:.cpp=.o)
@@ -53,11 +56,13 @@ OBJECTS:=$(SOURCES:.cpp=.o)
 # add bin path dependencies to the object files
 $(addprefix $(BIN_PATH)/,$(OBJECTS)) : | $(BIN_PATH)
 
+LDFLAGS+=-L$(LIBDIR)
+LDFLAGS+=-Wl,-R/$(SCRIPTPROVIDER_BIN)
+LIBS+= -lScriptProvider
+LIBS+= -lbase
+LIBS+= -lpal
 
 CPPFLAGS+=$(INCLUDES)
-
-PRINT_BOOKENDS?=0
-CPPFLAGS+=-DPRINT_BOOKENDS=$(PRINT_BOOKENDS)
 
 
 # compile rule
@@ -71,10 +76,10 @@ $(BIN_PATH)/%.o : %.cpp
 
 
 # link rule
-$(BIN_PATH)/$(LIBRARY) : \
+$(BIN_PATH)/$(EXECUTABLE) : \
 	$(addprefix $(BIN_PATH)/,$(OBJECTS))
-	@echo ...linking: $(LIBRARY)
-	$(CXX) -shared -o $@ $^
+	@echo ...linking: $(EXECUTABLE)
+	$(LINK.cpp) -o $@ $^ $(LIBS)
 
 
 # a rule to make root bin directory
@@ -82,28 +87,16 @@ $(BIN_PATH) :
 	$(MKDIR) $(BIN_PATH)
 
 
-# an install rule
-install : $(BIN_PATH)/$(LIBRARY)
-	@echo ...installing: $(LIBRARY)
-	@$(COPY) $(BIN_PATH)/$(LIBRARY) $(CONFIG_LIBDIR)/$(LIBRARY)
-
-
-# an uninstall rule
-uninstall :
-	@echo ...removing: $(LIBRARY)
-	@$(RM) $(CONFIG_LIBDIR)/$(LIBRARY)
-
-
 # rules for output when running the clean target
 .phony : clean-text
 clean-text :
-	@echo ...deleting: library, object, and dependency files!
+	@echo ...deleting: executable, object, and dependency files!
 
 
 # rules doing the cleanup in the root bin directory
 .phony : clean-action
 clean-action :
-	@$(RM) $(BIN_PATH)/$(LIBRARY) \
+	@$(RM) $(BIN_PATH)/$(EXECUTABLE) \
 	$(addprefix $(BIN_PATH)/,$(OBJECTS)) \
 	$(addprefix $(BIN_PATH)/,$(OBJECTS:.o=.P))
 
