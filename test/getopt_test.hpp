@@ -25,7 +25,6 @@ public:
     int test07 ();
     int test08 ();
     int test09 ();
-    int test10 ();
 };
 
 
