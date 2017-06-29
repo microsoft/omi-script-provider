@@ -7,14 +7,15 @@ MKDEP:=-MD
 
 
 LOCAL_DIR:=$(shell pwd)
-TOP?=$(shell cd ..; pwd)
+TOP?=$(shell cd ../..; pwd)
 
 
 include $(TOP)/omi/Unix/output/omi.mak
 include $(TOP)/omi/Unix/output/config.mak
 
 
-BIN_PATH:=$(LOCAL_DIR)/bin
+BIN_PATH:=$(TOP)/scriptprovider/bin
+OBJ_PATH:=$(TOP)/scriptprovider/obj
 
 
 PROVIDER=OMIScriptProvider
@@ -51,7 +52,7 @@ OBJECTS:=$(SOURCES:.cpp=.o)
 
 
 # add bin path dependencies to the object files
-$(addprefix $(BIN_PATH)/,$(OBJECTS)) : | $(BIN_PATH)
+$(addprefix $(OBJ_PATH)/,$(OBJECTS)) : | $(OBJ_PATH)
 
 
 CPPFLAGS+=$(INCLUDES)
@@ -61,18 +62,18 @@ CPPFLAGS+=-DPRINT_BOOKENDS=$(PRINT_BOOKENDS)
 
 
 # compile rule
-$(BIN_PATH)/%.o : %.cpp
+$(OBJ_PATH)/%.o : %.cpp
 	@echo ...compiling: $(@F)
 	$(COMPILE.cpp) $(MKDEP) $< -o $@
-	@-$(COPY) $(BIN_PATH)/$*.d $(BIN_PATH)/$*.P;
+	@-$(COPY) $(OBJ_PATH)/$*.d $(OBJ_PATH)/$*.P;
 	@$(SED) -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' -e '/^$$/ d' \
-	    -e 's/$$/ :/' < $(BIN_PATH)/$*.d >> $(BIN_PATH)/$*.P
-	@$(RM) $(BIN_PATH)/$*.d
+	    -e 's/$$/ :/' < $(OBJ_PATH)/$*.d >> $(OBJ_PATH)/$*.P
+	@$(RM) $(OBJ_PATH)/$*.d
 
 
 # link rule
 $(BIN_PATH)/$(LIBRARY) : \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS))
+	$(addprefix $(OBJ_PATH)/,$(OBJECTS)) | $(BIN_PATH)
 	@echo ...linking: $(LIBRARY)
 	$(CXX) -shared -o $@ $^
 
@@ -80,6 +81,10 @@ $(BIN_PATH)/$(LIBRARY) : \
 # a rule to make root bin directory
 $(BIN_PATH) :
 	$(MKDIR) $(BIN_PATH)
+
+# a rule to make the obj directory
+$(OBJ_PATH) :
+	$(MKDIR) $(OBJ_PATH)
 
 
 # an install rule
@@ -104,8 +109,8 @@ clean-text :
 .phony : clean-action
 clean-action :
 	@$(RM) $(BIN_PATH)/$(LIBRARY) \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS)) \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS:.o=.P))
+	$(addprefix $(OBJ_PATH)/,$(OBJECTS)) \
+	$(addprefix $(OBJ_PATH)/,$(OBJECTS:.o=.P))
 
 
 # master clean target
@@ -113,4 +118,4 @@ clean : clean-text clean-action
 
 
 # include shared dependency files
--include $(BIN_PATH)/*.P
+-include $(OBJ_PATH)/*.P
