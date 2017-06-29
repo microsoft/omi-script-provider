@@ -17,7 +17,7 @@ include $(TOP)/omi/Unix/output/config.mak
 BIN_PATH:=$(LOCAL_DIR)/bin
 
 
-PROVIDER=ScriptProvider
+PROVIDER=OMIScriptProvider
 LIBRARY=lib$(PROVIDER).so
 
 

@@ -260,8 +260,10 @@ MI_ProviderFT_Unload UnloadFunctions[] = {
 /*ctor*/
 Server::Server (
     std::string interpreter,
+    std::string startup,
     std::string moduleName)
     : m_Interpreter (interpreter)
+    , m_Startup (startup)
     , m_ModuleName (moduleName)
     , m_pSocket ()
     , m_pSchemaDecl ()
@@ -309,9 +311,10 @@ Server::open ()
                 char socketID[SOCK_ID_BUF_LEN];
                 snprintf (socketID, SOCK_ID_BUF_LEN, "%d", sockets[0]);
 //                chdir ("/home/[user]/omi-git/Unix/scriptprovider/python");
-                chdir (CONFIG_PREFIX "/scriptprovider/python");
+//                chdir (CONFIG_PREFIX "/scriptprovider/python");
+                chdir (CONFIG_LIBDIR);
                 char* args[] = { const_cast<char*>(m_Interpreter.c_str ()),
-                                 "client.py",
+                                 const_cast<char*>(m_Startup.c_str ()),
                                  socketID,
                                  const_cast<char*>(m_ModuleName.c_str ()),
                                  0 };
