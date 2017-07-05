@@ -6,9 +6,8 @@ COPY:=cp
 MKDEP:=-MD
 
 
-LOCAL_DIR:=$(shell pwd)
-OMI_TOP?=$(shell cd ../../omi/Unix; pwd)
-OMI_OUTPUT_DIR:=$(OMI_TOP)/output
+TOP?=$(shell cd ../..; pwd)
+OMI_OUTPUT_DIR:=$(TOP)/omi/Unix/output
 
 
 include $(OMI_OUTPUT_DIR)/omi.mak
@@ -19,7 +18,8 @@ GEN_OUTPUT_DIR:=$(OMI_OUTPUT_DIR)/obj/gen
 GEN_SOURCE_DIR:=$(SRCDIR)/gen
 
 
-BIN_PATH:=$(LOCAL_DIR)/bin
+BIN_PATH:=$(TOP)/scriptprovider/bin
+OBJ_PATH:=$(TOP)/scriptprovider/obj
 
 
 EXECUTABLE:=omigen_py
@@ -36,12 +36,16 @@ INCLUDE_PATH+=$(SRCDIR)/common
 INCLUDES+=$(addprefix -I,$(INCLUDE_PATH))
 
 
-SOURCES:=main.cpp
+SOURCES:=omigen_py.cpp
 SOURCES+=py_gen.cpp
 SOURCES+=options.cpp
 
 
-OBJECTS:=$(addprefix $(BIN_PATH)/,$(SOURCES:.cpp=.o))
+OBJECTS:=$(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
+
+
+# add obj path dependencies to the object files
+$(OBJECTS) : | $(OBJ_PATH)
 
 
 # add object files from omi/output/obj/gen
@@ -62,13 +66,13 @@ CPPFLAGS+=$(INCLUDES)
 
 
 # compile rule
-$(BIN_PATH)/%.o : %.cpp
+$(OBJ_PATH)/%.o : %.cpp
 	@echo ...compiling: $(@F)
 	$(COMPILE.cpp) $(MKDEP) $< -o $@
-	@-$(COPY) $(BIN_PATH)/$*.d $(BIN_PATH)/$*.P;
+	@-$(COPY) $(OBJ_PATH)/$*.d $(OBJ_PATH)/$*.P;
 	@$(SED) -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' -e '/^$$/ d' \
-	    -e 's/$$/ :/' < $(BIN_PATH)/$*.d >> $(BIN_PATH)/$*.P
-	@$(RM) $(BIN_PATH)/$*.d
+	    -e 's/$$/ :/' < $(OBJ_PATH)/$*.d >> $(OBJ_PATH)/$*.P
+	@$(RM) $(OBJ_PATH)/$*.d
 
 
 # compile rule for omigen objects
@@ -78,7 +82,7 @@ $(GEN_OUTPUT_DIR)/%.o : $(GEN_SOURCE_DIR)/%.cpp
 
 # link rule
 $(BIN_PATH)/$(EXECUTABLE) : \
-	$(OBJECTS) $(OMI_GEN_OBJECTS)
+	$(OBJECTS) $(OMI_GEN_OBJECTS) | $(BIN_PATH)
 	@echo ...linking: $(EXECUTABLE)
 	$(LINK.cpp) -o $@ $^ $(LIBS)
 
@@ -86,6 +90,11 @@ $(BIN_PATH)/$(EXECUTABLE) : \
 # a rule to make root bin directory
 $(BIN_PATH) :
 	$(MKDIR) $(BIN_PATH)
+
+
+# a rule to make the obj directory
+$(OBJ_PATH) :
+	$(MKDIR) $(OBJ_PATH)
 
 
 # rules for output when running the clean target
@@ -106,4 +115,4 @@ clean : clean-text clean-action
 
 
 # include shared dependency files
--include $(BIN_PATH)/*.P
+-include $(OBJ_PATH)/*.P

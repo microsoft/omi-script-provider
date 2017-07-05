@@ -6,7 +6,6 @@ COPY:=cp
 MKDEP:=-MD
 
 
-LOCAL_DIR:=$(shell pwd)
 TOP?=$(shell cd ../..; pwd)
 
 
@@ -48,11 +47,11 @@ SOURCES+=shared_protocol.cpp
 SOURCES+=socket_wrapper.cpp
 
 
-OBJECTS:=$(SOURCES:.cpp=.o)
+OBJECTS:=$(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
 
 
-# add bin path dependencies to the object files
-$(addprefix $(OBJ_PATH)/,$(OBJECTS)) : | $(OBJ_PATH)
+# add obj path dependencies to the object files
+$(OBJECTS) : | $(OBJ_PATH)
 
 
 CPPFLAGS+=$(INCLUDES)
@@ -73,7 +72,7 @@ $(OBJ_PATH)/%.o : %.cpp
 
 # link rule
 $(BIN_PATH)/$(LIBRARY) : \
-	$(addprefix $(OBJ_PATH)/,$(OBJECTS)) | $(BIN_PATH)
+	$(OBJECTS) | $(BIN_PATH)
 	@echo ...linking: $(LIBRARY)
 	$(CXX) -shared -o $@ $^
 
@@ -109,8 +108,7 @@ clean-text :
 .phony : clean-action
 clean-action :
 	@$(RM) $(BIN_PATH)/$(LIBRARY) \
-	$(addprefix $(OBJ_PATH)/,$(OBJECTS)) \
-	$(addprefix $(OBJ_PATH)/,$(OBJECTS:.o=.P))
+	$(OBJECTS) $(OBJECTS:.o=.P)
 
 
 # master clean target

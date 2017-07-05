@@ -3,9 +3,7 @@ from distutils import ccompiler
 
 import os
 cwd = os.getcwd ()
-print ('cwd: ' + cwd)
 root_dir = cwd[:-len('/scriptprovider/python')]
-print ('root: ' + root_dir)
 
 module1 = Extension (
     'omi',
@@ -22,11 +20,11 @@ module1 = Extension (
                'py_converter.cpp',
                'shared.cpp'],
     include_dirs = [root_dir,
-                    root_dir + '/scriptprovider',
+                    root_dir + '/scriptprovider/provider',
                     root_dir + '/omi/Unix/output/include',
                     root_dir + '/omi/Unix/common'],
     library_dirs = [root_dir + '/scriptprovider/bin'],
-    libraries = ['ScriptProvider'],
+    libraries = ['OMIScriptProvider'],
     define_macros = [('PRINT_BOOKENDS','1')],
     )
 
@@ -40,5 +38,5 @@ print foo.__dict__
 
 setup (name = 'omi',
        version = '1.0',
-       description = 'This is a demo',
+       description = 'The Python OMI interface',
        ext_modules = [module1])

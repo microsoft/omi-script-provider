@@ -6,27 +6,26 @@ COPY:=cp
 MKDEP:=-MD
 
 
-LOCAL_DIR:=$(shell pwd)
 TOP?=$(shell cd ../..; pwd)
-SCRIPTPROVIDER_DIR:=$(shell cd ..; pwd)
-SCRIPTPROVIDER_BIN:=$(SCRIPTPROVIDER_DIR)/bin
+OMI_OUTPUT_DIR:=$(TOP)/omi/Unix/output
 
 
-include $(TOP)/omi/Unix/output/omi.mak
-include $(TOP)/omi/Unix/output/config.mak
+include $(OMI_OUTPUT_DIR)/omi.mak
+include $(OMI_OUTPUT_DIR)/config.mak
 
 
-BIN_PATH:=$(LOCAL_DIR)/bin
+BIN_PATH:=$(TOP)/scriptprovider/bin
+OBJ_PATH:=$(TOP)/scriptprovider/obj
 
 
-EXECUTABLE:=Test
+EXECUTABLE:=test
 
 
 $(BIN_PATH)/$(EXECUTABLE) :
 
 
 INCLUDE_PATH+=$(INCDIR)
-INCLUDE_PATH+=$(SCRIPTPROVIDER_DIR)
+INCLUDE_PATH+=$(TOP)/scriptprovider/provider
 INCLUDE_PATH+=$(SRCDIR)
 INCLUDE_PATH+=$(SRCDIR)/common
 
@@ -34,7 +33,7 @@ INCLUDE_PATH+=$(SRCDIR)/common
 INCLUDES+=$(addprefix -I,$(INCLUDE_PATH))
 
 
-SOURCES:=main.cpp
+SOURCES:=test.cpp
 SOURCES+=test_helper.cpp
 SOURCES+=traits_test.cpp
 SOURCES+=repeat_test.cpp
@@ -50,34 +49,36 @@ SOURCES+=mi_value_test.cpp
 SOURCES+=getopt_test.cpp
 
 
-OBJECTS:=$(SOURCES:.cpp=.o)
+OBJECTS:=$(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
 
 
-# add bin path dependencies to the object files
-$(addprefix $(BIN_PATH)/,$(OBJECTS)) : | $(BIN_PATH)
+# add obj path dependencies to the object files
+$(OBJECTS) : | $(OBJ_PATH)
+
 
 LDFLAGS+=-L$(LIBDIR)
-LDFLAGS+=-Wl,-R/$(SCRIPTPROVIDER_BIN)
-LIBS+= -lScriptProvider
-LIBS+= -lbase
-LIBS+= -lpal
+LDFLAGS+=-L$(BIN_PATH)
+LDFLAGS+=-Wl,-R/$(BIN_PATH)
+LIBS+=-lOMIScriptProvider
+LIBS+=-lbase
+LIBS+=-lpal
 
 CPPFLAGS+=$(INCLUDES)
 
 
 # compile rule
-$(BIN_PATH)/%.o : %.cpp
+$(OBJ_PATH)/%.o : %.cpp
 	@echo ...compiling: $(@F)
 	$(COMPILE.cpp) $(MKDEP) $< -o $@
-	@-$(COPY) $(BIN_PATH)/$*.d $(BIN_PATH)/$*.P;
+	@-$(COPY) $(OBJ_PATH)/$*.d $(OBJ_PATH)/$*.P;
 	@$(SED) -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' -e '/^$$/ d' \
-	    -e 's/$$/ :/' < $(BIN_PATH)/$*.d >> $(BIN_PATH)/$*.P
-	@$(RM) $(BIN_PATH)/$*.d
+	    -e 's/$$/ :/' < $(OBJ_PATH)/$*.d >> $(OBJ_PATH)/$*.P
+	@$(RM) $(OBJ_PATH)/$*.d
 
 
 # link rule
 $(BIN_PATH)/$(EXECUTABLE) : \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS))
+	$(OBJECTS) | $(BIN_PATH)
 	@echo ...linking: $(EXECUTABLE)
 	$(LINK.cpp) -o $@ $^ $(LIBS)
 
@@ -85,6 +86,11 @@ $(BIN_PATH)/$(EXECUTABLE) : \
 # a rule to make root bin directory
 $(BIN_PATH) :
 	$(MKDIR) $(BIN_PATH)
+
+
+# a rule to make the obj directory
+$(OBJ_PATH) :
+	$(MKDIR) $(OBJ_PATH)
 
 
 # rules for output when running the clean target
@@ -97,8 +103,7 @@ clean-text :
 .phony : clean-action
 clean-action :
 	@$(RM) $(BIN_PATH)/$(EXECUTABLE) \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS)) \
-	$(addprefix $(BIN_PATH)/,$(OBJECTS:.o=.P))
+	$(OBJECTS) $(OBJECTS:.o=.P)
 
 
 # master clean target
@@ -106,4 +111,4 @@ clean : clean-text clean-action
 
 
 # include shared dependency files
--include $(BIN_PATH)/*.P
+-include $(OBJ_PATH)/*.P
