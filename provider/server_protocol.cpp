@@ -430,7 +430,7 @@ public:
 //#endif
 
 
-#if (1)
+#if (0)
 #define PRINT_RECV_STR (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_STR (0)
@@ -641,7 +641,7 @@ public:
 };
 
     
-#if (1)
+#if (0)
 #define PRINT_RECV_ARRAY (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_ARRAY (0)
@@ -723,7 +723,7 @@ recv_array_items (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_RECV_VALUE (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_VALUE (0)
@@ -899,7 +899,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_SEND (PRINT_BOOKENDS)
 #else
 #define PRINT_SEND (0)
@@ -1083,7 +1083,7 @@ namespace protocol
 {
 
 
-#if (1)
+#if (0)
 #define PRINT_RECV_INSTANCE (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_INSTANCE (1)
@@ -1447,7 +1447,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_QUALIFIER_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_QUALIFIER_DECL (0)
@@ -1586,7 +1586,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_QUALIFIER (PRINT_BOOKENDS)
 #else
 #define PRINT_QUALIFIER (0)
@@ -1707,7 +1707,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_PROPERTY_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_PROPERTY_DECL (0)
@@ -1919,7 +1919,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_PARAMETER_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_PARAMETER_DECL (0)
@@ -2065,7 +2065,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_METHOD_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_METHOD_DECL (0)
@@ -2272,7 +2272,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_CLASS_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_CLASS_DECL (0)
@@ -2518,7 +2518,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_SCHEMA_DECL (PRINT_BOOKENDS)
 #else
 #define PRINT_SCHEMA_DECL (0)

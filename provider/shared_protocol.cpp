@@ -26,7 +26,7 @@ recv_boolean (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_SEND_STR (PRINT_BOOKENDS)
 #else
 #define PRINT_SEND_STR (0)
@@ -78,7 +78,7 @@ send (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_SEND_DATETIME (PRINT_BOOKENDS)
 #else
 #define PRINT_SEND_DATETIME (0)
@@ -117,7 +117,7 @@ send (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_RECV_STR (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_STR (0)
@@ -195,7 +195,7 @@ recv (
 }
 
 
-#if (1)
+#if (0)
 #define PRINT_RECV_DATETIME (PRINT_BOOKENDS)
 #else
 #define PRINT_RECV_DATETIME (0)

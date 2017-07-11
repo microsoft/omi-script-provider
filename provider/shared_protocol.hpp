@@ -137,7 +137,7 @@ send (
     std::basic_string<char_t, traits> const& text,
     socket_wrapper& sock)
 {
-    SCX_BOOKEND ("protocol::send (std::basic_string)");
+    //SCX_BOOKEND ("protocol::send (std::basic_string)");
     item_count_t const len = text.size ();
     int rval = send_item_count (len, sock);
     if (socket_wrapper::SUCCESS == rval)
@@ -162,7 +162,7 @@ send (
     T const& value,
     socket_wrapper& sock)
 {
-    SCX_BOOKEND ("protocol::send (template)");
+    //SCX_BOOKEND ("protocol::send (template)");
     return sock.send (
         reinterpret_cast<socket_wrapper::byte_t const*>(&value),
         sizeof (T));
@@ -219,7 +219,7 @@ recv (
     std::basic_string<char_t, traits>* const pStringOut,
     socket_wrapper& sock)
 {
-    SCX_BOOKEND ("protocol::recv (std::basic_string)");
+    //SCX_BOOKEND ("protocol::recv (std::basic_string)");
     assert (pStringOut);
     MI_Char* pText = NULL;
     int rval = recv (&pText, sock);
@@ -251,7 +251,7 @@ recv (
     T* pValueOut,
     socket_wrapper& sock)
 {
-    SCX_BOOKEND ("protocol::recv (template)");
+    //SCX_BOOKEND ("protocol::recv (template)");
     assert (pValueOut);
     return sock.recv (
         reinterpret_cast<socket_wrapper::byte_t*>(pValueOut),

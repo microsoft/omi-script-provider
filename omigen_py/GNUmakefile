@@ -28,7 +28,7 @@ EXECUTABLE:=omigen_py
 $(BIN_PATH)/$(EXECUTABLE) :
 
 
-INCLUDE_PATH+=$(INCDIR)
+INCLUDE_PATH+=$(CONFIG_INCDIR)
 INCLUDE_PATH+=$(SRCDIR)
 INCLUDE_PATH+=$(SRCDIR)/common
 
@@ -95,6 +95,18 @@ $(BIN_PATH) :
 # a rule to make the obj directory
 $(OBJ_PATH) :
 	$(MKDIR) $(OBJ_PATH)
+
+
+# an install rule
+install : $(BIN_PATH)/$(EXECUTABLE)
+	@echo ...installing: $(EXECUTABLE)
+	@$(COPY) $(BIN_PATH)/$(EXECUTABLE) $(CONFIG_BINDIR)/$(EXECUTABLE)
+
+
+# an uninstall rule
+uninstall :
+	@echo ...removing: $(EXECUTABLE)
+	@$(RM) $(CONFIG_BINDIR)/$(EXECUTABLE)
 
 
 # rules for output when running the clean target

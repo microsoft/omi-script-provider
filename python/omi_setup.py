@@ -5,6 +5,15 @@ import os
 cwd = os.getcwd ()
 root_dir = cwd[:-len('/scriptprovider/python')]
 
+
+lib_dir = None
+config_mak = open (root_dir + '/omi/Unix/output/config.mak', 'r')
+if config_mak is not None:
+    for line in config_mak:
+        if 0 == line.find ('CONFIG_LIBDIR='):
+            lib_dir = line[14:].rstrip ()
+            break
+
 module1 = Extension (
     'omi',
     sources = ['bookend_wrapper.cpp',
@@ -24,19 +33,20 @@ module1 = Extension (
                     root_dir + '/omi/Unix/output/include',
                     root_dir + '/omi/Unix/common'],
     library_dirs = [root_dir + '/scriptprovider/bin'],
+    
+    runtime_library_dirs = [root_dir + '/scriptprovider/bin',
+                            lib_dir],
+
     libraries = ['OMIScriptProvider'],
-    define_macros = [('PRINT_BOOKENDS','1')],
+    define_macros = [('PRINT_BOOKENDS','0')],
+    
+    extra_link_args = ['-Wl,-R' + root_dir + '/scriptprovider/bin',
+                       '-Wl,-R' + lib_dir]
     )
-
-print module1.__dict__
-
-
-foo = ccompiler.get_default_compiler
-
-print foo.__dict__
-
 
 setup (name = 'omi',
        version = '1.0',
        description = 'The Python OMI interface',
-       ext_modules = [module1])
+       ext_modules = [module1],
+       data_files = [(lib_dir, ['client.py'])]
+       )

@@ -13,7 +13,7 @@
 #include "traits.hpp"
 
 
-#if (1)
+#if (0)
 #define _DESTROY_BOOKEND(x) SCX_BOOKEND(x)
 #define _DESTROY_PRINT(x) SCX_BOOKEND_PRINT(x)
 #else

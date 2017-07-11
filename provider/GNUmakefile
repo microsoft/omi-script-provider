@@ -90,6 +90,12 @@ $(OBJ_PATH) :
 install : $(BIN_PATH)/$(LIBRARY)
 	@echo ...installing: $(LIBRARY)
 	@$(COPY) $(BIN_PATH)/$(LIBRARY) $(CONFIG_LIBDIR)/$(LIBRARY)
+	@grep -cq '^\W*script=\-\-Python:' $(CONFIG_SYSCONFDIR)/omireg.conf || \
+		echo 'script=--Python:python2.7:client.py' >> \
+		$(CONFIG_SYSCONFDIR)/omireg.conf
+	@grep -cq '^\W*script=\-\-python:' $(CONFIG_SYSCONFDIR)/omireg.conf || \
+		echo 'script=--python:python2.7:client.py' >> \
+		$(CONFIG_SYSCONFDIR)/omireg.conf
 
 
 # an uninstall rule
