@@ -40,3 +40,8 @@ install :
 	$(MAKE) -C $(TOP)/scriptprovider/provider install
 	cd $(TOP)/scriptprovider/python && python2.7 omi_setup.py install
 	$(MAKE) -C $(TOP)/scriptprovider/omigen_py install
+
+
+.phony : release
+release : SCRIPTPROVIDER PYTHONWRAPPER OMIGEN_PY
+	$(MAKE) -C $(TOP)/scriptprovider/installbuilder

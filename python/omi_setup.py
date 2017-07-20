@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 from distutils import ccompiler
-
 import os
+
 cwd = os.getcwd ()
 root_dir = cwd[:-len('/scriptprovider/python')]
 
@@ -41,12 +41,13 @@ module1 = Extension (
     define_macros = [('PRINT_BOOKENDS','0')],
     
     extra_link_args = ['-Wl,-R' + root_dir + '/scriptprovider/bin',
-                       '-Wl,-R' + lib_dir]
+                       '-Wl,-R' + lib_dir],
     )
 
+    
 setup (name = 'omi',
        version = '1.0',
        description = 'The Python OMI interface',
        ext_modules = [module1],
-       data_files = [(lib_dir, ['client.py'])]
+       data_files = [(lib_dir, ['client.py'])],
        )
