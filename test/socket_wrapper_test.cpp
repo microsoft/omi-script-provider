@@ -4,6 +4,7 @@
 
 
 #include <cstdlib>
+#include <cstring>
 #include <errno.h>
 #include <signal.h>
 #include <socket_wrapper.hpp>

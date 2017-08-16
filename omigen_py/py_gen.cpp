@@ -5,6 +5,7 @@
 
 #include <pal/dir.h>
 #include <base/types.h>
+#include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <cstdlib>

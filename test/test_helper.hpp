@@ -4,6 +4,7 @@
 #define INCLUDED_TEST_HELPER_HPP
 
 
+#include <cstdlib>
 #include <iosfwd>
 #include <iostream>
 #include <utility>
