@@ -1,0 +1,8 @@
+instance of Full_Test
+{
+    [Key] Id=3
+    BooleanTest=true
+    RealTest=9.87
+    IntTest=256
+    StringTest=Number of ASCII Symbols
+}

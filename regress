@@ -1,0 +1,36 @@
+#!/bin/bash
+
+REGRESS_RESULT=0
+
+function run_command {
+    $1
+    EXIT_RESULT=$?
+    if [ "$EXIT_RESULT" = "0" ]; then
+        echo ">>> \"$1\" exited succesfully <<<"
+    else
+        echo ">>> \"$1\" failed with $EXIT_RESULT <<<"
+        REGRESS_RESULT=1
+    fi
+}
+
+run_command "./build.sh"
+run_command "./output/bin/test"
+run_command "python ./python/test/test.py"
+run_command "./test_all"
+
+
+echo "************************"
+echo "************************"
+echo "************************"
+echo "***                  ***"
+if [ "$REGRESS_RESULT" = "0" ]; then
+    echo "***  Regress passed  ***"
+else
+    echo "***  Regress failed  ***"
+fi
+echo "***                  ***"
+echo "************************"
+echo "************************"
+echo "************************"
+
+exit $REGRESS_RESULT

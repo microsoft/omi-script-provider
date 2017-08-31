@@ -1,0 +1,6 @@
+instance of OMI_OctetStrings
+{
+    [Key] Key=OMI_OctetStrings.1
+    Data1={0, 0, 0, 9, 104, 101, 108, 108, 111}
+    Str= &'"><
+}
