@@ -1,0 +1,21 @@
+language: cpp
+
+matrix:
+    include:
+        - os: linux
+
+sudo: required
+
+addons:
+    apt:
+        packages:
+            - build-essential
+            - openssl
+            - libssl-dev
+            - libpam0g-dev
+            - python2.7-dev
+            - pkg-config
+            - libkrb5-dev
+
+script:
+    - ./build.sh
