@@ -7,6 +7,7 @@ function BR {
 }
 
 function CHECK {
+    echo "Exist with $1"
     if [ "$1" = "0" ]; then
         echo \"$2\"    Passed.
     else
@@ -34,11 +35,11 @@ pushd $TEST_NAME >/dev/null
     CHECK $? "omigen_py $MOF_FILE $CLASS_NAME" 
 
     cp ../test.py .
-    python test.py $CLASS_NAME
-    CHECK $? "test.py for $CLASS_NAME"
+    python test.py $MOF_FILE
+    CHECK $? "test.py for $MOF_FILE"
     BR
+    echo "Removing files"
+    rm test.py schema.py mi_main.py $MOF_FILE *.pyc
 popd >/dev/null
-echo "Removing files"
-rm -rf $TEST_NAME
 
 exit $TEST_RESULT
