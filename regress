@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function run_command {
+    $1
+    EXIT_RESULT=$?
+    if [ "$EXIT_RESULT" = "0" ]; then
+        echo ">>> \"$1\" exited succesfully <<<"
+    else
+        echo ">>> \"$1\" failed with $EXIT_RESULT <<<"
+        exit 1
+    fi
+}
+
+run_command "./build.sh"
+run_command "./bin/test"
+run_command "python ./python/test/test.py"
