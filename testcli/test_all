@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLI_SAMPLES=`ls ../samples`
-PASSED=1
+TESTS_PASSED=0
 
 for DIRECTORY in $CLI_SAMPLES; do
     ./test $DIRECTORY
@@ -10,7 +10,7 @@ for DIRECTORY in $CLI_SAMPLES; do
         echo "Test $DIRECTORY passed!"
     else
         echo "Test $DIRECTORY failed!"
-        PASSED=0
+        TESTS_PASSED=1
     fi
     echo ""
     echo ""
@@ -18,10 +18,12 @@ done
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
-if [ "$PASSED" = "0" ]; then
-    echo "!!!CLI tests failed!!!!"
-else
+if [ "$TESTS_PASSED" = "0" ]; then
     echo "!!!CLI tests passed!!!!"
+else
+    echo "!!!CLI tests failed!!!!"
 fi
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
+
+exit $TESTS_PASSED

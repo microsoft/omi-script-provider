@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REGRESS_RESULT=0
+
 function run_command {
     $1
     EXIT_RESULT=$?
@@ -7,10 +9,12 @@ function run_command {
         echo ">>> \"$1\" exited succesfully <<<"
     else
         echo ">>> \"$1\" failed with $EXIT_RESULT <<<"
-        exit 1
+        REGRESS_RESULT=1
     fi
 }
 
 run_command "./build.sh"
 run_command "./bin/test"
 run_command "python ./python/test/test.py"
+
+exit $REGRESS_RESULT
