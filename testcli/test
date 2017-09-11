@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function BR {
+    echo "------------------------------"
+}
+
+function CHECK {
+    if [ "$1" = "0" ]; then
+        echo \"$2\"    Passed.
+    else
+        echo \"$2\"    Failed.
+        exit 1
+    fi
+}
+
+TEST_NAME=$1
+
+MOF_FILE=`ls "../samples/$TEST_NAME" | grep "mof"`
+
+echo ">>> Testing for $TEST_NAME <<<"
+pushd $TEST_NAME >/dev/null
+    BR ; BR
+    echo "Copying .mof file"
+    cp ../../samples/$TEST_NAME/$MOF_FILE .
+    CLASS_NAME=`cat $MOF_FILE | grep "class" | tail -n 1 | awk '{print $2}'` #get class name
+    CLAZZ_NAME="$(echo -e "${CLASS_NAME}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')" #remove white space
+    CLASS_NAME=$CLAZZ_NAME
+
+    BR
+    ../../bin/omigen_py $MOF_FILE $CLASS_NAME 1>/dev/null 2>&1
+    CHECK $? "omigen_py $MOF_FILE $CLASS_NAME" 
+    BR
+    echo "Removing files"
+    rm $MOF_FILE
+    rm schema.py
+    rm mi_main.py
+popd >/dev/null
+
