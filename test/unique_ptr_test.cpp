@@ -2205,10 +2205,14 @@ unique_ptr_test::test30 ()
     {
         util::unique_ptr<BaseType> pBase;
         util::default_delete<BaseType> deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::unique_ptr<BaseType, BaseDeleter> pBase;
         BaseDeleter deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::unique_ptr<BaseType, void (*)(BaseType*&)> pBase (
@@ -4614,10 +4618,14 @@ unique_ptr_test::test68 ()
     {
         util::unique_ptr<BaseType[]> pBase;
         util::default_delete<BaseType[]> deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::unique_ptr<BaseType[], ArrayDeleter> pBase;
         ArrayDeleter deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::unique_ptr<BaseType[], void (*)(BaseType*&)> pBase (

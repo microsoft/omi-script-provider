@@ -99,7 +99,7 @@ MI_Module_Wrapper::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_Module_Wrapper::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "schemaDecl",
         "load",
         "unload",
@@ -110,7 +110,7 @@ MI_Module_Wrapper::init (
     PyObject* pLoadObj = NULL;
     PyObject* pUnloadObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOO", KEYWORDS,
+            args, keywords, "OOO", const_cast<char **>(KEYWORDS),
             &pSchemaDeclObj, &pLoadObj, &pUnloadObj))
     {
         SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");

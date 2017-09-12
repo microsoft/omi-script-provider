@@ -137,7 +137,7 @@ public:
     std::basic_ostream<CHAR_t, TRAITS>&
     to_stream (std::basic_ostream<CHAR_t, TRAITS>& strm) const
     {
-        if (MI_FLAG_ANY == m_Scope & MI_FLAG_ANY)
+        if (MI_FLAG_ANY == (m_Scope & MI_FLAG_ANY))
         {
             strm << "MI_FLAG_ANY";
         }

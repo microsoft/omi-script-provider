@@ -70,7 +70,7 @@ BookEnd_wrapper_init (
 {
     //SCX_BOOKEND ("BookEnd_wrapper_init");
     int rval = 0;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "title",
         "subTitle",
         NULL
@@ -78,7 +78,7 @@ BookEnd_wrapper_init (
     char const* title = NULL;
     char const* subTitle = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "z|z", KEYWORDS, &title, &subTitle))
+            args, keywords, "z|z", const_cast<char **>(KEYWORDS), &title, &subTitle))
     {
         BookEnd_wrapper* pBookEnd = reinterpret_cast<BookEnd_wrapper*>(pSelf);
         new (&(pBookEnd->m_BookEnd)) scx::BookEnd (title, subTitle);

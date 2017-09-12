@@ -186,13 +186,13 @@ MI_Context_Wrapper::postResult (
     SCX_BOOKEND ("MI_Context_Wrapper::postResult");
     PyObject* pRet = NULL;
     // parse the args
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "result",
         NULL
     };
     MI_Uint32 resultAsUInt;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "I", KEYWORDS, &resultAsUInt))
+            args, keywords, "I", const_cast<char **>(KEYWORDS), &resultAsUInt))
     {
         SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Result result;
@@ -237,13 +237,13 @@ MI_Context_Wrapper::postInstance (
     SCX_BOOKEND ("MI_Context_Wrapper::postInstance");
     PyObject* pRet = NULL;
     // parse the args
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "instance",
         NULL
     };
     PyObject* pInstanceObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "O", KEYWORDS, &pInstanceObj))
+            args, keywords, "O", const_cast<char **>(KEYWORDS), &pInstanceObj))
     {
         SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (PyObject_TypeCheck (
@@ -293,12 +293,12 @@ MI_Context_Wrapper::newInstance (
 {
     SCX_BOOKEND ("MI_Context_Wrapper::newInstance");
     PyObject* rval = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "name",
         NULL
     };
     PyObject* pNameObj = NULL;
-    if (PyArg_ParseTupleAndKeywords (args, keywords, "O", KEYWORDS, &pNameObj))
+    if (PyArg_ParseTupleAndKeywords (args, keywords, "O", const_cast<char **>(KEYWORDS), &pNameObj))
     {
         MI_Type<MI_STRING>::type_t name;
         int ret = fromPyObject (pNameObj, &name);
@@ -357,7 +357,7 @@ MI_Context_Wrapper::newParameters (
 {
     SCX_BOOKEND ("MI_Context_Wrapper::newParameters");
     PyObject* rval = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "className",
         "methodName",
         NULL
@@ -365,7 +365,7 @@ MI_Context_Wrapper::newParameters (
     PyObject* pClassNameObj = NULL;
     PyObject* pMethodNameObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OO", KEYWORDS, &pClassNameObj, &pMethodNameObj))
+            args, keywords, "OO", const_cast<char **>(KEYWORDS), &pClassNameObj, &pMethodNameObj))
     {
         MI_Type<MI_STRING>::type_t className;
         int ret = fromPyObject (pClassNameObj, &className);
