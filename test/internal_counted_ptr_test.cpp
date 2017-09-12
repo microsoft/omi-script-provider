@@ -3873,10 +3873,14 @@ internal_counted_ptr_test::test55 ()
     {
         util::internal_counted_ptr<BaseType> pBase;
         util::default_delete<BaseType> deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::internal_counted_ptr<BaseType, BaseDeleter> pBase;
         BaseDeleter deleter = pBase.get_deleter ();
+        // To surpress the unused variable warning
+        (void)deleter;
     }
     {
         util::internal_counted_ptr<BaseType, void (*)(BaseType*&)> pBase (

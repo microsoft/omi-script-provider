@@ -344,7 +344,7 @@ shared_protocol_test::test05 ()
     if (EXIT_SUCCESS == rval)
     {
         // test an empty string
-        MI_Char* pStrOut = "";
+        MI_Char* pStrOut = const_cast<char*>("");
         rval = protocol::send (pStrOut, *sendSock);
         if (EXIT_SUCCESS == rval)
         {

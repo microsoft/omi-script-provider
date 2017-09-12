@@ -955,7 +955,7 @@ mi_memory_helper_test::test11 ()
     };
     MI_StringA stringA = {
         new MI_Char*[card (TEST_STRINGS)],
-        card (TEST_STRINGS)
+        (unsigned int)card (TEST_STRINGS)
     };
     for (size_t i = 0; i < card (TEST_STRINGS); ++i)
     {
@@ -1007,7 +1007,7 @@ mi_memory_helper_test::test12 ()
     }
     MI_StringA stringA = {
         new MI_Char*[card (TEST_STRINGS)],
-        card (TEST_STRINGS)
+        (unsigned int)card (TEST_STRINGS)
     };
     for (size_t i = 0; i < card (TEST_STRINGS); ++i)
     {
@@ -1059,7 +1059,7 @@ mi_memory_helper_test::test13 ()
     }
     MI_StringA stringA = {
         new MI_Char*[card (TEST_STRINGS)],
-        card (TEST_STRINGS)
+        (unsigned int)card (TEST_STRINGS)
     };
     for (size_t i = 0; i < card (TEST_STRINGS); ++i)
     {
@@ -1111,7 +1111,7 @@ mi_memory_helper_test::test14 ()
     }
     MI_StringA stringA = {
         new MI_Char*[card (TEST_STRINGS)],
-        card (TEST_STRINGS)
+        (unsigned int)card (TEST_STRINGS)
     };
     for (size_t i = 0; i < card (TEST_STRINGS); ++i)
     {

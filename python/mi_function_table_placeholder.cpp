@@ -597,7 +597,7 @@ MI_FunctionTable_Placeholder::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_FunctionTable_Placeholder::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "Load",
         "Unload",
         "GetInstance",
@@ -630,7 +630,7 @@ MI_FunctionTable_Placeholder::init (
     PyObject* pUnsubscribeObj = NULL;
     PyObject* pInvokeObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOOOOO|OOOOOOO", KEYWORDS, &pLoadObj, &pUnloadObj,
+            args, keywords, "OOOOOOO|OOOOOOO", const_cast<char **>(KEYWORDS), &pLoadObj, &pUnloadObj,
             &pGetInstanceObj, &pEnumerateInstancesObj, &pCreateInstanceObj,
             &pModifyInstanceObj, &pDeleteInstanceObj, &pAssociatorInstancesObj,
             &pReferenceInstancesObj, &pEnableIndicationsObj,

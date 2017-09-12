@@ -254,10 +254,10 @@ template<> char const MI_Wrapper<_TYPE_>::NAME[] = #_NAME_; \
 template<> char const MI_Wrapper<_TYPE_>::OMI_NAME[] = "omi." #_NAME_; \
 template<> char const MI_Wrapper<_TYPE_>::DOC[] = "omi." #_NAME_ " utility"; \
 template<> PyGetSetDef MI_Wrapper<_TYPE_>::s_Mutators[] = { \
-   { "value", \
+   { const_cast<char *>("value"), \
      reinterpret_cast<getter>(_getValue), \
      reinterpret_cast<setter>(_setValue), \
-     "value type", \
+     const_cast<char *>("value type"), \
      NULL }, \
    { NULL }, \
 }; \
@@ -321,10 +321,10 @@ template<> char const MI_Array_Iterator<_TYPE_>::OMI_NAME[] = \
 template<> char const MI_Array_Iterator<_TYPE_>::DOC[] = \
     "iterator for omi." #_NAME_; \
 template<> PyGetSetDef MI_Array_Iterator<_TYPE_>::s_Mutators[] = { \
-   { "value", \
+   { const_cast<char *>("value"), \
      reinterpret_cast<getter>(_getValue), \
      reinterpret_cast<setter>(_setValue), \
-     "value type", \
+     const_cast<char *>("value type"), \
      NULL }, \
    { NULL }, \
 }; \
@@ -386,10 +386,10 @@ char const MI_Array_Iterator<MI_DATETIMEA>::OMI_NAME[] =
 char const MI_Array_Iterator<MI_DATETIMEA>::DOC[] =
     "iterator for omi.MI_DatetimeA";
 PyGetSetDef MI_Array_Iterator<MI_DATETIMEA>::s_Mutators[] = {
-   { "value",
+   { const_cast<char *>("value"),
      reinterpret_cast<getter>(_getValue),
      reinterpret_cast<setter>(_setValue),
-     "value type",
+     const_cast<char *>("value type"),
      NULL },
    { NULL },
 };
@@ -410,12 +410,12 @@ MI_Wrapper<MI_BOOLEAN>::init (
         reinterpret_cast<MI_Wrapper<MI_BOOLEAN>*>(pSelf);
     pWrapper->ctor (MI_Value<MI_BOOLEAN>::Ptr ());
     PyObject* pValue = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|O", KEYWORDS, &pValue))
+            args, keywords, "|O", const_cast<char **>(KEYWORDS), &pValue))
     {
         if (NULL == pValue ||
             Py_None == pValue)
@@ -604,45 +604,45 @@ MI_Wrapper<MI_UINT8>::to_str (
 
 
 /*static*/ PyGetSetDef MI_Timestamp_Wrapper::MUTATORS[] = {
-    { "year",
+    { const_cast<char *>("year"),
       reinterpret_cast<getter>(_getYear),
       reinterpret_cast<setter>(_setYear),
-      "year value",
+      const_cast<char *>("year value"),
       NULL },
-    { "month",
+    { const_cast<char *>("month"),
       reinterpret_cast<getter>(_getMonth),
       reinterpret_cast<setter>(_setMonth),
-      "month value",
+      const_cast<char *>("month value"),
       NULL },
-    { "day",
+    { const_cast<char *>("day"),
       reinterpret_cast<getter>(_getDay),
       reinterpret_cast<setter>(_setDay),
-      "day value",
+      const_cast<char *>("day value"),
       NULL },
-    { "hour",
+    { const_cast<char *>("hour"),
       reinterpret_cast<getter>(_getHour),
       reinterpret_cast<setter>(_setHour),
-      "hour value",
+      const_cast<char *>("hour value"),
       NULL },
-    { "minute",
+    { const_cast<char *>("minute"),
       reinterpret_cast<getter>(_getMinute),
       reinterpret_cast<setter>(_setMinute),
-      "minute value",
+      const_cast<char *>("minute value"),
       NULL },
-    { "second",
+    { const_cast<char *>("second"),
       reinterpret_cast<getter>(_getSecond),
       reinterpret_cast<setter>(_setSecond),
-      "second value",
+      const_cast<char *>("second value"),
       NULL },
-    { "microseconds",
+    { const_cast<char *>("microseconds"),
       reinterpret_cast<getter>(_getMicroseconds),
       reinterpret_cast<setter>(_setMicroseconds),
-      "microseconds value",
+      const_cast<char *>("microseconds value"),
       NULL },
-    { "utc",
+    { const_cast<char *>("utc"),
       reinterpret_cast<getter>(_getUTC),
       reinterpret_cast<setter>(_setUTC),
-      "utc value",
+      const_cast<char *>("utc value"),
       NULL },
     { NULL },
 };
@@ -720,7 +720,7 @@ MI_Timestamp_Wrapper::init (
     PyObject* pSecondObj = NULL;
     PyObject* pMicrosecondsObj = NULL;
     PyObject* pUtcObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "year",
         "month",
         "day",
@@ -732,7 +732,7 @@ MI_Timestamp_Wrapper::init (
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|OOOOOOOO", KEYWORDS, &pYearObj, &pMonthObj,
+            args, keywords, "|OOOOOOOO", const_cast<char **>(KEYWORDS), &pYearObj, &pMonthObj,
             &pDayObj, &pHourObj, &pMinuteObj, &pSecondObj, &pMicrosecondsObj,
             &pUtcObj))
     {
@@ -1182,30 +1182,30 @@ MI_Timestamp_Wrapper::getValue () const
 
 
 /*static*/ PyGetSetDef MI_Interval_Wrapper::MUTATORS[] = {
-    { "days",
+    { const_cast<char *>("days"),
       reinterpret_cast<getter>(_getDays),
       reinterpret_cast<setter>(_setDays),
-      "days value",
+      const_cast<char *>("days value"),
       NULL },
-    { "hours",
+    { const_cast<char *>("hours"),
       reinterpret_cast<getter>(_getHours),
       reinterpret_cast<setter>(_setHours),
-      "hours value",
+      const_cast<char *>("hours value"),
       NULL },
-    { "minutes",
+    { const_cast<char *>("minutes"),
       reinterpret_cast<getter>(_getMinutes),
       reinterpret_cast<setter>(_setMinutes),
-      "minutes value",
+      const_cast<char *>("minutes value"),
       NULL },
-    { "seconds",
+    { const_cast<char *>("seconds"),
       reinterpret_cast<getter>(_getSeconds),
       reinterpret_cast<setter>(_setSeconds),
-      "seconds value",
+      const_cast<char *>("seconds value"),
       NULL },
-    { "microseconds",
+    { const_cast<char *>("microseconds"),
       reinterpret_cast<getter>(_getMicroseconds),
       reinterpret_cast<setter>(_setMicroseconds),
-      "microseconds value",
+      const_cast<char *>("microseconds value"),
       NULL },
     { NULL },
 };
@@ -1312,7 +1312,7 @@ MI_Interval_Wrapper::init (
     PyObject* pMinutesObj = NULL;
     PyObject* pSecondsObj = NULL;
     PyObject* pMicrosecondsObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "days",
         "hours",
         "minutes",
@@ -1321,7 +1321,7 @@ MI_Interval_Wrapper::init (
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|OOOOO", KEYWORDS, &pDaysObj, &pHoursObj,
+            args, keywords, "|OOOOO", const_cast<char **>(KEYWORDS), &pDaysObj, &pHoursObj,
             &pMinutesObj, &pSecondsObj, &pMicrosecondsObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
@@ -1991,12 +1991,12 @@ MI_Array_Wrapper<MI_DATETIMEA>::init (
         reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(pSelf);
     pWrapper->ctor ();
     PyObject* pValue = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "values",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|O", KEYWORDS, &pValue))
+            args, keywords, "|O", const_cast<char **>(KEYWORDS), &pValue))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (NULL == pValue)
@@ -2143,12 +2143,12 @@ MI_Array_Wrapper<MI_DATETIMEA>::_getValueAt (
     //SCX_BOOKEND ("MI_Array_Wrapper<MI_DATETIMEA>::_getValueAt");
     PyObject* pRval = NULL;
     long index = 0;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "l", KEYWORDS, &index))
+            args, keywords, "l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_DATETIMEA>* pArray =
@@ -2206,13 +2206,13 @@ MI_Array_Wrapper<MI_DATETIMEA>::_setValueAt (
     PyObject* rval = NULL;
     long index = 0;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_DATETIMEA>* pArray =
@@ -2281,12 +2281,12 @@ MI_Array_Wrapper<MI_DATETIMEA>::_append (
     SCX_BOOKEND ("MI_Array_Wrapper<MI_DATETIMEA>::_append");
     PyObject* rval = NULL;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "O", KEYWORDS, &pValueObj))
+            args, keywords, "O", const_cast<char **>(KEYWORDS), &pValueObj))
     {
         SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_DATETIMEA>* pArray =
@@ -2339,13 +2339,13 @@ MI_Array_Wrapper<MI_DATETIMEA>::_insert (
     PyObject* rval = NULL;
     long index = 0;;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_DATETIMEA>* pArray =
@@ -2414,12 +2414,12 @@ MI_Array_Wrapper<MI_DATETIMEA>::_pop (
     MI_Array_Wrapper<MI_DATETIMEA>* pArray =
         reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(pSelf);
     long index = static_cast<long>(pArray->m_pArray->size ()) - 1;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|l", KEYWORDS, &index))
+            args, keywords, "|l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (0 > index)
@@ -2569,12 +2569,12 @@ MI_Array_Wrapper<MI_BOOLEANA>::init (
         reinterpret_cast<MI_Array_Wrapper<MI_BOOLEANA>*>(pSelf);
     pWrapper->ctor ();
     PyObject* pValue = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "values",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|O", KEYWORDS, &pValue))
+            args, keywords, "|O", const_cast<char **>(KEYWORDS), &pValue))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (NULL == pValue)
@@ -2670,12 +2670,12 @@ MI_Array_Wrapper<MI_BOOLEANA>::_getValueAt (
     //SCX_BOOKEND ("MI_Array_Wrapper<MI_BOOLEANA>::_getValueAt");
     PyObject* pRval = NULL;
     long index = 0;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "l", KEYWORDS, &index))
+            args, keywords, "l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_BOOLEANA>* pArray =
@@ -2717,13 +2717,13 @@ MI_Array_Wrapper<MI_BOOLEANA>::_setValueAt (
     PyObject* rval = NULL;
     long index = 0;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_BOOLEANA>* pArray =
@@ -2777,12 +2777,12 @@ MI_Array_Wrapper<MI_BOOLEANA>::_append (
     //SCX_BOOKEND ("MI_Array_Wrapper<MI_BOOLEANA>::_append");
     PyObject* rval = NULL;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "O", KEYWORDS, &pValueObj))
+            args, keywords, "O", const_cast<char **>(KEYWORDS), &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_BOOLEANA>* pArray =
@@ -2824,13 +2824,13 @@ MI_Array_Wrapper<MI_BOOLEANA>::_insert (
     PyObject* rval = NULL;
     long index = 0;;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_BOOLEANA>* pArray =
@@ -2886,12 +2886,12 @@ MI_Array_Wrapper<MI_BOOLEANA>::_pop (
     MI_Array_Wrapper<MI_BOOLEANA>* pArray =
         reinterpret_cast<MI_Array_Wrapper<MI_BOOLEANA>*>(pSelf);
     long index = static_cast<long>(pArray->m_pArray->size ()) - 1;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|l", KEYWORDS, &index))
+            args, keywords, "|l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (0 > index)
@@ -3115,12 +3115,12 @@ MI_PropertySet_Wrapper::_ContainsElement (
     //SCX_BOOKEND ("MI_PropertySet_Wrapper::_ContainsElement");
     PyObject* rval = NULL;
     PyObject* pKeyObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "key",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "O", KEYWORDS, &pKeyObj))
+            args, keywords, "O", const_cast<char **>(KEYWORDS), &pKeyObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Type<MI_STRING>::type_t key;
@@ -3157,12 +3157,12 @@ MI_PropertySet_Wrapper::_GetElementAt (
     SCX_BOOKEND ("MI_PropertySet_Wrapper::_GetElementAt");
     MI_Wrapper<MI_STRING>::PyPtr rval;
     long index = 0;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "l", KEYWORDS, &index))
+            args, keywords, "l", const_cast<char **>(KEYWORDS), &index))
     {
         SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_PropertySet_Wrapper* pPropertySet =

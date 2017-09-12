@@ -18,12 +18,6 @@
 namespace {
 
 
-char* KEYWORDS[] = {
-    "name",
-    NULL
-};
-
-
 PyMethodDefContainer_t g_methods;
 
 

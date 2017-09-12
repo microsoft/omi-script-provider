@@ -349,7 +349,7 @@ MI_QualifierDecl_Wrapper::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_QualifierDecl_Wrapper::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "name",
         "type",
         "scope",
@@ -364,7 +364,7 @@ MI_QualifierDecl_Wrapper::init (
     PyObject* pFlavorObj = NULL;
     PyObject* pValueObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOO|O", KEYWORDS,
+            args, keywords, "OOOO|O", const_cast<char **>(KEYWORDS),
             &pNameObj, &pTypeObj, &pScopeObj, &pFlavorObj, &pValueObj))
     {
         MI_Value<MI_STRING>::Ptr pName;
@@ -523,7 +523,7 @@ MI_Qualifier_Wrapper::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_Qualifier_Wrapper::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "name",
         "type",
         "flavor",
@@ -536,7 +536,7 @@ MI_Qualifier_Wrapper::init (
     PyObject* pFlavorObj = NULL;
     PyObject* pValueObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOO|O", KEYWORDS,
+            args, keywords, "OOOO|O", const_cast<char **>(KEYWORDS),
             &pNameObj, &pTypeObj, &pFlavorObj, &pValueObj))
     {
         MI_Value<MI_STRING>::Ptr pName;
@@ -684,7 +684,7 @@ MI_PropertyDecl_Wrapper::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_PropertyDecl_Wrapper::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "flags",
         "name",
         "qualifiers",
@@ -705,7 +705,7 @@ MI_PropertyDecl_Wrapper::init (
     PyObject* pPropagatorObj = NULL;
     PyObject* pValueObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOOO|OOO", KEYWORDS,
+            args, keywords, "OOOOO|OOO", const_cast<char **>(KEYWORDS),
             &pFlagsObj, &pNameObj, &pQualifiersObj, &pTypeObj, &pClassNameObj,
             &pOriginObj, &pPropagatorObj, &pValueObj))
     {
@@ -907,7 +907,7 @@ MI_ParameterDecl_Wrapper::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_ParameterDecl_Wrapper::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "flags",
         "name",
         "qualifiers",
@@ -922,7 +922,7 @@ MI_ParameterDecl_Wrapper::init (
     PyObject* pTypeObj = NULL;
     PyObject* pClassNameObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOOO", KEYWORDS, 
+            args, keywords, "OOOOO", const_cast<char **>(KEYWORDS),
             &pFlagsObj, &pNameObj, &pQualifiersObj, &pTypeObj, &pClassNameObj))
     {
         MI_Value<MI_UINT32>::Ptr pFlags;
@@ -1086,7 +1086,7 @@ MI_MethodDecl_Placeholder::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_MethodDecl_Placeholder::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "flags",
         "name",
         "qualifiers",
@@ -1107,7 +1107,7 @@ MI_MethodDecl_Placeholder::init (
     PyObject* pPropagatorObj = NULL;
     PyObject* pInvokeFnNameObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOOOOOO", KEYWORDS,
+            args, keywords, "OOOOOOOO", const_cast<char **>(KEYWORDS),
             &pFlagsObj, &pNameObj, &pQualifiersObj, &pParametersObj,
             &pReturnTypeObj, &pOriginObj, &pPropagatorObj, &pInvokeFnNameObj))
     {
@@ -1339,7 +1339,7 @@ MI_ClassDecl_Placeholder::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_ClassDecl_Placeholder::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "flags",
         "name",
         "qualifiers",
@@ -1360,7 +1360,7 @@ MI_ClassDecl_Placeholder::init (
     PyObject* pFunctionTableObj = NULL;
     PyObject* pOwningClassNameObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OOOOOOOO", KEYWORDS,
+            args, keywords, "OOOOOOOO", const_cast<char **>(KEYWORDS),
             &pFlagsObj, &pNameObj, &pQualifiersObj, &pPropertyDeclsObj,
             &pSuperClassNameObj, &pMethodDeclsObj, &pFunctionTableObj,
             &pOwningClassNameObj))
@@ -1643,7 +1643,7 @@ MI_SchemaDecl_Placeholder::init (
     PyObject* keywords)
 {
     SCX_BOOKEND ("MI_SchemaDecl_Placeholder::init");
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "qualifierDecls",
         "classDecls",
         NULL
@@ -1652,7 +1652,7 @@ MI_SchemaDecl_Placeholder::init (
     PyObject* pQualifierDeclsObj = NULL;
     PyObject* pClassDeclsObj = NULL;
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "OO", KEYWORDS,
+            args, keywords, "OO", const_cast<char **>(KEYWORDS),
             &pQualifierDeclsObj, &pClassDeclsObj))
     {
         std::vector<MI_QualifierDecl_Wrapper::ValuePtr> qualifierDecls;

@@ -780,13 +780,13 @@ operator == (
                 static_cast<scx::MI_Timestamp const*>(&lhs);
             scx::MI_Timestamp const* pRHS =
                 static_cast<scx::MI_Timestamp const*>(&rhs);
-            return pLHS->getYear () == pRHS->getYear () &&
+            return (pLHS->getYear () == pRHS->getYear () &&
                 pLHS->getMonth () == pRHS->getMonth () &&
                 pLHS->getDay () == pRHS->getDay () &&
                 pLHS->getHour () == pRHS->getHour () &&
                 pLHS->getMinute () == pRHS->getMinute () &&
                 pLHS->getSecond () == pRHS->getSecond () &&
-                pLHS->getMicroseconds () == pRHS->getMicroseconds () ||
+                pLHS->getMicroseconds () == pRHS->getMicroseconds ()) ||
                 pLHS->getUTC () == pRHS->getUTC ();
         }
         else
