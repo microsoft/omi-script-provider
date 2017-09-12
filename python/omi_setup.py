@@ -38,7 +38,7 @@ module1 = Extension (
                             lib_dir],
 
     libraries = ['OMIScriptProvider'],
-    define_macros = [('PRINT_BOOKENDS','0')],
+    define_macros = [],
     
     extra_link_args = ['-Wl,-R' + root_dir + '/scriptprovider/bin',
                        '-Wl,-R' + lib_dir],
