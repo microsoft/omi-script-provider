@@ -16,5 +16,21 @@ function run_command {
 run_command "./build.sh"
 run_command "./bin/test"
 run_command "python ./python/test/test.py"
+run_command "./test_all"
+
+
+echo "************************"
+echo "************************"
+echo "************************"
+echo "***                  ***"
+if [ "$REGRESS_RESULT" = "0" ]; then
+    echo "***  Regress passed  ***"
+else
+    echo "***  Regress failed  ***"
+fi
+echo "***                  ***"
+echo "************************"
+echo "************************"
+echo "************************"
 
 exit $REGRESS_RESULT
