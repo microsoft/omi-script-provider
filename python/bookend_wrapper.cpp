@@ -45,7 +45,7 @@ BookEnd_wrapper_dealloc (
     {
         BookEnd_wrapper* pBookEnd = reinterpret_cast<BookEnd_wrapper*>(pObj);
         pBookEnd->~BookEnd_wrapper ();
-        pBookEnd->ob_type->tp_free (pObj);
+        Py_TYPE(pBookEnd)->tp_free (pObj);
     }
 }
 

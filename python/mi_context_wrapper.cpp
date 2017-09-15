@@ -126,16 +126,16 @@ to_MI_Result (
 /*static*/ PyMethodDef MI_Context_Wrapper::METHODS[] = {
     { "PostResult",
       reinterpret_cast<PyCFunction>(MI_Context_Wrapper::postResult),
-      METH_KEYWORDS, "post a result to omi" },
+      METH_VARARGS | METH_KEYWORDS, "post a result to omi" },
     { "PostInstance",
       reinterpret_cast<PyCFunction>(MI_Context_Wrapper::postInstance),
-      METH_KEYWORDS, "return a MI_Instance to omi" },
+      METH_VARARGS | METH_KEYWORDS, "return a MI_Instance to omi" },
     { "NewInstance",
       reinterpret_cast<PyCFunction>(MI_Context_Wrapper::newInstance),
-      METH_KEYWORDS, "create a new MI_Instance" },
+      METH_VARARGS | METH_KEYWORDS, "create a new MI_Instance" },
     { "NewParameters",
       reinterpret_cast<PyCFunction>(MI_Context_Wrapper::newParameters),
-      METH_KEYWORDS, "create a new MI_Instance for method parameters" },
+      METH_VARARGS | METH_KEYWORDS, "create a new MI_Instance for method parameters" },
     { NULL, NULL, 0, NULL }
 };
 
@@ -172,7 +172,7 @@ MI_Context_Wrapper::dealloc (
         MI_Context_Wrapper* pDecl =
             reinterpret_cast<MI_Context_Wrapper*>(pObj);
         pDecl->~MI_Context_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 

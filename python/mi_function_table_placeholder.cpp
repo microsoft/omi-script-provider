@@ -566,7 +566,7 @@ MI_FunctionTable_Placeholder::dealloc (
         MI_FunctionTable_Placeholder* pDecl =
             reinterpret_cast<MI_FunctionTable_Placeholder*>(pObj);
         pDecl->~MI_FunctionTable_Placeholder ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 

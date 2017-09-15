@@ -5,6 +5,7 @@
 
 #include "debug_tags.hpp"
 #include "py_ptr.hpp"
+#include "python_compatibility.hpp"
 #include "shared.hpp"
 #include "mi_module_wrapper.hpp"
 
@@ -67,7 +68,7 @@ Client_Wrapper::dealloc (
         Client_Wrapper* pDecl =
             reinterpret_cast<Client_Wrapper*>(pObj);
         pDecl->~Client_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 

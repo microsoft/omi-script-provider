@@ -10,6 +10,7 @@
 #include "mi_value.hpp"
 #include "py_converter.hpp"
 #include "py_ptr.hpp"
+#include "python_compatibility.hpp"
 #include "shared.hpp"
 
 
@@ -597,7 +598,7 @@ MI_Wrapper<TYPE_ID>::dealloc (
     MI_Wrapper<TYPE_ID>* pWrapper =
         reinterpret_cast<MI_Wrapper<TYPE_ID>*>(pSelf);
     pWrapper->dtor ();
-    pWrapper->ob_type->tp_free (pSelf);
+    Py_TYPE(pWrapper)->tp_free (pSelf);
 }
 
 
@@ -890,7 +891,7 @@ MI_Array_Wrapper<TYPE_ID>::dealloc (
     MI_Array_Wrapper<TYPE_ID>* pArray =
         reinterpret_cast<MI_Array_Wrapper<TYPE_ID>*>(pSelf);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pSelf);
+    Py_TYPE(pArray)->tp_free (pSelf);
 }
 
 
@@ -1452,7 +1453,7 @@ MI_Array_Iterator<TYPE_ID>::dealloc (
     MI_Array_Iterator<TYPE_ID>* pArray =
         reinterpret_cast<MI_Array_Iterator<TYPE_ID>*>(pObj);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pObj);
+    Py_TYPE(pArray)->tp_free (pObj);
 }
 
 
