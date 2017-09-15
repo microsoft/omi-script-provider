@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export PYTHONPATH=$1
+../../../omi/Unix/output/bin/omiserver -d
+sleep 1

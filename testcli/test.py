@@ -96,8 +96,6 @@ print("Testing mof file ..." + mof_file)
 all_decl = dir(sch)
 classes = get_class_names(mof_file)
 
-print(classes)
-
 #check if declarations are correct
 check_decl(all_decl, "Weak_qual_decl")
 check_type(sch.Weak_qual_decl, sch.omi.MI_QualifierDecl)
