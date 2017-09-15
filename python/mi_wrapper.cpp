@@ -15,6 +15,7 @@
 #include "mi_function_table_placeholder.hpp"
 #include "shared_protocol.hpp"
 #include "shared.hpp"
+#include "python_compatibility.hpp"
 
 
 using namespace scx;
@@ -301,18 +302,18 @@ template<> PyMethodDef MI_Array_Wrapper<_TYPE_>::METHODS[] = { \
       METH_NOARGS, "return item count" }, \
     { "getValueAt", \
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<_TYPE_>::_getValueAt), \
-      METH_KEYWORDS, "return value at index" }, \
+      METH_VARARGS | METH_KEYWORDS, "return value at index" }, \
     { "setValueAt", \
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<_TYPE_>::_setValueAt), \
-      METH_KEYWORDS, "set value at index" }, \
+      METH_VARARGS | METH_KEYWORDS, "set value at index" }, \
     { "append", \
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<_TYPE_>::_append), \
-      METH_KEYWORDS, "append value" }, \
+      METH_VARARGS | METH_KEYWORDS, "append value" }, \
     { "insert", \
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<_TYPE_>::_insert), \
-      METH_KEYWORDS, "insert value at index" }, \
+      METH_VARARGS | METH_KEYWORDS, "insert value at index" }, \
     { "pop", reinterpret_cast<PyCFunction>(MI_Array_Wrapper<_TYPE_>::_pop), \
-      METH_KEYWORDS, "remove value at index and return it" }, \
+      METH_VARARGS | METH_KEYWORDS, "remove value at index and return it" }, \
     { NULL, NULL, 0, NULL } \
 }; \
 template<> char const MI_Array_Iterator<_TYPE_>::NAME[] = #_NAME_ "_iterator"; \
@@ -364,20 +365,20 @@ PyMethodDef MI_Array_Wrapper<MI_DATETIMEA>::METHODS[] = {
     { "getValueAt",
       reinterpret_cast<PyCFunction>(
           MI_Array_Wrapper<MI_DATETIMEA>::_getValueAt),
-      METH_KEYWORDS, "return value at index" },
+      METH_VARARGS | METH_KEYWORDS, "return value at index" },
     { "setValueAt",
       reinterpret_cast<PyCFunction>(
           MI_Array_Wrapper<MI_DATETIMEA>::_setValueAt),
-      METH_KEYWORDS, "set value at index" },
+      METH_VARARGS | METH_KEYWORDS, "set value at index" },
     { "append",
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<MI_DATETIMEA>::_append),
-      METH_KEYWORDS, "append value" },
+      METH_VARARGS | METH_KEYWORDS, "append value" },
     { "insert",
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<MI_DATETIMEA>::_insert),
-      METH_KEYWORDS, "insert value at index" },
+      METH_VARARGS | METH_KEYWORDS, "insert value at index" },
     { "pop",
       reinterpret_cast<PyCFunction>(MI_Array_Wrapper<MI_DATETIMEA>::_pop),
-      METH_KEYWORDS, "remove value at index and return it" },
+      METH_VARARGS | METH_KEYWORDS, "remove value at index and return it" },
     { NULL, NULL, 0, NULL }
 };
 char const MI_Array_Iterator<MI_DATETIMEA>::NAME[] = "MI_DatetimeA_iterator";
@@ -699,7 +700,7 @@ MI_Timestamp_Wrapper::dealloc (
     MI_Timestamp_Wrapper* pTimestamp =
         reinterpret_cast<MI_Timestamp_Wrapper*>(pSelf);
     pTimestamp->dtor ();
-    pTimestamp->ob_type->tp_free (pSelf);
+    Py_TYPE(pTimestamp)->tp_free (pSelf);
 }
 
 
@@ -1294,7 +1295,7 @@ MI_Interval_Wrapper::dealloc (
     MI_Interval_Wrapper* pInterval =
         reinterpret_cast<MI_Interval_Wrapper*>(pSelf);
     pInterval->dtor ();
-    pInterval->ob_type->tp_free (pSelf);
+    Py_TYPE(pInterval)->tp_free (pSelf);
 }
 
 
@@ -1636,7 +1637,7 @@ MI_Array_Iterator<MI_DATETIMEA>::dealloc (
     MI_Array_Iterator<MI_DATETIMEA>* pArray =
         reinterpret_cast<MI_Array_Iterator<MI_DATETIMEA>*>(pObj);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pObj);
+    Py_TYPE(pArray)->tp_free (pObj);
 }
 
 
@@ -1975,7 +1976,7 @@ MI_Array_Wrapper<MI_DATETIMEA>::dealloc (
     MI_Array_Wrapper<MI_DATETIMEA>* pArray =
         reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(pSelf);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pSelf);
+    Py_TYPE(pArray)->tp_free (pSelf);
 }
 
 
@@ -3049,7 +3050,7 @@ MI_PropertySet_Wrapper::dealloc (
     MI_PropertySet_Wrapper* pPropertySet =
         reinterpret_cast<MI_PropertySet_Wrapper*>(pSelf);
     pPropertySet->~MI_PropertySet_Wrapper ();
-    pPropertySet->ob_type->tp_free (pSelf);
+    Py_TYPE(pPropertySet)->tp_free (pSelf);
 }
 
 

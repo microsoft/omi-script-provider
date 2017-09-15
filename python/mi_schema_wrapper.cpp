@@ -318,7 +318,7 @@ MI_QualifierDecl_Wrapper::dealloc (
         MI_QualifierDecl_Wrapper* pDecl =
             reinterpret_cast<MI_QualifierDecl_Wrapper*>(pObj);
         pDecl->~MI_QualifierDecl_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -492,7 +492,7 @@ MI_Qualifier_Wrapper::dealloc (
         MI_Qualifier_Wrapper* pDecl =
             reinterpret_cast<MI_Qualifier_Wrapper*>(pObj);
         pDecl->~MI_Qualifier_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -653,7 +653,7 @@ MI_PropertyDecl_Wrapper::dealloc (
         MI_PropertyDecl_Wrapper* pDecl =
             reinterpret_cast<MI_PropertyDecl_Wrapper*>(pObj);
         pDecl->~MI_PropertyDecl_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -876,7 +876,7 @@ MI_ParameterDecl_Wrapper::dealloc (
         MI_ParameterDecl_Wrapper* pDecl =
             reinterpret_cast<MI_ParameterDecl_Wrapper*>(pObj);
         pDecl->~MI_ParameterDecl_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -1055,7 +1055,7 @@ MI_MethodDecl_Placeholder::dealloc (
         MI_MethodDecl_Placeholder* pDecl =
             reinterpret_cast<MI_MethodDecl_Placeholder*>(pObj);
         pDecl->~MI_MethodDecl_Placeholder ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -1308,7 +1308,7 @@ MI_ClassDecl_Placeholder::dealloc (
         MI_ClassDecl_Placeholder* pDecl =
             reinterpret_cast<MI_ClassDecl_Placeholder*>(pObj);
         pDecl->~MI_ClassDecl_Placeholder ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -1612,7 +1612,7 @@ MI_SchemaDecl_Placeholder::dealloc (
         MI_SchemaDecl_Placeholder* pDecl =
             reinterpret_cast<MI_SchemaDecl_Placeholder*>(pObj);
         pDecl->~MI_SchemaDecl_Placeholder ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 

@@ -75,7 +75,7 @@ MI_Module_Wrapper::dealloc (
         MI_Module_Wrapper* pDecl =
             reinterpret_cast<MI_Module_Wrapper*>(pObj);
         pDecl->~MI_Module_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 

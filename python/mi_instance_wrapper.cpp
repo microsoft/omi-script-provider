@@ -730,10 +730,10 @@ convertToBase (
 /*static*/ PyMethodDef MI_Instance_Wrapper::METHODS[] = {
     { "GetValue",
       reinterpret_cast<PyCFunction>(MI_Instance_Wrapper::getValue),
-      METH_KEYWORDS, "retrieve a value from the instance" },
+      METH_VARARGS | METH_KEYWORDS, "retrieve a value from the instance" },
     { "SetValue",
       reinterpret_cast<PyCFunction>(MI_Instance_Wrapper::setValue),
-      METH_KEYWORDS, "set a value for the instance" },
+      METH_VARARGS | METH_KEYWORDS, "set a value for the instance" },
     { NULL, NULL, 0, NULL }
 };
 
@@ -772,7 +772,7 @@ MI_Instance_Wrapper::dealloc (
         MI_Instance_Wrapper* pDecl =
             reinterpret_cast<MI_Instance_Wrapper*>(pObj);
         pDecl->~MI_Instance_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
