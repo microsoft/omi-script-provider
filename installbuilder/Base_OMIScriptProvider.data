@@ -33,7 +33,7 @@ SITE_PKG=$(python2.7 -c "import site; print (site.getsitepackages()[0])")
 mv /opt/omi/bin/PythonOMIWrapper.so $SITE_PKG/omi.so
 
 %Postinstall_20
-grep -cq 'script=\-\-python:' /etc/opt/omi/conf/omireg.conf || echo 'script=\-\-python:python2.7:client.py' >> /etc/opt/omi/conf/omireg.conf
+grep -cq 'script=--python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--python:python2.7:client.py' >> /etc/opt/omi/conf/omireg.conf
 
 %Postinstall_30
-grep -cq 'script=\-\-Python:' /etc/opt/omi/conf/omireg.conf || echo 'script=\-\-Python:python2.7:client.py' >> /etc/opt/omi/conf/omireg.conf
+grep -cq 'script=--Python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--Python:python2.7:client.py' >> /etc/opt/omi/conf/omireg.conf
