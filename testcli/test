@@ -20,9 +20,9 @@ TEST_NAME=$1
 MOF_FILE=`ls "../samples/$TEST_NAME" | grep "mof"`
 
 echo ">>> Testing for $TEST_NAME <<<"
-mkdir $TEST_NAME >/dev/null
+mkdir $TEST_NAME 1>/dev/null 2>&1
 pushd $TEST_NAME >/dev/null
-    echo "------------------------------"
+    echo "-----------------------------"
     cp ../../samples/$TEST_NAME/$MOF_FILE .
     CLASS_NAME=`cat $MOF_FILE | grep "class" | tail -n 1 | awk '{print $2}'` #get class name
     CLAZZ_NAME="$(echo -e "${CLASS_NAME}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')" #remove white space
@@ -64,8 +64,13 @@ pushd $TEST_NAME >/dev/null
     #skip OMI_Perf for resource reasons
     if [ "$CLASS_NAME" != "OMI_Perf" ]; then
         #request enumerate instances
-        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>/dev/null 2>&1
-        CHECK $? "omicli ei root/cimv2 $CLASS_NAME"
+        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>ei_output 2>/dev/null
+        EXIT_RESULT=$?
+        CHECK $EXIT_RESULT "omicli ei root/cimv2 $CLASS_NAME"
+        if [ "$EXIT_RESULT" -ne "$NOT_SUPPORTED" ]; then
+            diff ei_output ../../samples/$TEST_NAME/ei_output
+            CHECK $? "omicli ei root/cimv2 $CLASS_NAME output comparison"
+        fi
     fi
 
 
@@ -74,7 +79,7 @@ pushd $TEST_NAME >/dev/null
 
 
     #remove files
-    rm test.py schema.py mi_main.py $MOF_FILE *.pyc
+    rm test.py schema.py mi_main.py $MOF_FILE *.pyc ei_output 1>/dev/null 2>&1
 popd >/dev/null
 
 exit $TEST_RESULT
