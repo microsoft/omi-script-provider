@@ -2,7 +2,6 @@
 
 pushd testcli 1>/dev/null 2>&1
 
-CLI_SAMPLES="xyz_color" #`ls ../samples`
 CLI_SAMPLES=`ls ../samples`
 TESTS_PASSED=0
 

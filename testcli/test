@@ -1,12 +1,16 @@
 #!/bin/bash
 
+NOT_SUPPORTED=7
 TEST_RESULT=0
 
 function CHECK {
     if [ "$1" = "0" ]; then
-        echo \"$2\"    Passed.
+        echo "\"$2\"    Passed."
+    #skip tests that are not supported
+    elif [ "$1" = "$NOT_SUPPORTED" ]; then
+        echo "\"$2\"    Skipped."
     else
-        echo \"$2\"    Failed.
+        echo "\"$2\"    Failed."
         TEST_RESULT=1
     fi
 }
@@ -16,7 +20,7 @@ TEST_NAME=$1
 MOF_FILE=`ls "../samples/$TEST_NAME" | grep "mof"`
 
 echo ">>> Testing for $TEST_NAME <<<"
-mkdir $TEST_NAME
+mkdir $TEST_NAME >/dev/null
 pushd $TEST_NAME >/dev/null
     echo "------------------------------"
     cp ../../samples/$TEST_NAME/$MOF_FILE .
@@ -26,7 +30,7 @@ pushd $TEST_NAME >/dev/null
 
 
     #executes omigen
-    ../../bin/omigen_py $MOF_FILE $CLASS_NAME 1>/dev/null 2>&1
+    ../../../omi/Unix/output/bin/omigen_py $MOF_FILE $CLASS_NAME 1>/dev/null 2>&1
     CHECK $? "omigen_py $MOF_FILE $CLASS_NAME" 
 
 
@@ -56,9 +60,13 @@ pushd $TEST_NAME >/dev/null
     ../../../omi/Unix/output/bin/omicli id 1>/dev/null 2>&1
     CHECK $? "omicli id"
 
-    #request enumerate instances
-    ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>/dev/null 2>&1
-    CHECK $? "omicli ei root/cimv2 $CLASS_NAME"
+    #special case
+    #skip OMI_Perf for resource reasons
+    if [ "$CLASS_NAME" != "OMI_Perf" ]; then
+        #request enumerate instances
+        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>/dev/null 2>&1
+        CHECK $? "omicli ei root/cimv2 $CLASS_NAME"
+    fi
 
 
     #shut down server
