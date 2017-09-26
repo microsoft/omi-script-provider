@@ -1,0 +1,15 @@
+instance of OMI_Error
+{
+    OwningEntity=OMI:CIMOM
+    MessageID=OMI:MI_Result:7
+    Message=The requested operation is not supported.
+    MessageArguments={}
+    PerceivedSeverity=7
+    ProbableCause=0
+    ProbableCauseDescription=Unknown
+    CIMStatusCode=7
+    OMI_Code=7
+    OMI_Category=11
+    OMI_Type=MI
+    OMI_ErrorMessage=The requested operation is not supported.
+}

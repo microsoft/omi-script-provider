@@ -68,7 +68,7 @@ pushd $TEST_NAME >/dev/null
         EXIT_RESULT=$?
         CHECK $EXIT_RESULT "omicli ei root/cimv2 $CLASS_NAME"
         if [ "$EXIT_RESULT" -ne "$NOT_SUPPORTED" ]; then
-            diff ei_output ../../samples/$TEST_NAME/ei_output 1>/dev/null 2>&1
+            diff ei_output ../ei_output/$TEST_NAME/ei_output 1>/dev/null 2>&1
             CHECK $? "omicli ei root/cimv2 $CLASS_NAME output comparison"
         fi
     fi
