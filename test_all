@@ -7,7 +7,6 @@ TESTS_PASSED=0
 
 for DIRECTORY in $CLI_SAMPLES; do
     ./test $DIRECTORY
-    #cat ./$DIRECTORY/result
     TEST_RESULT=$?
     if [ "$TEST_RESULT" = "0" ]; then
         echo "Test $DIRECTORY passed!"
@@ -19,6 +18,20 @@ for DIRECTORY in $CLI_SAMPLES; do
     echo ""
 done
 
+pushd testcli 1>/dev/null 2>&1
+sudo ./test_full
+popd 1>/dev/null 2>&1
+
+TEST_RESULT=$?
+if [ "$TEST_RESULT" = "0" ]; then
+    echo "Full CLI Test passed!"
+else
+    echo "Full CLI Test failed!"
+    TESTS_PASSED=1
+fi
+
+popd 1>/dev/null 2>&1
+
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 if [ "$TESTS_PASSED" = "0" ]; then
@@ -29,6 +42,5 @@ fi
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!"
 
-popd 1>/dev/null 2>&1
 
 exit $TESTS_PASSED

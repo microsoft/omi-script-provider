@@ -14,6 +14,12 @@ function stop_server {
     ../../../omi/Unix/output/bin/omiserver -s 1>/dev/null 2>&1
 }
 
+function init_test {
+    MOF_FILE=`ls ../../samples/full_test/*.mof`
+    cp $MOF_FILE .
+    cp ../../samples/full_test/*.py .
+}
+
 function init_record {
     RECORD_FILE_NAME="../../../omi/Unix/output/lib/FullTestOMI_Record"
     if [ ! -e "$RECORD_FILE_NAME" ]; then
@@ -21,10 +27,23 @@ function init_record {
     fi
 }
 
+TEST_RESULT=0
+function CHECK {
+    diff $1 ../full_test_results/$1
+    RESULT=$?
+    if [ "$RESULT" = "0" ]; then
+        echo "$2 passed!"
+    else
+        echo "$2 failed!"
+        TEST_RESULT=1
+    fi
+}
+
 mkdir full_test 1>/dev/null 2>&1
 pushd full_test 1>/dev/null 2>&1
 
 init_record
+init_test
 
 export PYTHONPATH=`pwd`
 
@@ -33,25 +52,48 @@ start_server
 ../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest True RealTest 3.1415 StringTest "Value of PI" } >> step0
 ../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest False IntTest 365 StringTest "Days in a year" } >> step0
 ../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest False RealTest 1.618 StringTest "Golden ratio" } >> step0
+CHECK step0 "Create three instances"
+
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step1
+CHECK step1 "Enumerate"
 
 stop_server
 
 start_server
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step2
+CHECK step2 "Reload and enumerate"
+
 ../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest True IntTest 256 StringTest "Number of ASCII Symbols" RealTest 9.87 } >> step3
+CHECK step3 "Create another instance"
+
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step4
+CHECK step4 "Enumerate"
+
 ../../../omi/Unix/output/bin/omicli gi root/cimv2 { Full_Test Id 3 } >> step5
+CHECK step5 "Get instance"
+
 ../../../omi/Unix/output/bin/omicli mi root/cimv2 { Full_Test Id 3 BooleanTest False IntTest 255 StringTest "Max value for ASCII Symbols" RealTest 10.0 } >> step6
+CHECK step6 "Modify instance"
+
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step7
+CHECK step7 "Enumerate"
+
 ../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 3 }
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step8
+CHECK step8 "Delete instance"
+
 ../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 0 }
 ../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 1 }
 ../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 2 }
 ../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step9
+CHECK step9 "Delete all instances"
+
 
 stop_server
 
+rm *
+
 popd 1>/dev/null 2>&1
 rmdir full_test 1>/dev/null 2>&1
+
+exit $TEST_RESULT
