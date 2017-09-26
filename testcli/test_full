@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function start_server {
+    rm *.pyc 1>/dev/null 2>&1
+
+    ../../../omi/Unix/output/bin/omireg --Python Full_Test 1>/dev/null 2>&1
+    ../../../omi/Unix/output/bin/omiserver -d 1>/dev/null 2>&1
+
+    sleep 1
+}
+
+function stop_server {
+    sleep 1
+    ../../../omi/Unix/output/bin/omiserver -s 1>/dev/null 2>&1
+}
+
+function init_record {
+    RECORD_FILE_NAME="../../../omi/Unix/output/lib/FullTestOMI_Record"
+    if [ ! -e "$RECORD_FILE_NAME" ]; then
+        touch "$RECORD_FILE_NAME"
+    fi
+}
+
+mkdir full_test 1>/dev/null 2>&1
+pushd full_test 1>/dev/null 2>&1
+
+init_record
+
+export PYTHONPATH=`pwd`
+
+start_server
+
+../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest True RealTest 3.1415 StringTest "Value of PI" } >> step0
+../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest False IntTest 365 StringTest "Days in a year" } >> step0
+../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest False RealTest 1.618 StringTest "Golden ratio" } >> step0
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step1
+
+stop_server
+
+start_server
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step2
+../../../omi/Unix/output/bin/omicli ci root/cimv2 { Full_Test BooleanTest True IntTest 256 StringTest "Number of ASCII Symbols" RealTest 9.87 } >> step3
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step4
+../../../omi/Unix/output/bin/omicli gi root/cimv2 { Full_Test Id 3 } >> step5
+../../../omi/Unix/output/bin/omicli mi root/cimv2 { Full_Test Id 3 BooleanTest False IntTest 255 StringTest "Max value for ASCII Symbols" RealTest 10.0 } >> step6
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step7
+../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 3 }
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step8
+../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 0 }
+../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 1 }
+../../../omi/Unix/output/bin/omicli di root/cimv2 { Full_Test Id 2 }
+../../../omi/Unix/output/bin/omicli ei root/cimv2 Full_Test >> step9
+
+stop_server
+
+popd 1>/dev/null 2>&1
+rmdir full_test 1>/dev/null 2>&1

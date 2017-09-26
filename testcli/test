@@ -68,7 +68,7 @@ pushd $TEST_NAME >/dev/null
         EXIT_RESULT=$?
         CHECK $EXIT_RESULT "omicli ei root/cimv2 $CLASS_NAME"
         if [ "$EXIT_RESULT" -ne "$NOT_SUPPORTED" ]; then
-            diff ei_output ../../samples/$TEST_NAME/ei_output
+            diff ei_output ../../samples/$TEST_NAME/ei_output 1>/dev/null 2>&1
             CHECK $? "omicli ei root/cimv2 $CLASS_NAME output comparison"
         fi
     fi
@@ -81,5 +81,6 @@ pushd $TEST_NAME >/dev/null
     #remove files
     rm test.py schema.py mi_main.py $MOF_FILE *.pyc ei_output 1>/dev/null 2>&1
 popd >/dev/null
+rmdir $TEST_NAME
 
 exit $TEST_RESULT
