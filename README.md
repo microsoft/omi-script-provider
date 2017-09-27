@@ -7,11 +7,17 @@
 Before you build OMI Python Script Provider, you should check [OMI_Build_Dependencies](https://github.com/Microsoft/Build-omi#dependencies-to-build-a-native-package), then you can build the provider as following:
 
 - Install python and python-devel
-  - Redhat/CentOS: 
+  - Redhat 7/CentOS 7: 
     ```
     sudo yum update
     sudo yum install python27 python27-devel
     ```
+  - Redhat 6/CentOS 6:
+    ```
+    sudo yum update
+    sudo yum install centos-release-SCL
+    sudo yum install python27 python27-python-devel.x86_64
+    ```
   - Debian/Ubuntu OS: 
     ```
     sudo apt-get update
