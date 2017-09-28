@@ -1,4 +1,5 @@
-# OMI Python Script Provider
+# OMI Python Script Provider [![Build Status](https://travis-ci.org/Microsoft/omi-script-provider.svg?branch=master)](https://travis-ci.org/Microsoft/omi-script-provider)
+
 
 ## How to build
 
