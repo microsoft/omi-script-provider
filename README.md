@@ -1,5 +1,10 @@
 # OMI Python Script Provider
 
+
+### Additional Resources
+
+- [Script Provider Getting Started Guide](/doc/ScriptProviderGettingStarted.pdf)
+
 ## How to build
 
 ### Dependencies to build OMI Python Script Provider:
