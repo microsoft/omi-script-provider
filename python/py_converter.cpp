@@ -4,6 +4,7 @@
 
 
 #include "mi_wrapper.hpp"
+#include "python_compatibility.hpp"
 
 
 namespace
