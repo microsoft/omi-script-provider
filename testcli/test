@@ -62,7 +62,8 @@ pushd $TEST_NAME >/dev/null
 
     #special case
     #skip OMI_Perf for resource reasons
-    if [ "$CLASS_NAME" != "OMI_Perf" ]; then
+    #skip OMI_DateTime because the instances are randomly generated
+    if [ "$CLASS_NAME" != "OMI_Perf" ] && [ "$CLASS_NAME" != "OMI_Datetime" ]; then
         #request enumerate instances
         ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>ei_output 2>/dev/null
         EXIT_RESULT=$?
