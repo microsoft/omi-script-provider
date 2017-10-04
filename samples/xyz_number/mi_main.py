@@ -27,7 +27,7 @@ def XYZ_Number_EnumerateInstances (
     instance = context.NewInstance ('XYZ_Number')
     instance.SetValue ('Description',
                        MI_String ('This is a long long long long string'))
-    for i in range (1000):
+    for i in range (10000):
         instance.SetValue ('Number', MI_Uint32(i))
         instance.SetValue ('NumberString', MI_String(str(i)))
         context.PostInstance (instance)
