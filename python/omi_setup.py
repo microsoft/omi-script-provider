@@ -33,9 +33,10 @@ module1 = Extension (
                     root_dir + '/omi/Unix/output/include',
                     root_dir + '/omi/Unix/common'],
     library_dirs = [root_dir + '/scriptprovider/bin'],
-    
+
     runtime_library_dirs = [root_dir + '/scriptprovider/bin',
-                            lib_dir],
+                            lib_dir,
+                            '/opt/omi/lib'],
 
     libraries = ['OMIScriptProvider'],
     define_macros = [('PRINT_BOOKENDS','0')],
