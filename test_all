@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#do cleanup
+rm ../omi/Unix/output/etc/omiregister/root-cimv2/Number.reg
+rm ../omi/Unix/output/etc/omiregister/root-cimv2/NumberCXX.reg
+
 pushd testcli 1>/dev/null 2>&1
 
 CLI_SAMPLES=`ls ../samples`
