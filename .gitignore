@@ -3,3 +3,4 @@ bin/
 python/build
 python/lib
 *.swp
+output/

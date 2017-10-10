@@ -5,6 +5,7 @@
 
 #include "debug_tags.hpp"
 #include "py_ptr.hpp"
+#include "python_compatibility.hpp"
 #include "shared.hpp"
 #include "mi_module_wrapper.hpp"
 
@@ -67,7 +68,7 @@ Client_Wrapper::dealloc (
         Client_Wrapper* pDecl =
             reinterpret_cast<Client_Wrapper*>(pObj);
         pDecl->~Client_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -118,7 +119,7 @@ Client_Wrapper::init (
     std::ostringstream strm;
 #endif
     // parse the args
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "fd",
         "path",
         NULL
@@ -126,7 +127,7 @@ Client_Wrapper::init (
     int fd = socket_wrapper::INVALID_SOCKET;
     char const* path = NULL;
     if (!PyArg_ParseTupleAndKeywords (
-            args, keywords, "is", KEYWORDS, &fd, &path))
+            args, keywords, "is", const_cast<char **>(KEYWORDS), &fd, &path))
     {
         CLIENT_INIT_BOOKEND_PRINT ("PyArg_ParseTuple failed");
         PyErr_SetString (PyExc_ValueError,
@@ -150,7 +151,7 @@ Client_Wrapper::init (
     // set the new path
     if (0 == rval)
     {
-        PyObject* pSysPath = PySys_GetObject ("path");
+        PyObject* pSysPath = PySys_GetObject (const_cast<char *>("path"));
         PyObjPtr pNewPathItem (PyString_FromString (path));
         if (NULL == pSysPath ||
             0 > PyList_Append (pSysPath, pNewPathItem.release ()))

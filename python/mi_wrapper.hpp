@@ -10,6 +10,7 @@
 #include "mi_value.hpp"
 #include "py_converter.hpp"
 #include "py_ptr.hpp"
+#include "python_compatibility.hpp"
 #include "shared.hpp"
 
 
@@ -597,7 +598,7 @@ MI_Wrapper<TYPE_ID>::dealloc (
     MI_Wrapper<TYPE_ID>* pWrapper =
         reinterpret_cast<MI_Wrapper<TYPE_ID>*>(pSelf);
     pWrapper->dtor ();
-    pWrapper->ob_type->tp_free (pSelf);
+    Py_TYPE(pWrapper)->tp_free (pSelf);
 }
 
 
@@ -622,12 +623,12 @@ MI_Wrapper<TYPE_ID>::init (
         reinterpret_cast<MI_Wrapper<TYPE_ID>*>(pSelf);
     pWrapper->ctor (typename MI_Value<TYPE_ID>::Ptr ());
     PyObject* pValue = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|O", KEYWORDS, &pValue))
+            args, keywords, "|O", const_cast<char **>(KEYWORDS), &pValue))
     {
         if (NULL == pValue ||
             Py_None == pValue)
@@ -890,7 +891,7 @@ MI_Array_Wrapper<TYPE_ID>::dealloc (
     MI_Array_Wrapper<TYPE_ID>* pArray =
         reinterpret_cast<MI_Array_Wrapper<TYPE_ID>*>(pSelf);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pSelf);
+    Py_TYPE(pArray)->tp_free (pSelf);
 }
 
 
@@ -915,12 +916,12 @@ MI_Array_Wrapper<TYPE_ID>::init (
         reinterpret_cast<MI_Array_Wrapper<TYPE_ID>*>(pSelf);
     pWrapper->ctor ();
     PyObject* pValue = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "values",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|O", KEYWORDS, &pValue))
+            args, keywords, "|O", const_cast<char **>(KEYWORDS), &pValue))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (NULL == pValue)
@@ -1045,12 +1046,12 @@ MI_Array_Wrapper<TYPE_ID>::_getValueAt (
     //SCX_BOOKEND ("MI_Array_Wrapper::_getValueAt");
     PyObject* pRval = NULL;
     long index = 0;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "l", KEYWORDS, &index))
+            args, keywords, "l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<TYPE_ID>* pArray =
@@ -1098,13 +1099,13 @@ MI_Array_Wrapper<TYPE_ID>::_setValueAt (
     PyObject* rval = NULL;
     long index = 0;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<TYPE_ID>* pArray =
@@ -1162,12 +1163,12 @@ MI_Array_Wrapper<TYPE_ID>::_append (
     //SCX_BOOKEND ("MI_Array_Wrapper::_append");
     PyObject* rval = NULL;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "O", KEYWORDS, &pValueObj))
+            args, keywords, "O", const_cast<char **>(KEYWORDS), &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<TYPE_ID>* pArray =
@@ -1213,13 +1214,13 @@ MI_Array_Wrapper<TYPE_ID>::_insert (
     PyObject* rval = NULL;
     long index = 0;;
     PyObject* pValueObj = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         "value",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "lO", KEYWORDS, &index, &pValueObj))
+            args, keywords, "lO", const_cast<char **>(KEYWORDS), &index, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<TYPE_ID>* pArray =
@@ -1279,12 +1280,12 @@ MI_Array_Wrapper<TYPE_ID>::_pop (
     MI_Array_Wrapper<TYPE_ID>* pArray =
         reinterpret_cast<MI_Array_Wrapper<TYPE_ID>*>(pSelf);
     long index = static_cast<long>(pArray->m_pArray->size ()) - 1;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "index",
         NULL
     };
     if (PyArg_ParseTupleAndKeywords (
-            args, keywords, "|l", KEYWORDS, &index))
+            args, keywords, "|l", const_cast<char **>(KEYWORDS), &index))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         if (0 > index)
@@ -1452,7 +1453,7 @@ MI_Array_Iterator<TYPE_ID>::dealloc (
     MI_Array_Iterator<TYPE_ID>* pArray =
         reinterpret_cast<MI_Array_Iterator<TYPE_ID>*>(pObj);
     pArray->dtor ();
-    pArray->ob_type->tp_free (pObj);
+    Py_TYPE(pArray)->tp_free (pObj);
 }
 
 

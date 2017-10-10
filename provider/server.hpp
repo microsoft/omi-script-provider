@@ -285,10 +285,18 @@ std::basic_ostream<char_t, traits_t>& errnoText (
     static size_t const BUFFER_LEN = 256;
     char errorBuffer[BUFFER_LEN];
     int err = errno;
+#if ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE)
+    int ret = strerror_r (err, errorBuffer, BUFFER_LEN);
+    if (ret != 0)
+        *errorBuffer = '\0';
+    strm << errorBuffer;
+    return strm;
+#else
     char* pErrorText = strerror_r (err, errorBuffer, BUFFER_LEN);
     strm << pErrorText;
     errno = err;
     return strm;
+#endif
 }
 
 
