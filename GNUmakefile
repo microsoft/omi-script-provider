@@ -1,5 +1,7 @@
 TOP?=$(shell cd ..; pwd)
 
+include $(TOP)/scriptprovider/config.mak
+
 
 all : SCRIPTPROVIDER PYTHONWRAPPER OMIGEN_PY TEST
 
@@ -7,24 +9,25 @@ all : SCRIPTPROVIDER PYTHONWRAPPER OMIGEN_PY TEST
 .phony : SCRIPTPROVIDER
 SCRIPTPROVIDER :
 	$(MAKE) -C $(TOP)/scriptprovider/provider \
-		$(TOP)/scriptprovider/bin/libOMIScriptProvider.so
+		$(OSP_OUTPUTDIR)/bin/libOMIScriptProvider.so
 
 
 .phony : PYTHONWRAPPER
 PYTHONWRAPPER :
-	cd $(TOP)/scriptprovider/python && python2.7 omi_setup.py build
+	cd $(TOP)/scriptprovider/python && python2.7 omi_setup.py build \
+		--build-temp $(OSP_OUTPUTDIR)/python/build
 
 
 .phony : OMIGEN_PY
 OMIGEN_PY :
 	$(MAKE) -C $(TOP)/scriptprovider/omigen_py \
-		$(TOP)/scriptprovider/bin/omigen_py
+		$(OSP_OUTPUTDIR)/bin/omigen_py
 
 
 .phony : TEST
 TEST :
 	$(MAKE) -C $(TOP)/scriptprovider/test \
-		$(TOP)/scriptprovider/bin/test
+		$(OSP_OUTPUTDIR)/bin/test
 
 
 .phony : clean
