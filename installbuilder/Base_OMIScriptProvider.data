@@ -10,10 +10,10 @@ SHLIB_EXT: 'so'
 
 
 %Files
-/opt/omi/lib/libOMIScriptProvider.so; bin/libOMIScriptProvider.so; 755; ${{RUN_AS_USER}}; root
+/opt/omi/lib/libOMIScriptProvider.so; output/bin/libOMIScriptProvider.so; 755; ${{RUN_AS_USER}}; root
 /opt/omi/lib/client.py; python/client.py; 755; ${{RUN_AS_USER}}; root
-/opt/omi/bin/PythonOMIWrapper.so; python/lib/omi.so; 755; ${{RUN_AS_USER}}; root
-/opt/omi/bin/omigen_py; bin/omigen_py; 755; ${{RUN_AS_USER}}; root
+/opt/omi/bin/PythonOMIWrapper.so; output/python/lib/omi.so; 755; ${{RUN_AS_USER}}; root
+/opt/omi/bin/omigen_py; output/bin/omigen_py; 755; ${{RUN_AS_USER}}; root
 
 
 %Directories
