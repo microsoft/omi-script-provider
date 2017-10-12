@@ -32,7 +32,7 @@ endif
 
 
 all:
-	@echo "========================= Make DSC installer"
+	@echo "========================= Make OMI Script Provider installer RPM"
 	sudo rm -rf $(STAGING_DIR) $(INTERMEDIATE_DIR) $(RELEASE_DIR)/*.rpm \
 		$(RELEASE_DIR)/*.rpm
 	mkdir -p $(RELEASE_DIR) $(STAGING_DIR) $(INTERMEDIATE_DIR)
@@ -56,9 +56,9 @@ all:
 		--RUN_AS_USER="$(RUN_AS_USER)" \
 		--OUTPUTFILE=$(PACKAGE_NAME) \
 		--DATAFILE_PATH="$(TOP)/scriptprovider/installbuilder" \
-		Base_OMIScriptProvider.data Linux.data Linux_DPKG.data
+		Base_OMIScriptProvider.data Linux.data Linux_RPM.data
 
-	@echo "========================= Make DSC installer"
+	@echo "========================= Make OMI Script Provider installer DPKG"
 	sudo rm -rf $(STAGING_DIR) $(INTERMEDIATE_DIR) 
 	mkdir -p $(RELEASE_DIR) $(STAGING_DIR) $(INTERMEDIATE_DIR)
 	python $(IB_DIR)/installbuilder.py \
