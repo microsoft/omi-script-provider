@@ -45,7 +45,7 @@ function check_built_omi {
 function pull_omi {
     pushd $START_DIR/.. >/dev/null
     echo "Cloning OMI in parent directory"
-    git clone https://github.com/Microsoft/omi
+    git clone https://github.com/Microsoft/omi --depth 1
     popd >/dev/null
 }
 
@@ -73,6 +73,17 @@ function build_omi {
     fi
 }
 
+function copy_version_file {
+    pushd $START_DIR/.. >/dev/null
+    echo "Cloning Build OMI script provider repository"
+    git clone https://github.com/Microsoft/Build-omi-script-provider --depth 1
+    cd Build-omi-script-provider
+    cp omiscriptprovider.version ..
+    cd ..
+    rm -rf Build-omi-script-provider
+    popd >/dev/null
+}
+
 START_DIR=`pwd`
 cd ..
 if [ -d "omi-script-provider" ]; then
@@ -84,6 +95,8 @@ fi
 
 START_DIR=`pwd`
 build_omi
+
+copy_version_file
 
 echo "Building OMI Python Script provider"
 ./configure
