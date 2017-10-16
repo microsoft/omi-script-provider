@@ -14,7 +14,7 @@ function run_command {
 }
 
 run_command "./build.sh"
-run_command "./bin/test"
+run_command "./output/bin/test"
 run_command "python ./python/test/test.py"
 run_command "./test_all"
 
