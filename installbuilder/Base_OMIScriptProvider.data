@@ -18,8 +18,8 @@ SHLIB_EXT: 'so'
 
 %Directories
 /opt/omi/;      755; root; root; sysdir
-/opt/omi/lib;   755; root; root;
-/opt/omi/bin;   755; root; root;
+/opt/omi/lib;   755; root; root; sysdir
+/opt/omi/bin;   755; root; root; sysdir
 
 
 %Links
