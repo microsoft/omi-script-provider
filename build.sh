@@ -86,6 +86,6 @@ START_DIR=`pwd`
 build_omi
 
 echo "Building OMI Python Script provider"
-export CPPFLAGS="-fpermissive"
+./configure
 make
 sudo make install

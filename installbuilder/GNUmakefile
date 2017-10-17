@@ -1,8 +1,9 @@
 TOP?=$(shell cd ../..; pwd)
+include $(TOP)/scriptprovider/config.mak
 
-STAGING_DIR:=$(TOP)/scriptprovider/staging
-INTERMEDIATE_DIR:=$(TOP)/scriptprovider/intermediate
-RELEASE_DIR:=$(TOP)/scriptprovider/release
+STAGING_DIR:=$(OSP_OUTPUTDIR)/staging
+INTERMEDIATE_DIR:=$(OSP_OUTPUTDIR)/intermediate
+RELEASE_DIR:=$(OSP_OUTPUTDIR)/release
 
 IB_DIR:=$(TOP)/pal/installer/InstallBuilder
 
@@ -13,15 +14,15 @@ else
  PF_ARCH := x86
 endif
 
-CONFIG_VERSION:=1.1.1
-
-OMI_SCRIPTPROVIDER_VERSION_BUILD=1
-
-SHORT_NAME=OMIScriptProvider
-LONG_NAME=OMI Provider for scripting languages for Linux
+SHORT_NAME=$(CONFIG_PRODUCT)
+LONG_NAME=$(CONFIG_FULLPRODUCT)
+PF_MAJOR=$(CONFIG_MAJOR)
+PF_MINOR=$(CONFIG_MINOR)
+OMI_SCRIPTPROVIDER_VERSION_BUILD=$(CONFIG_OMI_SCRIPTPROVIDER_VERSION_BUILD)
 PROVIDES=omiscriptproviderpkg
 DESCRIPTION=Enables OMI providers to be written in scripting languages for Linux
 RUN_AS_USER=root
+PACKAGE_NAME=$(SHORT_NAME)-$(CONFIG_VERSION)-$(OMI_SCRIPTPROVIDER_VERSION_BUILD).$(PF_ARCH)
 
 ifeq ("$(wildcard /usr/bin/dpkg-deb)","")
 DPKG_LOCATION=--DPKG_LOCATION="$(IB_DIR)/tools/bin/dpkg-deb-$(PF_ARCH)"
@@ -31,7 +32,7 @@ endif
 
 
 all:
-	@echo "========================= Make DSC installer"
+	@echo "========================= Make OMI Script Provider installer RPM"
 	sudo rm -rf $(STAGING_DIR) $(INTERMEDIATE_DIR) $(RELEASE_DIR)/*.rpm \
 		$(RELEASE_DIR)/*.rpm
 	mkdir -p $(RELEASE_DIR) $(STAGING_DIR) $(INTERMEDIATE_DIR)
@@ -42,8 +43,8 @@ all:
 		--STAGING_DIR=$(STAGING_DIR) \
 		--PACKAGE_TYPE=RPM \
 		--PF=Linux \
-		--PFMAJOR=1 \
-		--PFMINOR=0 \
+		--PFMAJOR=$(PF_MAJOR) \
+		--PFMINOR=$(PF_MINOR) \
 		--PFARCH=$(PF_ARCH) \
 		--PFDISTRO=ULINUX \
 		--VERSION=$(CONFIG_VERSION) \
@@ -53,11 +54,11 @@ all:
 		--PROVIDES=$(PROVIDES) \
 		--DESCRIPTION="$(DESCRIPTION)" \
 		--RUN_AS_USER="$(RUN_AS_USER)" \
-		--OUTPUTFILE=$(SHORT_NAME)-$(CONFIG_VERSION)-$(OMI_SCRIPTPROVIDER_VERSION_BUILD).ssl_$(SSL_VERSION).$(PF_ARCH) \
+		--OUTPUTFILE=$(PACKAGE_NAME) \
 		--DATAFILE_PATH="$(TOP)/scriptprovider/installbuilder" \
-		Base_OMIScriptProvider.data
+		Base_OMIScriptProvider.data Linux.data Linux_RPM.data
 
-	@echo "========================= Make DSC installer"
+	@echo "========================= Make OMI Script Provider installer DPKG"
 	sudo rm -rf $(STAGING_DIR) $(INTERMEDIATE_DIR) 
 	mkdir -p $(RELEASE_DIR) $(STAGING_DIR) $(INTERMEDIATE_DIR)
 	python $(IB_DIR)/installbuilder.py \
@@ -67,8 +68,8 @@ all:
 		--STAGING_DIR=$(STAGING_DIR) \
 		--PACKAGE_TYPE=DPKG \
 		--PF=Linux \
-		--PFMAJOR=1 \
-		--PFMINOR=0 \
+		--PFMAJOR=$(PF_MAJOR) \
+		--PFMINOR=$(PF_MINOR) \
 		--PFARCH=$(PF_ARCH) \
 		--PFDISTRO=ULINUX \
 		--VERSION=$(CONFIG_VERSION) \
@@ -78,7 +79,7 @@ all:
 		--PROVIDES=$(PROVIDES) \
 		--DESCRIPTION="$(DESCRIPTION)" \
 		--RUN_AS_USER="$(RUN_AS_USER)" \
-		--OUTPUTFILE=$(SHORT_NAME)-$(CONFIG_VERSION)-$(OMI_SCRIPTPROVIDER_VERSION_BUILD).ssl_$(SSL_VERSION).$(PF_ARCH) \
+		--OUTPUTFILE=$(PACKAGE_NAME) \
 		$(DPKG_LOCATION) \
 		--DATAFILE_PATH="$(TOP)/scriptprovider/installbuilder" \
-		Base_OMIScriptProvider.data
+		Base_OMIScriptProvider.data Linux.data Linux_DPKG.data

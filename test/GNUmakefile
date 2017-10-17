@@ -12,10 +12,11 @@ OMI_OUTPUT_DIR:=$(TOP)/omi/Unix/output
 
 include $(OMI_OUTPUT_DIR)/omi.mak
 include $(OMI_OUTPUT_DIR)/config.mak
+include $(TOP)/scriptprovider/config.mak
 
 
-BIN_PATH:=$(TOP)/scriptprovider/bin
-OBJ_PATH:=$(TOP)/scriptprovider/obj
+BIN_PATH:=$(OSP_OUTPUTDIR)/bin
+OBJ_PATH:=$(OSP_OUTPUTDIR)/obj
 
 
 EXECUTABLE:=test
