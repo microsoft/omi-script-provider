@@ -53,7 +53,7 @@ main ()
     srand (seed);
 
     test::test_suite test_suite;
-
+/*
     test::integral_constant_test integral_constant_test;
     test_suite.add_test_class (MAKE_TEST (integral_constant_test));
     test::is_lvalue_reference_test is_lvalue_reference_test;
@@ -102,12 +102,13 @@ main ()
     test_suite.add_test_class (MAKE_TEST (socket_wrapper_test));
     test::shared_protocol_test shared_protocol_test;
     test_suite.add_test_class (MAKE_TEST (shared_protocol_test));
+*/
 
     test::mi_value_test mi_value_test;
     test_suite.add_test_class (MAKE_TEST (mi_value_test));
 
-    test::getopt_test getopt_test;
-    test_suite.add_test_class (MAKE_TEST (getopt_test));
+    //test::getopt_test getopt_test;
+    //test_suite.add_test_class (MAKE_TEST (getopt_test));
 
     //result = test_suite.run_all ();
     result = test_suite.run_all_print (std::cout);

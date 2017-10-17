@@ -116,7 +116,7 @@ mi_value_test::mi_value_test ()
     add_test (MAKE_TEST (mi_value_test::test17));
     add_test (MAKE_TEST (mi_value_test::test18));
     add_test (MAKE_TEST (mi_value_test::test19));
-    add_test (MAKE_TEST (mi_value_test::test20));
+//    add_test (MAKE_TEST (mi_value_test::test20));
 }
 
 
@@ -1648,7 +1648,6 @@ int
 mi_value_test::test17 ()
 {
     // test MI_Array<MI_BOOLEANA>
-#if (1)
     MI_Boolean vals[] = {
         rand () % 2 ? MI_TRUE : MI_FALSE,
         rand () % 2 ? MI_TRUE : MI_FALSE,
@@ -1664,31 +1663,10 @@ mi_value_test::test17 ()
     MI_Boolean insertVals[] = {
         rand () % 2 ? MI_TRUE : MI_FALSE,
         rand () % 2 ? MI_TRUE : MI_FALSE,
-//        rand () % 2 ? MI_TRUE : MI_FALSE,
-//        rand () % 2 ? MI_TRUE : MI_FALSE,
-//        rand () % 2 ? MI_TRUE : MI_FALSE,
-    };
-#else
-    MI_Boolean insertVals[] = {
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
         rand () % 2 ? MI_TRUE : MI_FALSE,
         rand () % 2 ? MI_TRUE : MI_FALSE,
         rand () % 2 ? MI_TRUE : MI_FALSE,
     };
-    MI_Boolean vals[] = {
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-        rand () % 2 ? MI_TRUE : MI_FALSE,
-    };
-#endif
     int rval = EXIT_SUCCESS;
     // ctor
     scx::MI_Array<MI_BOOLEANA> arr;
@@ -1749,11 +1727,9 @@ mi_value_test::test17 ()
     {
         // vals[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
         // insertVals[] = { 1, 2, 3, 4, 5 }
-
         // count = 15
         // index = 3
         // count 7
-
         //    arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
         // 0, arr[] = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
         // 1, arr[] = { 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
@@ -1762,7 +1738,6 @@ mi_value_test::test17 ()
         // 4, arr[] = { 1, 2, 3, 9, 10, 11, 12, 13, 14, 15 }
         // 5, arr[] = { 1, 2, 3, 10, 11, 12, 13, 14, 15 }
         // 6, arr[] = { 1, 2, 3, 11, 12, 13, 14, 15 }
-
         arr.erase (index);
         if (card (vals) + card (insertVals) - i - 1 == arr.size ())
         {
@@ -1772,18 +1747,19 @@ mi_value_test::test17 ()
                 {
                     if (j < card (insertVals))
                     {
-                        std::cout << "case 1:" << std::endl;
+                        //std::cout << "case 1:" << std::endl;
                         if (arr[j] != insertVals[j])
                         {
+                            std::cout << "fail: case 1" << std::endl;
                             rval = EXIT_FAILURE;
                         }
                     }
                     else
                     {
-                        std::cout << "case 2: *****" << std::endl;
+                        //std::cout << "case 2: *****" << std::endl;
                         if (arr[j] != vals[j - card (insertVals)])
                         {
-                            std::cout << "fail" << std::endl;
+                            std::cout << "fail: case 2" << std::endl;
                             rval = EXIT_FAILURE;
                         }
                     }
@@ -1792,17 +1768,17 @@ mi_value_test::test17 ()
                 {
                     if (j + i + 1 < card (insertVals))
                     {
-                        std::cout << "case 3:" << std::endl;
+                        //std::cout << "case 3:" << std::endl;
                         // index = 3
                         // card (insertVals) = 5
                         // i = 0;
                         // j = 3; insertVals[4]
                         // card - index = 2
-                        std::cout << "j: " << j << std::endl;
-                        std::cout << "i: " << i << std::endl;
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
                         if (arr[j] != insertVals[j + i + 1])
                         {
-                            std::cout << "fail" << std::endl;
+                            std::cout << "fail: case 3" << std::endl;
                             std::cout << "j: " << j << std::endl;
                             std::cout << "i: " << i << std::endl;
                             std::cout << "index: " << index << std::endl;
@@ -1816,17 +1792,17 @@ mi_value_test::test17 ()
                     }
                     else
                     {
-                        std::cout << "case 4:" << std::endl;
+                        //std::cout << "case 4:" << std::endl;
                         // index = 3
                         // card (insertVals) = 5
                         // i = 0;
                         // j = 4; ??? vals[0]
                         // card - index = 2
-                        std::cout << "j: " << j << std::endl;
-                        std::cout << "i: " << i << std::endl;
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
                         if (arr[j] != vals[j + i + 1 - card (insertVals)])
                         {
-                            std::cout << "fail" << std::endl;
+                            std::cout << "fail: case 4" << std::endl;
                             std::cout << "j: " << j << std::endl;
                             std::cout << "i: " << i << std::endl;
                             std::cout << "index: " << index << std::endl;
@@ -1846,7 +1822,6 @@ mi_value_test::test17 ()
             rval = EXIT_FAILURE;
         }
     }
-
     socket_wrapper::Ptr sendSock;
     socket_wrapper::Ptr recvSock;
     if (EXIT_SUCCESS == rval &&
@@ -1858,7 +1833,6 @@ mi_value_test::test17 ()
             out.push_back (vals[i]);
         }
         out.send (*sendSock);
-
         protocol::item_count_t count;
         rval = protocol::recv_item_count (&count, *recvSock);
         util::unique_ptr<MI_Boolean[]> pVals (new MI_Boolean[count]);
@@ -1868,7 +1842,6 @@ mi_value_test::test17 ()
         {
             rval = protocol::recv_boolean (pVals.get () + i, *recvSock);
         }
-
         if (EXIT_SUCCESS == rval &&
             card (vals) == count)
         {
@@ -1881,15 +1854,45 @@ mi_value_test::test17 ()
                     rval = EXIT_FAILURE;
                 }
             }
+            if (EXIT_SUCCESS == rval)
+            {
+                rval = protocol::send_item_count (card (vals), *sendSock);
+                for (size_t i = 0; EXIT_SUCCESS == rval && i < card (vals); ++i)
+                {
+                    rval = protocol::send_boolean (vals[i], *sendSock);
+                }
+                if (EXIT_SUCCESS == rval)
+                {
+                    scx::MI_Array<MI_BOOLEANA>::Ptr pIn;
+                    rval = scx::MI_Array<MI_BOOLEANA>::recv (&pIn, *recvSock);
+                    if (EXIT_SUCCESS == rval)
+                    {
+                        for (size_t i = 0, count = pIn->size ();
+                             EXIT_SUCCESS == rval && i < count;
+                             ++i)
+                        {
+                            if ((*pIn)[i] != vals[i])
+                            {
+                                rval = EXIT_FAILURE;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        rval = EXIT_FAILURE;
+                    }
+                }
+                else
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
         }
         else
         {
             rval = EXIT_FAILURE;
         }
-        
     }
-    
-
     return rval;
 }
 
@@ -1950,7 +1953,252 @@ mi_value_test::test17 ()
 int
 mi_value_test::test18 ()
 {
+    // test MI_Array<MI_UINT8A>
+    MI_Uint8 vals[] = {
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+    };
+    MI_Uint8 insertVals[] = {
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+        static_cast<MI_Uint8>(rand () % scx::MI_Limits<MI_UINT8>::max ()),
+    };
     int rval = EXIT_SUCCESS;
+    // ctor
+    scx::MI_Array<MI_UINT8A> arr;
+    if (0 != arr.size ())
+    {
+        rval = EXIT_FAILURE;
+    }
+    // push_back
+    for (size_t i = 0; EXIT_FAILURE != rval && i < card (vals); ++i)
+    {
+        arr.push_back (vals[i]);
+        if ((1 + i) == arr.size ())
+        {
+            for (size_t x = 0; EXIT_FAILURE != rval && x <= i; ++x)
+            {
+                if (arr[x] != vals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    // insert
+    for (size_t i = 0; EXIT_FAILURE != rval && i < card (insertVals); ++i)
+    {
+        arr.insert (i, insertVals[i]);
+        if ((1 + card (vals) + i) == arr.size ())
+        {
+            for (size_t x = 0; EXIT_FAILURE != rval && x <= i; ++x)
+            {
+                if (arr[x] != insertVals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+            for (size_t x = 0; EXIT_FAILURE != rval && x < card (vals); ++x)
+            {
+                if (arr[x + i + 1] != vals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    // erase
+    size_t count = arr.size ();
+    size_t index = count / 4;
+    count /= 2;
+    for (size_t i = 0; i < count; ++i)
+    {
+        // vals[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // insertVals[] = { 1, 2, 3, 4, 5 }
+        // count = 15
+        // index = 3
+        // count 7
+        //    arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 0, arr[] = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 1, arr[] = { 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 2, arr[] = { 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 3, arr[] = { 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 4, arr[] = { 1, 2, 3, 9, 10, 11, 12, 13, 14, 15 }
+        // 5, arr[] = { 1, 2, 3, 10, 11, 12, 13, 14, 15 }
+        // 6, arr[] = { 1, 2, 3, 11, 12, 13, 14, 15 }
+        arr.erase (index);
+        if (card (vals) + card (insertVals) - i - 1 == arr.size ())
+        {
+            for (size_t j = 0; EXIT_FAILURE != rval && j < arr.size (); ++j)
+            {
+                if (j < index)
+                {
+                    if (j < card (insertVals))
+                    {
+                        //std::cout << "case 1:" << std::endl;
+                        if (arr[j] != insertVals[j])
+                        {
+                            std::cout << "fail: case 1" << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        //std::cout << "case 2: *****" << std::endl;
+                        if (arr[j] != vals[j - card (insertVals)])
+                        {
+                            std::cout << "fail: case 2" << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                }
+                else
+                {
+                    if (j + i + 1 < card (insertVals))
+                    {
+                        //std::cout << "case 3:" << std::endl;
+                        // index = 3
+                        // card (insertVals) = 5
+                        // i = 0;
+                        // j = 3; insertVals[4]
+                        // card - index = 2
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
+                        if (arr[j] != insertVals[j + i + 1])
+                        {
+                            std::cout << "fail: case 3" << std::endl;
+                            std::cout << "j: " << j << std::endl;
+                            std::cout << "i: " << i << std::endl;
+                            std::cout << "index: " << index << std::endl;
+                            std::cout << "arr[j]: " << (arr[j] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j]: " << (insertVals[j] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i - 1]: " << (insertVals[j + i - 1] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i]: " << (insertVals[j + i] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i + 1]: " << (insertVals[j + i + 1] ? "true" : "false") << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        //std::cout << "case 4:" << std::endl;
+                        // index = 3
+                        // card (insertVals) = 5
+                        // i = 0;
+                        // j = 4; ??? vals[0]
+                        // card - index = 2
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
+                        if (arr[j] != vals[j + i + 1 - card (insertVals)])
+                        {
+                            std::cout << "fail: case 4" << std::endl;
+                            std::cout << "j: " << j << std::endl;
+                            std::cout << "i: " << i << std::endl;
+                            std::cout << "index: " << index << std::endl;
+                            std::cout << "arr[j]: " << (arr[j] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j]: " << (insertVals[j] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i - 1 - card]: " << (vals[j + i - 1 - card (insertVals)] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i - card]: " << (vals[j + i - card (insertVals)] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i + 1 - card]: " << (vals[j + i + 1 - card (insertVals)] ? "true" : "false") << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    socket_wrapper::Ptr sendSock;
+    socket_wrapper::Ptr recvSock;
+    if (EXIT_SUCCESS == rval &&
+        EXIT_SUCCESS == (rval = create_sockets (&sendSock, &recvSock)))
+    {
+        scx::MI_Array<MI_UINT8A> out;
+        for (size_t i = 0; EXIT_FAILURE != rval && i < card (vals); ++i)
+        {
+            out.push_back (vals[i]);
+        }
+        out.send (*sendSock);
+        protocol::item_count_t count;
+        rval = protocol::recv_item_count (&count, *recvSock);
+        util::unique_ptr<MI_Uint8[]> pVals (new MI_Uint8[count]);
+        for (protocol::item_count_t i = 0;
+             EXIT_SUCCESS == rval && i < count;
+             ++i)
+        {
+            rval = protocol::recv (pVals.get () + i, *recvSock);
+        }
+        if (EXIT_SUCCESS == rval &&
+            card (vals) == count)
+        {
+            for (protocol::item_count_t i = 0;
+                 EXIT_SUCCESS == rval && i < count;
+                 ++i)
+            {
+                if (out[i] != pVals[i])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+            if (EXIT_SUCCESS == rval)
+            {
+                rval = protocol::send_item_count (card (vals), *sendSock);
+                for (size_t i = 0; EXIT_SUCCESS == rval && i < card (vals); ++i)
+                {
+                    rval = protocol::send (vals[i], *sendSock);
+                }
+                if (EXIT_SUCCESS == rval)
+                {
+                    scx::MI_Array<MI_UINT8A>::Ptr pIn;
+                    rval = scx::MI_Array<MI_UINT8A>::recv (&pIn, *recvSock);
+                    if (EXIT_SUCCESS == rval)
+                    {
+                        for (size_t i = 0, count = pIn->size ();
+                             EXIT_SUCCESS == rval && i < count;
+                             ++i)
+                        {
+                            if ((*pIn)[i] != vals[i])
+                            {
+                                rval = EXIT_FAILURE;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        rval = EXIT_FAILURE;
+                    }
+                }
+                else
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
     return rval;
 }
 
@@ -1958,7 +2206,297 @@ mi_value_test::test18 ()
 int
 mi_value_test::test19 ()
 {
+    // test MI_Array<MI_SINT8A>
+    MI_Sint8 vals[] = {
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+    };
+    MI_Sint8 insertVals[] = {
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+        static_cast<MI_Sint8>(
+            rand () % (scx::MI_Limits<MI_SINT8>::max () -
+                       scx::MI_Limits<MI_SINT8>::min ()) +
+            scx::MI_Limits<MI_SINT8>::min ()),
+    };
     int rval = EXIT_SUCCESS;
+    // ctor
+    scx::MI_Array<MI_SINT8A> arr;
+    if (0 != arr.size ())
+    {
+        rval = EXIT_FAILURE;
+    }
+    // push_back
+    for (size_t i = 0; EXIT_FAILURE != rval && i < card (vals); ++i)
+    {
+        arr.push_back (vals[i]);
+        if ((1 + i) == arr.size ())
+        {
+            for (size_t x = 0; EXIT_FAILURE != rval && x <= i; ++x)
+            {
+                if (arr[x] != vals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    // insert
+    for (size_t i = 0; EXIT_FAILURE != rval && i < card (insertVals); ++i)
+    {
+        arr.insert (i, insertVals[i]);
+        if ((1 + card (vals) + i) == arr.size ())
+        {
+            for (size_t x = 0; EXIT_FAILURE != rval && x <= i; ++x)
+            {
+                if (arr[x] != insertVals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+            for (size_t x = 0; EXIT_FAILURE != rval && x < card (vals); ++x)
+            {
+                if (arr[x + i + 1] != vals[x])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    // erase
+    size_t count = arr.size ();
+    size_t index = count / 4;
+    count /= 2;
+    for (size_t i = 0; i < count; ++i)
+    {
+        // vals[] = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // insertVals[] = { 1, 2, 3, 4, 5 }
+        // count = 15
+        // index = 3
+        // count 7
+        //    arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 0, arr[] = { 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 1, arr[] = { 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 2, arr[] = { 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 3, arr[] = { 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15 }
+        // 4, arr[] = { 1, 2, 3, 9, 10, 11, 12, 13, 14, 15 }
+        // 5, arr[] = { 1, 2, 3, 10, 11, 12, 13, 14, 15 }
+        // 6, arr[] = { 1, 2, 3, 11, 12, 13, 14, 15 }
+        arr.erase (index);
+        if (card (vals) + card (insertVals) - i - 1 == arr.size ())
+        {
+            for (size_t j = 0; EXIT_FAILURE != rval && j < arr.size (); ++j)
+            {
+                if (j < index)
+                {
+                    if (j < card (insertVals))
+                    {
+                        //std::cout << "case 1:" << std::endl;
+                        if (arr[j] != insertVals[j])
+                        {
+                            std::cout << "fail: case 1" << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        //std::cout << "case 2: *****" << std::endl;
+                        if (arr[j] != vals[j - card (insertVals)])
+                        {
+                            std::cout << "fail: case 2" << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                }
+                else
+                {
+                    if (j + i + 1 < card (insertVals))
+                    {
+                        //std::cout << "case 3:" << std::endl;
+                        // index = 3
+                        // card (insertVals) = 5
+                        // i = 0;
+                        // j = 3; insertVals[4]
+                        // card - index = 2
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
+                        if (arr[j] != insertVals[j + i + 1])
+                        {
+                            std::cout << "fail: case 3" << std::endl;
+                            std::cout << "j: " << j << std::endl;
+                            std::cout << "i: " << i << std::endl;
+                            std::cout << "index: " << index << std::endl;
+                            std::cout << "arr[j]: " << (arr[j] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j]: " << (insertVals[j] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i - 1]: " << (insertVals[j + i - 1] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i]: " << (insertVals[j + i] ? "true" : "false") << std::endl;
+                            std::cout << "insertVals[j + i + 1]: " << (insertVals[j + i + 1] ? "true" : "false") << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                    else
+                    {
+                        //std::cout << "case 4:" << std::endl;
+                        // index = 3
+                        // card (insertVals) = 5
+                        // i = 0;
+                        // j = 4; ??? vals[0]
+                        // card - index = 2
+                        //std::cout << "j: " << j << std::endl;
+                        //std::cout << "i: " << i << std::endl;
+                        if (arr[j] != vals[j + i + 1 - card (insertVals)])
+                        {
+                            std::cout << "fail: case 4" << std::endl;
+                            std::cout << "j: " << j << std::endl;
+                            std::cout << "i: " << i << std::endl;
+                            std::cout << "index: " << index << std::endl;
+                            std::cout << "arr[j]: " << (arr[j] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j]: " << (insertVals[j] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i - 1 - card]: " << (vals[j + i - 1 - card (insertVals)] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i - card]: " << (vals[j + i - card (insertVals)] ? "true" : "false") << std::endl;
+                            std::cout << "vals[j + i + 1 - card]: " << (vals[j + i + 1 - card (insertVals)] ? "true" : "false") << std::endl;
+                            rval = EXIT_FAILURE;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
+    socket_wrapper::Ptr sendSock;
+    socket_wrapper::Ptr recvSock;
+    if (EXIT_SUCCESS == rval &&
+        EXIT_SUCCESS == (rval = create_sockets (&sendSock, &recvSock)))
+    {
+        scx::MI_Array<MI_SINT8A> out;
+        for (size_t i = 0; EXIT_FAILURE != rval && i < card (vals); ++i)
+        {
+            out.push_back (vals[i]);
+        }
+        out.send (*sendSock);
+        protocol::item_count_t count;
+        rval = protocol::recv_item_count (&count, *recvSock);
+        util::unique_ptr<MI_Sint8[]> pVals (new MI_Sint8[count]);
+        for (protocol::item_count_t i = 0;
+             EXIT_SUCCESS == rval && i < count;
+             ++i)
+        {
+            rval = protocol::recv (pVals.get () + i, *recvSock);
+        }
+        if (EXIT_SUCCESS == rval &&
+            card (vals) == count)
+        {
+            for (protocol::item_count_t i = 0;
+                 EXIT_SUCCESS == rval && i < count;
+                 ++i)
+            {
+                if (out[i] != pVals[i])
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+            if (EXIT_SUCCESS == rval)
+            {
+                rval = protocol::send_item_count (card (vals), *sendSock);
+                for (size_t i = 0; EXIT_SUCCESS == rval && i < card (vals); ++i)
+                {
+                    rval = protocol::send (vals[i], *sendSock);
+                }
+                if (EXIT_SUCCESS == rval)
+                {
+                    scx::MI_Array<MI_SINT8A>::Ptr pIn;
+                    rval = scx::MI_Array<MI_SINT8A>::recv (&pIn, *recvSock);
+                    if (EXIT_SUCCESS == rval)
+                    {
+                        for (size_t i = 0, count = pIn->size ();
+                             EXIT_SUCCESS == rval && i < count;
+                             ++i)
+                        {
+                            if ((*pIn)[i] != vals[i])
+                            {
+                                rval = EXIT_FAILURE;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        rval = EXIT_FAILURE;
+                    }
+                }
+                else
+                {
+                    rval = EXIT_FAILURE;
+                }
+            }
+        }
+        else
+        {
+            rval = EXIT_FAILURE;
+        }
+    }
     return rval;
 }
 
