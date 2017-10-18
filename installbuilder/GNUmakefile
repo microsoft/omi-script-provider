@@ -7,8 +7,8 @@ RELEASE_DIR:=$(OSP_OUTPUTDIR)/release
 
 IB_DIR:=$(TOP)/pal/installer/InstallBuilder
 
-UNAME_P:=$(shell uname -p)
-ifeq ($(UNAME_P),x86_64)
+UNAME_M:=$(shell uname -m)
+ifeq ($(UNAME_M),x86_64)
  PF_ARCH := x64
 else
  PF_ARCH := x86
