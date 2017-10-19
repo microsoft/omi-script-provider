@@ -5,9 +5,21 @@
 
 - [Script Provider Getting Started Guide](/doc/ScriptProviderGettingStarted.pdf)
 
-## How to build
+### Supported Linux Operating Systems
 
-### Dependencies to build OMI Python Script Provider:
+We support most Linux platforms which support python2.7 by default. That
+said, our formal tested matrix of Linux platforms includes the following:
+
+- CentOS 7 x64
+- Debian 7, 8 (x86 and x64) and Debian 9 x64
+- Oracle Linux 7 x64
+- Red Hat Enterprise Linux Server 7 x64
+- SUSE Linux Enteprise Server 12 x64
+- Ubuntu 12.04 LTS, 14.04 LTS, and 16.04 LTS (x86 and x64)
+
+### How to build
+
+#### Dependencies to build OMI Python Script Provider:
 
 Before you build OMI Python Script Provider, you should check [OMI_Build_Dependencies](https://github.com/Microsoft/Build-omi#dependencies-to-build-a-native-package), then you can build the provider as following:
 
@@ -24,7 +36,7 @@ Before you build OMI Python Script Provider, you should check [OMI_Build_Depende
     ```
     Note: If you use old OS version like Ubuntu 12.04 or Ubuntu 14.04, you might need to run command:`sudo add-apt-repository ppa:fkrull/deadsnakes` to get python to be installed.
 
-### To clone the repository to build OMI Python Script Provider, issue the following commands:
+#### To clone the repository to build OMI Python Script Provider, issue the following commands:
 ```
 git clone --recursive https://github.com/Microsoft/Build-omi-script-provider
 cd Build-omi-script-provider/omi/Unix
