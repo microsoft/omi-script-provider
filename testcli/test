@@ -1,0 +1,87 @@
+#!/bin/bash
+
+NOT_SUPPORTED=7
+TEST_RESULT=0
+
+function CHECK {
+    if [ "$1" = "0" ]; then
+        echo "\"$2\"    Passed."
+    #skip tests that are not supported
+    elif [ "$1" = "$NOT_SUPPORTED" ]; then
+        echo "\"$2\"    Skipped."
+    else
+        echo "\"$2\"    Failed."
+        TEST_RESULT=1
+    fi
+}
+
+TEST_NAME=$1
+
+MOF_FILE=`ls "../samples/$TEST_NAME" | grep "mof"`
+
+echo ">>> Testing for $TEST_NAME <<<"
+mkdir $TEST_NAME 1>/dev/null 2>&1
+pushd $TEST_NAME >/dev/null
+    echo "-----------------------------"
+    cp ../../samples/$TEST_NAME/$MOF_FILE .
+    CLASS_NAME=`cat $MOF_FILE | grep "class" | tail -n 1 | awk '{print $2}'` #get class name
+    CLAZZ_NAME="$(echo -e "${CLASS_NAME}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')" #remove white space
+    CLASS_NAME=$CLAZZ_NAME
+
+
+    #executes omigen
+    ../../../omi/Unix/output/bin/omigen_py $MOF_FILE $CLASS_NAME 1>/dev/null 2>&1
+    CHECK $? "omigen_py $MOF_FILE $CLASS_NAME" 
+
+
+    #copies the test script in current directory
+    cp ../test.py .
+    python test.py $MOF_FILE
+    CHECK $? "test.py for $MOF_FILE"
+
+
+    #replaces generated files with functional ones, already provided
+    rm *.pyc
+    cp ../../samples/$TEST_NAME/mi_main.py .
+    sleep 1
+
+
+    #performing registration
+    export PYTHONPATH=`pwd`
+    ../../../omi/Unix/output/bin/omireg --Python $CLASS_NAME 1>/dev/null 2>&1
+    CHECK $? "omireg --Python $CLASS_NAME"
+
+
+    #starting server in background
+    sudo ../start_server `pwd`
+
+
+    #request identification
+    ../../../omi/Unix/output/bin/omicli id 1>/dev/null 2>&1
+    CHECK $? "omicli id"
+
+    #special case
+    #skip OMI_Perf for resource reasons
+    #skip OMI_DateTime because the instances are randomly generated
+    if [ "$CLASS_NAME" != "OMI_Perf" ] && [ "$CLASS_NAME" != "OMI_Datetime" ]; then
+        #request enumerate instances
+        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>ei_output 2>/dev/null
+        EXIT_RESULT=$?
+        CHECK $EXIT_RESULT "omicli ei root/cimv2 $CLASS_NAME"
+        if [ "$EXIT_RESULT" -ne "$NOT_SUPPORTED" ]; then
+            diff ei_output ../ei_output/$TEST_NAME/ei_output 1>/dev/null 2>&1
+            CHECK $? "omicli ei root/cimv2 $CLASS_NAME output comparison"
+        fi
+    fi
+
+
+    #shut down server
+    sudo ../stop_server
+
+
+    #remove files
+    rm test.py schema.py mi_main.py $MOF_FILE *.pyc ei_output 1>/dev/null 2>&1
+popd >/dev/null
+rmdir $TEST_NAME
+
+exit $TEST_RESULT
