@@ -18,8 +18,8 @@ SHLIB_EXT: 'so'
 
 %Directories
 /opt/omi/;      755; root; root; sysdir
-/opt/omi/lib;   755; root; root;
-/opt/omi/bin;   755; root; root;
+/opt/omi/lib;   755; root; root; sysdir
+/opt/omi/bin;   755; root; root; sysdir
 
 
 %Links
@@ -37,3 +37,7 @@ grep -cq 'script=--python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--pyth
 
 %Postinstall_30
 grep -cq 'script=--Python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--Python:python2.7:client.py' >> /etc/opt/omi/conf/omireg.conf
+
+%Postuninstall_10
+SITE_PKG=$(python2.7 -c "import site; print (site.getsitepackages()[0])")
+rm $SITE_PKG/omi.so
