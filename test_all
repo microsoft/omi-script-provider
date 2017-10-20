@@ -1,0 +1,49 @@
+#!/bin/bash
+
+#do cleanup
+rm ../omi/Unix/output/etc/omiregister/root-cimv2/Number.reg
+rm ../omi/Unix/output/etc/omiregister/root-cimv2/NumberCXX.reg
+
+pushd testcli 1>/dev/null 2>&1
+
+CLI_SAMPLES=`ls ../samples`
+TESTS_PASSED=0
+
+for DIRECTORY in $CLI_SAMPLES; do
+    ./test $DIRECTORY
+    TEST_RESULT=$?
+    if [ "$TEST_RESULT" = "0" ]; then
+        echo "Test $DIRECTORY passed!"
+    else
+        echo "Test $DIRECTORY failed!"
+        TESTS_PASSED=1
+    fi
+    echo ""
+    echo ""
+done
+
+
+sudo ./test_full
+TEST_RESULT=$?
+if [ "$TEST_RESULT" = "0" ]; then
+    echo "Full CLI Test passed!"
+else
+    echo "Full CLI Test failed!"
+    TESTS_PASSED=1
+fi
+
+
+popd 1>/dev/null 2>&1
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!"
+if [ "$TESTS_PASSED" = "0" ]; then
+    echo "!!!CLI tests passed!!!!"
+else
+    echo "!!!CLI tests failed!!!!"
+fi
+echo "!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!"
+
+
+exit $TESTS_PASSED

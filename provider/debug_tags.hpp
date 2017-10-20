@@ -9,7 +9,7 @@
 
 
 #ifndef PRINT_BOOKENDS
-#define PRINT_BOOKENDS (1)
+#define PRINT_BOOKENDS (0)
 #endif
 
 

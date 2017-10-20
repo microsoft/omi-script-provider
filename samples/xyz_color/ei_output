@@ -1,0 +1,24 @@
+instance of XYZ_Color
+{
+    [Key] Id=1001
+    Caption=This is Red
+    Name=Red
+}
+instance of XYZ_Color
+{
+    [Key] Id=1002
+    Caption=This is Green
+    Name=Green
+}
+instance of XYZ_Color
+{
+    [Key] Id=1003
+    Caption=This is Blue
+    Name=Blue
+}
+instance of XYZ_Color
+{
+    [Key] Id=1004
+    Caption=This is Yellow
+    Name=Yellow
+}
