@@ -1,0 +1,4 @@
+#!/bin/bash
+
+../../../omi/Unix/output/bin/omiserver -s 1>/dev/null 2>&1
+sleep 1

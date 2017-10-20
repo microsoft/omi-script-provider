@@ -1,0 +1,9 @@
+class Full_Test
+{
+    [Key] Uint32 Id;
+    Boolean BooleanTest;
+    Real32 RealTest;
+    Uint32 IntTest;
+    String StringTest;
+    Datetime DateTimeTest;
+};

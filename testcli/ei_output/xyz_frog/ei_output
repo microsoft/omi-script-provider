@@ -1,0 +1,12 @@
+instance of XYZ_Frog
+{
+    [Key] Name=Fred
+    Weight=55
+    Color=Green
+}
+instance of XYZ_Frog
+{
+    [Key] Name=Same
+    Weight=65
+    Color=Blue
+}

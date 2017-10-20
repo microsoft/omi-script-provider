@@ -1,0 +1,29 @@
+instance of Full_Test
+{
+    [Key] Id=0
+    BooleanTest=true
+    RealTest=3.1415
+    StringTest=Value of PI
+}
+instance of Full_Test
+{
+    [Key] Id=1
+    BooleanTest=false
+    IntTest=365
+    StringTest=Days in a year
+}
+instance of Full_Test
+{
+    [Key] Id=2
+    BooleanTest=false
+    RealTest=1.618
+    StringTest=Golden ratio
+}
+instance of Full_Test
+{
+    [Key] Id=3
+    BooleanTest=false
+    RealTest=10
+    IntTest=255
+    StringTest=Max value for ASCII Symbols
+}

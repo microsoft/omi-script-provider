@@ -1,0 +1,6 @@
+instance of XYZ_Dog
+{
+    [Key] Key=1001
+    Array2={}
+    Array3={10, 20, 30}
+}
