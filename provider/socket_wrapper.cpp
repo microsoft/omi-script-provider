@@ -4,6 +4,7 @@
 
 
 #include "debug_tags.hpp"
+#include "server.hpp"
 
 
 #include <errno.h>
@@ -14,20 +15,6 @@
 
 namespace
 {
-
-
-template<typename char_t, typename traits_t>
-std::basic_ostream<char_t, traits_t>& errnoText (
-    std::basic_ostream<char_t, traits_t>& strm)
-{
-    static size_t const BUFFER_LEN = 256;
-    char errorBuffer[BUFFER_LEN];
-    int err = errno;
-    char* pErrorText = strerror_r (err, errorBuffer, BUFFER_LEN);
-    strm << pErrorText;
-    errno = err;
-    return strm;
-}
 
 
 }

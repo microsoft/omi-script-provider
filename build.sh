@@ -100,5 +100,6 @@ copy_version_file
 
 echo "Building OMI Python Script provider"
 export CPPFLAGS="-fpermissive"
+./configure
 make
 sudo make install

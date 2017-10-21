@@ -12,14 +12,15 @@ OMI_OUTPUT_DIR:=$(TOP)/omi/Unix/output
 
 include $(OMI_OUTPUT_DIR)/omi.mak
 include $(OMI_OUTPUT_DIR)/config.mak
+include $(TOP)/scriptprovider/config.mak
 
 
 GEN_OUTPUT_DIR:=$(OMI_OUTPUT_DIR)/obj/gen
 GEN_SOURCE_DIR:=$(SRCDIR)/gen
 
 
-BIN_PATH:=$(TOP)/scriptprovider/bin
-OBJ_PATH:=$(TOP)/scriptprovider/obj
+BIN_PATH:=$(OSP_OUTPUTDIR)/bin
+OBJ_PATH:=$(OSP_OUTPUTDIR)/obj
 
 
 EXECUTABLE:=omigen_py
@@ -28,7 +29,7 @@ EXECUTABLE:=omigen_py
 $(BIN_PATH)/$(EXECUTABLE) :
 
 
-INCLUDE_PATH+=$(CONFIG_INCDIR)
+INCLUDE_PATH+=$(INCDIR)
 INCLUDE_PATH+=$(SRCDIR)
 INCLUDE_PATH+=$(SRCDIR)/common
 

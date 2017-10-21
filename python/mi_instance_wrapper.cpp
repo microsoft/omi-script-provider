@@ -730,10 +730,10 @@ convertToBase (
 /*static*/ PyMethodDef MI_Instance_Wrapper::METHODS[] = {
     { "GetValue",
       reinterpret_cast<PyCFunction>(MI_Instance_Wrapper::getValue),
-      METH_KEYWORDS, "retrieve a value from the instance" },
+      METH_VARARGS | METH_KEYWORDS, "retrieve a value from the instance" },
     { "SetValue",
       reinterpret_cast<PyCFunction>(MI_Instance_Wrapper::setValue),
-      METH_KEYWORDS, "set a value for the instance" },
+      METH_VARARGS | METH_KEYWORDS, "set a value for the instance" },
     { NULL, NULL, 0, NULL }
 };
 
@@ -772,7 +772,7 @@ MI_Instance_Wrapper::dealloc (
         MI_Instance_Wrapper* pDecl =
             reinterpret_cast<MI_Instance_Wrapper*>(pObj);
         pDecl->~MI_Instance_Wrapper ();
-        pDecl->ob_type->tp_free (pObj);
+        Py_TYPE(pDecl)->tp_free (pObj);
     }
 }
 
@@ -817,10 +817,10 @@ MI_Instance_Wrapper::init (
     MI_Instance_Wrapper* pInstance =
         reinterpret_cast<MI_Instance_Wrapper*>(pSelf);
     pInstance->ctor (MI_Instance::Ptr (new MI_Instance (MI_ClassDecl::Ptr ())));
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         NULL
     };
-    if (PyArg_ParseTupleAndKeywords (args, keywords, "", KEYWORDS))
+    if (PyArg_ParseTupleAndKeywords (args, keywords, "", const_cast<char **>(KEYWORDS)))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         rval = PY_SUCCESS;
@@ -842,12 +842,12 @@ MI_Instance_Wrapper::getValue (
 {
     //SCX_BOOKEND ("MI_Instance_Wrapper::getValue");
     PyObject* rval = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "name",
         NULL
     };
     PyObject* pNameObj = NULL;
-    if (PyArg_ParseTupleAndKeywords (args, keywords, "O", KEYWORDS, &pNameObj))
+    if (PyArg_ParseTupleAndKeywords (args, keywords, "O", const_cast<char **>(KEYWORDS), &pNameObj))
     {
         MI_Type<MI_STRING>::type_t name;
         int ret = fromPyObject (pNameObj, &name);
@@ -1003,14 +1003,14 @@ MI_Instance_Wrapper::setValue (
 {
     //SCX_BOOKEND ("MI_Instance_Wrapper::setValue");
     PyObject* rval = NULL;
-    char* KEYWORDS[] = {
+    char const* KEYWORDS[] = {
         "name",
         "value",
         NULL
     };
     PyObject* pNameObj = NULL;
     PyObject* pValueObj = NULL;
-    if (PyArg_ParseTupleAndKeywords (args, keywords, "OO", KEYWORDS,
+    if (PyArg_ParseTupleAndKeywords (args, keywords, "OO", const_cast<char **>(KEYWORDS),
                                      &pNameObj, &pValueObj))
     {
         //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");

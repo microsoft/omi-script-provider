@@ -9,12 +9,12 @@
 void Zero_PyTypeObject (PyTypeObject* pObjOut)
 {
     PyTypeObject const OBJ = {
-        PyObject_HEAD_INIT (NULL)
+        // Works on both Python 2 and Python 3, ob_size is the second argument
+        PyVarObject_HEAD_INIT(NULL, 0)
     };
     if (NULL != pObjOut)
     {
         memcpy (pObjOut, &OBJ, sizeof (PyTypeObject));
-        pObjOut->ob_size = 0;
         pObjOut->tp_name = NULL;
         pObjOut->tp_basicsize = 0;
         pObjOut->tp_itemsize = 0;
@@ -22,7 +22,16 @@ void Zero_PyTypeObject (PyTypeObject* pObjOut)
         pObjOut->tp_print = NULL;
         pObjOut->tp_getattr = NULL;
         pObjOut->tp_setattr = NULL;
-        pObjOut->tp_compare = NULL;
+        #if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION > 4
+            // Called tp_as_sync in Python 3 ( > 3.4)
+            pObjOut->tp_as_sync = NULL;
+        #elif PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 4
+            // Called tp_reserved in Python 3 (3 - 3.4)
+            pObjOut->tp_reserved = NULL;
+        #else
+            // Called tp_compare in Python 2 ( < 3)
+            pObjOut->tp_compare = NULL;
+        #endif
         pObjOut->tp_repr = NULL;
         pObjOut->tp_as_number = NULL;
         pObjOut->tp_as_sequence = NULL;

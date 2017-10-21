@@ -431,6 +431,7 @@ MI_Instance::recv_values (
                 {
                     MI_Datetime::Ptr pTemp;
                     rval = MI_Datetime::recv (&pTemp, sock);
+                    pValue = pTemp.get ();
                     break;
                 }
                 case MI_STRING:

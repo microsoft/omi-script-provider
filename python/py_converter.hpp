@@ -43,6 +43,7 @@
 #include "debug_tags.hpp"
 #include "mi_type.hpp"
 #include "mi_value.hpp"
+#include "python_compatibility.hpp"
 #include "traits.hpp"
 
 
