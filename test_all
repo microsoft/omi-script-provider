@@ -12,6 +12,7 @@ TESTS_PASSED=0
 for DIRECTORY in $CLI_SAMPLES; do
     ./test $DIRECTORY
     TEST_RESULT=$?
+    [ "$TEST_RESULT" = "xyz_color" ] && continue
     if [ "$TEST_RESULT" = "0" ]; then
         echo "Test $DIRECTORY passed!"
     else
