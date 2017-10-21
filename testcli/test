@@ -1,25 +1,43 @@
 #!/bin/bash
 
+TEST_NAME=$1
+LOG_PATH=$2
+STDERR_FILE="$LOG_PATH/stderr_out"
+TMP_1="$LOG_PATH/tmp_1"
+TMP_2="$LOG_PATH/tmp_2"
+
 NOT_SUPPORTED=7
 TEST_RESULT=0
 
 function CHECK {
     if [ "$1" = "0" ]; then
         echo "\"$2\"    Passed."
+        echo "\"$2\"    Passed." >> $STDERR_FILE
     #skip tests that are not supported
     elif [ "$1" = "$NOT_SUPPORTED" ]; then
         echo "\"$2\"    Skipped."
+        echo "\"$2\"    Skipped." >> $STDERR_FILE
     else
         echo "\"$2\"    Failed."
+        echo "\"$2\"    Failed." >> $STDERR_FILE
         TEST_RESULT=1
     fi
 }
 
-TEST_NAME=$1
+function DUMP_STD {
+    echo "$1" >> $STDERR_FILE
+    echo "-----------------------------"
+    echo "stdout:" >> $STDERR_FILE
+    cat $TMP_1 1>> $STDERR_FILE 2>/dev/null
+    echo "stderr:" >> $STDERR_FILE
+    cat $TMP_2 1>> $STDERR_FILE 2>/dev/null
+    rm $TMP_1 $TMP_2 1>/dev/null 2>&1
+}
 
 MOF_FILE=`ls "../samples/$TEST_NAME" | grep "mof"`
 
 echo ">>> Testing for $TEST_NAME <<<"
+echo ">>> Testing for $TEST_NAME <<<" >> $STDERR_FILE
 mkdir $TEST_NAME 1>/dev/null 2>&1
 pushd $TEST_NAME >/dev/null
     echo "-----------------------------"
@@ -30,14 +48,16 @@ pushd $TEST_NAME >/dev/null
 
 
     #executes omigen
-    ../../../omi/Unix/output/bin/omigen_py $MOF_FILE $CLASS_NAME 1>/dev/null 2>&1
+    ../../../omi/Unix/output/bin/omigen_py $MOF_FILE $CLASS_NAME 1>$TMP_1 2>$TMP_2
     CHECK $? "omigen_py $MOF_FILE $CLASS_NAME" 
+    DUMP_STD "omigen_py"
 
 
     #copies the test script in current directory
     cp ../test.py .
-    python test.py $MOF_FILE
+    python test.py $MOF_FILE 2>$TMP_2
     CHECK $? "test.py for $MOF_FILE"
+    DUMP_STD "test.py, stderr only"
 
 
     #replaces generated files with functional ones, already provided
@@ -48,35 +68,40 @@ pushd $TEST_NAME >/dev/null
 
     #performing registration
     export PYTHONPATH=`pwd`
-    ../../../omi/Unix/output/bin/omireg --Python $CLASS_NAME 1>/dev/null 2>&1
+    ../../../omi/Unix/output/bin/omireg --Python $CLASS_NAME 1>$TMP_1 2>$TMP_2
     CHECK $? "omireg --Python $CLASS_NAME"
+    DUMP_STD "omireg"
 
 
     #starting server in background
-    sudo ../start_server `pwd`
+    sudo ../start_server `pwd` $LOG_PATH
 
 
     #request identification
-    ../../../omi/Unix/output/bin/omicli id 1>/dev/null 2>&1
+    ../../../omi/Unix/output/bin/omicli id 1>$TMP_1 2>$TMP_2
     CHECK $? "omicli id"
+    DUMP_STD "omicli id"
+
 
     #special case
     #skip OMI_Perf for resource reasons
     #skip OMI_DateTime because the instances are randomly generated
     if [ "$CLASS_NAME" != "OMI_Perf" ] && [ "$CLASS_NAME" != "OMI_Datetime" ]; then
         #request enumerate instances
-        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>ei_output 2>/dev/null
+        ../../../omi/Unix/output/bin/omicli ei root/cimv2 $CLASS_NAME 1>ei_output 2>$TMP_2
         EXIT_RESULT=$?
+        DUMP_STD "omicli ei"
         CHECK $EXIT_RESULT "omicli ei root/cimv2 $CLASS_NAME"
         if [ "$EXIT_RESULT" -ne "$NOT_SUPPORTED" ]; then
-            diff ei_output ../ei_output/$TEST_NAME/ei_output 1>/dev/null 2>&1
+            diff ei_output ../ei_output/$TEST_NAME/ei_output 1>$TMP_1 2>$TMP_2
             CHECK $? "omicli ei root/cimv2 $CLASS_NAME output comparison"
+            DUMP_STD "diff for ei_output"
         fi
     fi
 
 
     #shut down server
-    sudo ../stop_server
+    sudo ../stop_server $LOG_PATH
 
 
     #remove files

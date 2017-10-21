@@ -1,5 +1,19 @@
 #!/bin/bash
 
+LOG_PATH=$2
+STDERR_FILE="$LOG_PATH/stderr_out"
+TMP_1="$LOG_PATH/tmp_1"
+TMP_2="$LOG_PATH/tmp_2"
+
 export PYTHONPATH=$1
-../../../omi/Unix/output/bin/omiserver -d
+../../../omi/Unix/output/bin/omiserver -d 1>$TMP_1 2>$TMP_2
+
+echo "start_server" >> $STDERR_FILE
+echo "-----------------------------"
+echo "stdout:" >> $STDERR_FILE
+cat $TMP_1 1>> $STDERR_FILE 2>/dev/null
+echo "stderr:" >> $STDERR_FILE
+cat $TMP_2 1>> $STDERR_FILE 2>/dev/null
+rm $TMP_1 $TMP_2 1>/dev/null 2>&1
+
 sleep 1
