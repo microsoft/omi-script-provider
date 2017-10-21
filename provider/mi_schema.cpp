@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cctype>
 #include "shared_protocol.hpp"
 
 
@@ -12,12 +13,34 @@ namespace
 {
 
 
+template<typename CHAR_t>
+inline int
+compare_case_insensitive (
+    CHAR_t const* pLHS,
+    CHAR_t const* pRHS)
+{
+    for (; *pLHS || *pRHS; ++pLHS, ++pRHS)
+    {
+        CHAR_t l = tolower (*pLHS);
+        CHAR_t r = tolower (*pRHS);
+        if (l != r)
+        {
+            return l < r ? -1 : 1;
+        }
+    }
+    return 0;
+}
+
+
 bool
 classDeclSort (
     scx::MI_ClassDecl::Ptr pLeft,
     scx::MI_ClassDecl::Ptr pRight)
 {
-    return pLeft->getName () < pRight->getName ();
+    return 0 > compare_case_insensitive (
+        pLeft->getName ()->getValue ().c_str (),
+        pRight->getName ()->getValue ().c_str ());
+                                         
 }
 
 
@@ -34,8 +57,9 @@ findClassDecl (
         while (left < right)
         {
             index_t mid = (left + right) / 2;
-            int const ret = pName->getValue ().compare (
-                classDecls[mid]->getName ()->getValue ());
+            int const ret = compare_case_insensitive (
+                pName->getValue ().c_str (),
+                classDecls[mid]->getName ()->getValue ().c_str ());
             if (ret < 0)
             {
                 left = mid + 1;

@@ -10,6 +10,7 @@
 #include "unique_ptr.hpp"
 
 
+#include <cctype>
 #include <config.h>
 #include <errno.h>
 #include <sstream>
@@ -25,6 +26,25 @@ namespace
 
 
 typedef util::unique_ptr<char[]> char_array;
+
+
+template<typename CHAR_t>
+inline int
+compare_case_insensitive (
+    CHAR_t const* pLHS,
+    CHAR_t const* pRHS)
+{
+    for (; *pLHS || *pRHS; ++pLHS, ++pRHS)
+    {
+        CHAR_t l = tolower (*pLHS);
+        CHAR_t r = tolower (*pRHS);
+        if (l != r)
+        {
+            return l < r ? -1 : 1;
+        }
+    }
+    return 0;
+}
 
 
 class ClassFinder
@@ -45,7 +65,7 @@ public:
         strm << "pClass->name: \"" << pClass->name << '\"';
         SCX_BOOKEND_PRINT (strm.str ());
 #endif
-        return m_Name == pClass->name;
+        return 0 == compare_case_insensitive (m_Name.c_str (), pClass->name);
     }
 
 private:
