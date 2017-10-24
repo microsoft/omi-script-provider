@@ -44,9 +44,50 @@ cd Build-omi-script-provider/omi/Unix
 make -j
 make install
 cd ../../scriptprovider
+./configure
 make
 sudo make install
 ```
+
+### Developing an OMI Python Script Provider
+
+To develop an OMI Python Script Provider, the [OMI](https://github.com/Microsoft/omi) is required to be built in the developer mode.
+Please refer to [How to build](https://github.com/Microsoft/omi-script-provider#how-to-build) in order to do that.
+
+After building the project, we need to define "schema.mof" and to generate the Provider Sources from it.
+We need to create first a directory under the lib directory of the OMI. For the developer build, this will be ```Build-omi-script-provider/omi/Unix/output/lib```. If the OMI was installed with a package, the root library location is ```/opt/omi/lib```. Replace the path with the one that applies for your environment, in our case will be the first one since we built it from source.
+```
+> cd Build-omi-script-provider/omi/Unix/output/lib
+> mkdir XYZ_Frog
+> cd XYZ_Frog
+```
+Example of "schema.mof" file:
+```
+class XYZ_Frog
+{
+ [Key] String Name;
+ Uint32 Weight;
+ String Color;
+};
+```
+
+In order to generate the Provider Sources from the schema file, we need to run omigen_py:
+```
+> ../../../../../scriptprovider/output/bin/omigen_py schema.mof XYZ_Frog
+Creating "schema.py"
+Creating "mi_main.py"
+```
+The omigen_py tool will generate the files ```schema.py``` and ```mi_main.py```.
+
+The file mi_main.py will be edited in order to implement the custom python provider.
+Please refer to [Script Provider Getting Started Guide](/doc/ScriptProviderGettingStarted.pdf) for more details.
+
+We can now register the Python Provider using the omireg command:
+```
+> ../../bin/omireg --Python XYZ_Frog
+Created /home/ubuntu/docs_update/Build-omi-script-provider/omi/Unix/output/etc/omiregister/root-cimv2/XYZ_Frog.reg
+```
+
 
 # Contributing
 
