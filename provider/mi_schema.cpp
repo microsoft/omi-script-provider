@@ -62,11 +62,11 @@ findClassDecl (
                 classDecls[mid]->getName ()->getValue ().c_str ());
             if (ret < 0)
             {
-                left = mid + 1;
+                right = mid;
             }
             else if (0 < ret)
             {
-                right = mid;
+                left = mid + 1;
             }
             else
             {
