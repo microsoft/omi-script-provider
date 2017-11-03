@@ -12,11 +12,11 @@ def main (argv = None):
     be = BookEnd ('main')
     for i in range (len (argv)):
         BookEndPrint ('args[' + str (i) + ']: "' + argv[i] + '"')
-    if len (argv) == 3:
+    if len (argv) == 4:
         try:
-            fd = int (argv[1])
-            path = os.path.split (os.path.realpath (argv[0]))[0] + '/' + argv[2]
-            client = Client (fd, path)
+            path = os.path.split (os.path.realpath (argv[0]))[0] + '/' + argv[1]
+            port = int (argv[2])
+            client = Client (path, port, argv[3])
             client.run ()
         except:
             e = sys.exc_info ()[0]

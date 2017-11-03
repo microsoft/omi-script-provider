@@ -8,6 +8,7 @@
 
 
 #include <errno.h>
+#include <fcntl.h>
 #include <sstream>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -25,15 +26,18 @@ socket_wrapper::socket_wrapper (
     int fd)
     : m_FD (fd)
 {
-    //SCX_BOOKEND ("socket_wrapper::ctor");
+    SCX_BOOKEND ("socket_wrapper::ctor");
 }
 
 
 /*dtor*/
 socket_wrapper::~socket_wrapper ()
 {
-    //SCX_BOOKEND ("socket_wrapper::dtor");
-    close ();
+    SCX_BOOKEND ("socket_wrapper::dtor");
+    if (INVALID_SOCKET != m_FD)
+    {
+        close ();
+    }
 }
 
 
@@ -44,30 +48,39 @@ socket_wrapper::send (
 {
     //SCX_BOOKEND ("socket_wrapper::send");
     int rval = SUCCESS;
-    ssize_t nBytesSent = 0;
-    while (SUCCESS == rval &&
-           -1 != nBytesSent &&
-           nBytes > static_cast<size_t> (nBytesSent))
+    if (INVALID_SOCKET != m_FD)
     {
-        ssize_t nSent = write (m_FD, pData + nBytesSent, nBytes - nBytesSent);
-        if (-1 != nSent)
+        ssize_t nBytesSent = 0;
+        while (SUCCESS == rval &&
+               nBytes > static_cast<size_t> (nBytesSent))
         {
-            nBytesSent += nSent;
+            ssize_t nSent = write (m_FD, pData + nBytesSent,
+                                   nBytes - nBytesSent);
+            if (-1 != nSent)
+            {
+                nBytesSent += nSent;
+            }
+            else if (EINTR != errno)
+            {
+                // error (check errno { EACCESS, EAGAIN, EWOULDBLOCK, EBADF,
+                //                      ECONNRESET, EDESTADDRREQ, EFAULT,
+                //                      EINVAL, EISCONN, EMSGSIZE, ENOBUFS,
+                //                      ENOMEM, ENOTCONN, ENOTSOCK, EOPNOTSUPP,
+                //                      EPIPE })
+                close ();
+                rval = SEND_FAILED;
+                std::ostringstream strm;
+                strm << "error on socket: (" << errno << ") \"" << errnoText
+                     << '\"';
+                SCX_BOOKEND_PRINT (strm.str ());
+                std::cerr << strm.str () << std::endl;
+            }
         }
-        else if (EINTR != errno)
-        {
-            // error (check errno { EACCESS, EAGAIN, EWOULDBLOCK, EBADF,
-            //                      ECONNRESET, EDESTADDRREQ, EFAULT, EINVAL,
-            //                      EISCONN, EMSGSIZE, ENOBUFS, ENOMEM,
-            //                      ENOTCONN, ENOTSOCK, EOPNOTSUPP, EPIPE })
-            close ();
-            rval = SEND_FAILED;
-            //std::ostringstream strm;
-            //strm << "error on socket: (" << errno << ") \"" << errnoText
-            //     << '\"';
-            //SCX_BOOKEND_PRINT (strm.str ());
-            //std::cerr << strm.str () << std::endl;
-        }
+    }
+    else
+    {
+        SCX_BOOKEND_PRINT ("socket_wrapper::send called on closed socket");
+        rval = SOCKET_CLOSED;
     }
     return rval;
 }
@@ -80,37 +93,43 @@ socket_wrapper::recv (
 {
     //SCX_BOOKEND ("socket_wrapper::recv");
     int rval = SUCCESS;
-    ssize_t nBytesRead = 0;
-    while (SUCCESS == rval &&
-           nBytes > static_cast<size_t> (nBytesRead))
+    if (INVALID_SOCKET != m_FD)
     {
-        ssize_t nRead = read (m_FD, pDataOut + nBytesRead, nBytes - nBytesRead);
-        if (0 < nRead)
+        ssize_t nBytesRead = 0;
+        while (SUCCESS == rval &&
+               nBytes > static_cast<size_t> (nBytesRead))
         {
-            nBytesRead += nRead;
-        }
-        else if (0 == nRead)
-        {
-            // socket closed
-            close ();
-            rval = SOCKET_CLOSED;
-            //SCX_BOOKEND_PRINT ("socket closed unexpectedly");
-            //std::cerr << "socket closed unexpectedly" << std::endl;
-        }
-        else if (EINTR != errno)
-        {
-            // Error - check errno { EAGAIN, EBADF, EFAULT, EINVAL, EIO,
-            //                       EISDIR }
-            close ();
-            rval = RECV_FAILED;
-            //std::ostringstream strm;
-            //strm << "error on socket: (" << errno << ") \"" << errnoText
-            //     << '\"';
-            //SCX_BOOKEND_PRINT (strm.str ());
-            //std::cerr << strm.str () << std::endl;
-            //strm.str ("");
-            //strm.clear ();
-        }
+            ssize_t nRead = read (m_FD, pDataOut + nBytesRead,
+                                  nBytes - nBytesRead);
+            if (0 < nRead)
+            {
+                nBytesRead += nRead;
+            }
+            else if (0 == nRead)
+            {
+                // socket closed
+                close ();
+                rval = SOCKET_CLOSED;
+                SCX_BOOKEND_PRINT ("recv - zero byte read");
+            }
+            else if (EINTR != errno)
+            {
+                // Error - check errno { EAGAIN, EBADF, EFAULT, EINVAL, EIO,
+                //                       EISDIR }
+                close ();
+                rval = RECV_FAILED;
+                std::ostringstream strm;
+                strm << "error on socket: (" << errno << ") \"" << errnoText
+                     << '\"';
+                SCX_BOOKEND_PRINT (strm.str ());
+                std::cerr << strm.str () << std::endl;
+            }
+    }
+    }
+    else
+    {
+        SCX_BOOKEND_PRINT ("socket_wrapper::recv called on closed socket");
+        rval = SOCKET_CLOSED;
     }
     return rval;
 }
@@ -119,9 +138,9 @@ socket_wrapper::recv (
 void
 socket_wrapper::close ()
 {
+    SCX_BOOKEND ("socket_wrapper::close");
     if (INVALID_SOCKET != m_FD)
     {
-        //SCX_BOOKEND ("socket_wrapper::close");
         ::close (m_FD);
         m_FD = INVALID_SOCKET;
     }
