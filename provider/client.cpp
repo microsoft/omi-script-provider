@@ -5,23 +5,92 @@
 
 #include "debug_tags.hpp"
 #include "mi_context.hpp"
+#include "mi_module.hpp"
 #include "mi_schema.hpp"
 #include "shared_protocol.hpp"
+#include "socket_wrapper.hpp"
+
+
+#include <cstdlib>
+#include <errno.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 
 
 namespace scx
 {
 
 
-/*ctor*/
-Client::Client (
-    socket_wrapper::Ptr const& pSocket,
-    MI_Module::Ptr const& pModule)
-    : m_pSocket (pSocket)
-    , m_pModule (pModule)
-      , m_pContext (new MI_Context (pSocket, pModule->getSchemaDecl ()))
+/*static*/ int
+Client::create (
+    unsigned short const& port,
+    unsigned int (&key)[4],
+    util::internal_counted_ptr<MI_Module> const& pModule,
+    Client::Ptr* ppClientOut)
 {
-    SCX_BOOKEND ("Client::ctor");
+    SCX_BOOKEND ("Client::create");
+    int rval = EXIT_SUCCESS;
+    if (ppClientOut)
+    {
+        int fd = socket (AF_INET, SOCK_STREAM, 0);
+        if (-1 != fd)
+        {
+            sockaddr_in addr;
+            memset (&addr, 0, sizeof (addr));
+            addr.sin_family = AF_INET;
+            addr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+            addr.sin_port = htons (port);
+            int result;
+            do
+            {
+                result = connect (fd, reinterpret_cast<sockaddr*>(&addr),
+                                  sizeof (addr));
+            } while (-1 == result &&
+                     EINTR == errno);
+            if (0 == result)
+            {
+                ssize_t nBytesSent = 0;
+                while (EXIT_SUCCESS == rval &&
+                       static_cast<size_t> (nBytesSent) < sizeof (key))
+                {
+                    ssize_t nSent = write (
+                        fd, reinterpret_cast<unsigned char*>(key) + nBytesSent,
+                        sizeof (key) - nBytesSent);
+                    if (-1 != nSent)
+                    {
+                        nBytesSent += nSent;
+                    }
+                    else if (EINTR != errno)
+                    {
+                        SCX_BOOKEND_PRINT ("send key failed");
+                        close (fd);
+                        rval = EXIT_FAILURE;
+                    }
+                }
+                if (EXIT_SUCCESS == rval)
+                {
+                    SCX_BOOKEND_PRINT ("socket created");
+                    ppClientOut->reset (
+                        new Client (
+                            util::internal_counted_ptr<socket_wrapper> (
+                                new socket_wrapper (fd)),
+                            pModule));
+                }
+            }
+            else
+            {
+                SCX_BOOKEND_PRINT ("connect failed");
+                close (fd);
+                rval = EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            SCX_BOOKEND_PRINT ("create socket failed");
+            rval = EXIT_FAILURE;
+        }
+    }
+    return rval;
 }
 
 
@@ -95,11 +164,14 @@ Client::run ()
                 break;
             }
         }
+        else
+        {
+            SCX_BOOKEND_PRINT ("recv_opcode FAILED");
+        }
         if (EXIT_SUCCESS != rval)
         {
             complete = true;
         }
-        
         if (!m_pContext->getResultSent ())
         {
             m_pContext->postResult (MI_RESULT_FAILED);
@@ -107,6 +179,18 @@ Client::run ()
         m_pContext->resetResultSent ();
     }
     return rval;
+}
+
+
+/*ctor*/
+Client::Client (
+    util::internal_counted_ptr<socket_wrapper> const& pSocket,
+    util::internal_counted_ptr<MI_Module> const& pModule)
+    : m_pSocket (pSocket)
+    , m_pModule (pModule)
+    , m_pContext (new MI_Context (pSocket, pModule->getSchemaDecl ()))
+{
+    SCX_BOOKEND ("Client::ctor");
 }
 
 
