@@ -118,16 +118,19 @@ Client_Wrapper::init (
 #if (CLIENT_INIT_VERBOSE)
     std::ostringstream strm;
 #endif
-    // parse the args
+    // parse the args (path, port, key)
     char const* KEYWORDS[] = {
-        "fd",
         "path",
+        "port",
+        "key",
         NULL
     };
-    int fd = socket_wrapper::INVALID_SOCKET;
     char const* path = NULL;
+    unsigned int port = 0;
+    char const* key = NULL;
     if (!PyArg_ParseTupleAndKeywords (
-            args, keywords, "is", const_cast<char **>(KEYWORDS), &fd, &path))
+            args, keywords, "sIs", const_cast<char **>(KEYWORDS), &path, &port,
+            &key))
     {
         CLIENT_INIT_BOOKEND_PRINT ("PyArg_ParseTuple failed");
         PyErr_SetString (PyExc_ValueError,
@@ -138,14 +141,16 @@ Client_Wrapper::init (
     else
     {
         CLIENT_INIT_BOOKEND ("PyArg_ParseTuple succeeded");
-        strm << "fd: " << fd;
-        CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
-        strm.str ("");
-        strm.clear ();
         strm << "path: " << path;
         CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
         strm.str ("");
         strm.clear ();
+        strm << "port: " << port;
+        CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
+        strm.str ("");
+        strm.clear ();
+        strm << "key: " << key;
+        CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
     }
 #endif 
     // set the new path
@@ -165,6 +170,8 @@ Client_Wrapper::init (
         else
         {
             CLIENT_INIT_BOOKEND_PRINT ("sys.path:");
+            strm.str ("");
+            strm.clear ();
             for (Py_ssize_t i = 0, len = PyList_GET_SIZE (pSysPath);
                  i < len;
                  ++i)
@@ -172,8 +179,6 @@ Client_Wrapper::init (
                 PyObject* pPathItem = PyList_GET_ITEM (pSysPath, i);
                 strm << "    " << PyString_AsString (pPathItem);
                 CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
-                strm.str ("");
-                strm.clear ();
             }
         }
 #endif
@@ -260,14 +265,41 @@ Client_Wrapper::init (
             CLIENT_INIT_BOOKEND_PRINT ("MI_Module was created successfully");
         }
     }
+    // parse the key
+    unsigned int keyCode[4];
+    if (0 == rval)
+    {
+        char keyText[9];
+        keyText[8] = '\0';
+        for (int i = 0; 0 == rval && i < 4; ++i)
+        {
+            strncpy (keyText, key + 8 * i, 8);
+            char* pEnd = NULL;
+            keyCode[i] = strtoul (keyText, &pEnd, 16);
+            if (keyText + 8 != pEnd)
+            {
+                rval = -1;
+                PyErr_SetString (PyExc_ValueError, "failed to parse key");
+            }
+        }
+    }
     // finally create the client object
     if (0 == rval)
     {
-        CLIENT_INIT_BOOKEND_PRINT ("Client_Wrapper::init succeeded");
-        Client::Ptr pClient (
-            new Client (socket_wrapper::Ptr (new socket_wrapper (fd)),
-                        pModule));
-        new (pSelf) Client_Wrapper (pPythonModule.release (), pClient);
+        Client::Ptr pClient;
+        if (EXIT_SUCCESS ==
+            Client::create (static_cast<unsigned short>(port), keyCode, pModule,
+                            &pClient))
+        {
+            CLIENT_INIT_BOOKEND_PRINT ("Client::create succeeded");
+            new (pSelf) Client_Wrapper (pPythonModule.release (), pClient);
+        }
+        else
+        {
+            CLIENT_INIT_BOOKEND_PRINT ("Client::create failed");
+            PyErr_SetString (PyExc_ValueError, "failed to create client");
+            rval = -1;
+        }
     }
     return rval;
 }

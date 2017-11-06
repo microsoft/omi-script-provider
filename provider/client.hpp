@@ -5,9 +5,6 @@
 
 
 #include "internal_counted_ptr.hpp"
-#include "mi_context.hpp"
-#include "mi_module.hpp"
-#include "socket_wrapper.hpp"
 
 
 #include <cstdlib>
@@ -16,8 +13,15 @@
 #define EXPORT_PUBLIC __attribute__ ((visibility ("default")))
 
 
+class socket_wrapper;
+
+
 namespace scx
 {
+
+
+class MI_Context;
+class MI_Module;
 
 
 class Client : public util::ref_counted_obj
@@ -29,14 +33,20 @@ public:
         SUCCESS = EXIT_SUCCESS,
     };
 
-    EXPORT_PUBLIC /*ctor*/ Client (
-        socket_wrapper::Ptr const& pSocket,
-        MI_Module::Ptr const& pModule);
+    EXPORT_PUBLIC static int create (
+        unsigned short const& port,
+        unsigned int (&key)[4],
+        util::internal_counted_ptr<MI_Module> const& pModule,
+        Ptr* ppClientOut);
     EXPORT_PUBLIC virtual /*dtor*/ ~Client ();
 
     EXPORT_PUBLIC int run ();
 
 private:
+    /*ctor*/ Client (
+        util::internal_counted_ptr<socket_wrapper> const& pSocket,
+        util::internal_counted_ptr<MI_Module> const& pModule);
+
     int handle_module_load ();
     int handle_module_unload ();
     int handle_class_load ();
@@ -52,9 +62,9 @@ private:
     /*ctor*/ Client (Client const&); // = delete
     Client& operator = (Client const&); // = delete
     
-    socket_wrapper::Ptr const m_pSocket;
-    MI_Module::Ptr const m_pModule;
-    MI_Context::Ptr const m_pContext;
+    util::internal_counted_ptr<socket_wrapper> const m_pSocket;
+    util::internal_counted_ptr<MI_Module> const m_pModule;
+    util::internal_counted_ptr<MI_Context> const m_pContext;
 };
 
 
