@@ -8,7 +8,7 @@ TMP_2="$LOG_PATH/tmp_2"
 ../../../omi/Unix/output/bin/omiserver -s 1>$TMP_1 2>$TMP_2
 
 echo "start_server" >> $STDERR_FILE
-echo "-----------------------------" $STDERR_FILE
+echo "-----------------------------" >> $STDERR_FILE
 echo "stdout:" >> $STDERR_FILE
 cat $TMP_1 >> $STDERR_FILE
 echo "stderr:" >> $STDERR_FILE
