@@ -64,7 +64,9 @@ LIBS+=-lOMIScriptProvider
 LIBS+=-lbase
 LIBS+=-lpal
 
+
 CPPFLAGS+=$(INCLUDES)
+CPPFLAGS+=-fpermissive
 
 
 # compile rule

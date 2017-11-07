@@ -64,6 +64,7 @@ LIBS+=$(shell $(BUILDTOOL) syslibs)
 
 
 CPPFLAGS+=$(INCLUDES)
+CPPFLAGS+=-fpermissive
 
 
 # compile rule

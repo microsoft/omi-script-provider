@@ -4,16 +4,22 @@
 
 
 #include "debug_tags.hpp"
+#include "mi_module_self.hpp"
 #include "mi_script_extensions.hpp"
 #include "server_protocol.hpp"
 #include "repeat.hpp"
 #include "unique_ptr.hpp"
 
 
+#include <cassert>
 #include <cctype>
 #include <config.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <list>
+#include <netinet/in.h>
 #include <sstream>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -233,10 +239,357 @@ handle_return (
 }
 
 
+void
+close_listener_socket (
+    int* fd)
+{
+    SCX_BOOKEND ("close_listener_socket");
+    close (*fd);
 }
 
 
+void
+generate_key (
+    unsigned int (&key)[4])
+{
+    srand (time (0));
+    for (int i = 0; i < 4; ++i)
+    {
+        key[i] = 0;
+        for (int j = 0; j < 4; ++j)
+        {
+            key[i] |= static_cast<unsigned int>(
+                static_cast<unsigned char> (rand () % 0xff) << (8 * j));
+        }
+    }
+}
+
+
+int
+create_listener (
+    unsigned short* pPortOut,
+    int* pListenerFDOut)
+{
+    SCX_BOOKEND ("create_listener");
+    assert (pPortOut);
+    assert (pListenerFDOut);
+    int result = Server::LISTEN_SOCKET_FAILED;
+    util::unique_ptr<int, void (*)(int*)> listener_holder (NULL, close_listener_socket);
+    int listener_fd = socket (AF_INET, SOCK_STREAM, 0);
+    if (-1 != listener_fd)
+    {
+        listener_holder.reset (&listener_fd);
+        int flags = fcntl (listener_fd, F_GETFL, 0);
+        if (-1 != flags &&
+            -1 != fcntl (listener_fd, F_SETFL, flags | O_NONBLOCK))
+        {
+            sockaddr_in addr;
+            memset (&addr, 0, sizeof (addr));
+            addr.sin_family = AF_INET;
+            addr.sin_addr.s_addr = INADDR_ANY;
+            unsigned short port = 5999;
+            int local_result;
+            do
+            {
+                ++port;
+                addr.sin_port = htons (port);
+                local_result =
+                    bind (listener_fd, reinterpret_cast<sockaddr*>(&addr),
+                          sizeof (addr));
+            } while (-1 == local_result &&
+                     EADDRINUSE == errno);
+            if (0 == local_result)
+            {
+                local_result = listen (listener_fd, 5);
+                if (0 == local_result)
+                {
+                    *pPortOut = port;
+                    *pListenerFDOut = listener_fd;
+                    listener_holder.release ();
+                    result = Server::SUCCESS;
+                }
+#if (PRINT_BOOKENDS)
+                else
+                {
+                    std::ostringstream strm;
+                    strm << "listen failed: " << errnoText;
+                    SCX_BOOKEND_PRINT (strm.str ().c_str ());
+                }
+            }
+            else
+            {
+                std::ostringstream strm;
+                strm << "bind failed: " << errnoText;
+                SCX_BOOKEND_PRINT (strm.str ().c_str ());
+            }
+        }
+        else
+        {
+            std::ostringstream strm;
+            strm << "set flags for bind socket failed: " << errnoText;
+            SCX_BOOKEND_PRINT (strm.str ().c_str ());
+        }
+    }
+    else
+    {
+        std::ostringstream strm;
+        strm << "create socket failed: " << errnoText;
+        SCX_BOOKEND_PRINT (strm.str ().c_str ());
+    }
+#else // PRINT_BOOKENDS
+            }
+        }
+    }
+#endif // PRINT_BOOKENDS
+    return result;
+}
+
+
+class pending_client
+{
+public:
+    enum Result
+    {
+        VALID,
+        INVALID,
+        INCOMPLETE,
+    };
+
+    /*ctor*/ pending_client (int fd)
+        : m_remaining (sizeof (m_key))
+        , m_fd (fd)
+    {
+        SCX_BOOKEND ("pending_client::ctor");
+        memset (m_key, 0, sizeof (m_key));
+    }
+
+    int get_fd () { return m_fd; }
+    void close_socket ()
+    {
+        SCX_BOOKEND ("pending_client::close_socket");
+        close (m_fd);
+    }
+    int read_and_validate (unsigned int (&key)[4]);
+
+private:
+    unsigned int m_key[4];
+    ssize_t m_remaining;
+    int m_fd;
+};
+
+
+int
+pending_client::read_and_validate (
+    unsigned int (&key)[4])
+{
+    SCX_BOOKEND ("pending_client::read_and_validate");
+    int result = INCOMPLETE;
+    if (0 < m_remaining)
+    {
+        ssize_t nRead = read (
+            m_fd,
+            reinterpret_cast<unsigned char*>(
+                m_key) + (sizeof (m_key) - m_remaining),
+            m_remaining);
+        if (0 < nRead)
+        {
+            m_remaining -= nRead;
+        }
+        else if (EINTR != errno ||
+                 0 == nRead)
+        {
+            SCX_BOOKEND_PRINT ("error on read");
+            close (m_fd);
+            result = INVALID;
+        }
+    }
+    if (0 == m_remaining)
+    {
+        result = std::equal (key, key + 4, m_key) ? VALID : INVALID;
+        if (VALID == result)
+        {
+            SCX_BOOKEND_PRINT ("VALID");
+        }
+        else
+        {
+            SCX_BOOKEND_PRINT ("INVALID");
+        }
+    }
+    return result;
+}
+
+
+int
+accept_socket (
+    int listenerFD,
+    std::list<pending_client>* pPendingClients)
+{
+    SCX_BOOKEND ("accept_socket");
+    int result = EXIT_SUCCESS;
+    bool done = false;
+    do
+    {
+        sockaddr_in addr;
+        socklen_t addrlen = sizeof (addr);
+        int fd = accept (listenerFD, reinterpret_cast<sockaddr*>(&addr),
+                         &addrlen);
+        if (-1 != fd)
+        {
+            int flags = fcntl (fd, F_GETFL, 0);
+            if (-1 != flags &&
+                -1 != fcntl (fd, F_SETFL, flags | O_NONBLOCK))
+            {
+                pPendingClients->push_back (pending_client (fd));
+            }
+            else
+            {
+                // failed to set the socket to non-blocking
+                SCX_BOOKEND_PRINT ("failed to set new socket to non-blocking");
+                close (fd);
+            }
+        }
+        else
+        {
+            // out of sockets to accept
+            done = true;
+            if (EAGAIN != errno && EWOULDBLOCK != errno)
+            {
+#if (PRINT_BOOKENDS)
+                std::ostringstream strm;
+                strm << "accept_socket: error on accept - " << errnoText;
+                SCX_BOOKEND_PRINT (strm.str ());
+#endif
+                result = EXIT_FAILURE;
+            }
+        }
+    } while (!done);
+    return result;
+}
+
+
+int
+wait_for_client (
+    int listenerFD,
+    unsigned int (&key)[4],
+    int* pClientFDOut)
+{
+    SCX_BOOKEND ("wait_for_client");
+    int result = Server::CLIENT_FAILED_TO_CONNECT;
+    std::list<pending_client> pendingClients;
+    timeval tv;
+    tv.tv_sec = 5;
+    tv.tv_usec = 0;
+    bool done = false;
+    while (!done)
+    {
+        // create the fd set
+        int maxfd = listenerFD;
+        fd_set read_fds;
+        FD_ZERO (&read_fds);
+        FD_SET (listenerFD, &read_fds);
+        for (std::list<pending_client>::iterator
+                 pos = pendingClients.begin (), end = pendingClients.end ();
+             pos != end;
+             ++pos)
+        {
+            FD_SET (pos->get_fd (), &read_fds);
+            maxfd = std::max (maxfd, pos->get_fd ());
+        }
+        int count = select (maxfd + 1, &read_fds, NULL, NULL, &tv);
+        if (0 < count)
+        {
+            std::list<pending_client>::iterator pos = pendingClients.begin ();
+            std::list<pending_client>::iterator endPos = pendingClients.end ();
+            while (!done &&
+                   0 < count &&
+                   pos != endPos)
+            {
+                --count;
+                if (FD_ISSET (pos->get_fd (), &read_fds))
+                {
+                    switch (pos->read_and_validate (key))
+                    {
+                    case pending_client::VALID:
+                    {
+                        done = true;
+                        *pClientFDOut = pos->get_fd ();
+                        int flags = fcntl (*pClientFDOut, F_GETFL, 0);
+                        if (-1 != flags &&
+                            -1 != fcntl (*pClientFDOut, F_SETFL,
+                                         flags ^ O_NONBLOCK))
+                        {
+                            result = Server::SUCCESS;
+                            pendingClients.erase (pos);
+                        }
+                        else
+                        {
+                            SCX_BOOKEND_PRINT (
+                                "failed to reset socket to blocking");
+                            *pClientFDOut = socket_wrapper::INVALID_SOCKET;
+                        }
+                        break;
+                    }
+                    case pending_client::INVALID:
+                    {
+                        std::list<pending_client>::iterator nextPos = pos;
+                        ++nextPos;
+                        close (pos->get_fd ());
+                        pendingClients.erase (pos);
+                        pos = nextPos;
+                        break;
+                    }
+                    case pending_client::INCOMPLETE:
+                        ++pos;
+                        break;
+                    }
+                }
+            }
+            if (!done &&
+                0 < count &&
+                FD_ISSET (listenerFD, &read_fds))
+            {
+                // accept
+                if (EXIT_SUCCESS !=
+                    accept_socket (listenerFD, &pendingClients))
+                {
+                    done = true;
+                }
+            }
+        }
+        else
+        {
+            done = true;
+#if (PRINT_BOOKENDS)
+            if (0 > count)
+            {
+                std::ostringstream strm;
+                strm << "error: " << errnoText;
+                SCX_BOOKEND_PRINT (strm.str ());
+            }
+            else
+            {
+                SCX_BOOKEND_PRINT ("timed out");
+            }
+#endif
+        }
+    }
+    //close all of the remaining sockets
+    for (std::list<pending_client>::iterator pos = pendingClients.begin (),
+             end = pendingClients.end ();
+         pos != end;
+         ++pos)
+    {
+        close (pos->get_fd ());
+    }
+    return result;
+}
+
+
+} // namespace (unnamed)
+
+
 #define _COUNT 25
+
 
 #define LOAD_DEF(I) \
 MI_EXTERN_C void \
@@ -245,11 +598,10 @@ MI_CALL Load##I ( \
     MI_Module_Self* pSelfModule, \
     MI_Context* pContext) \
 { \
-    g_pServer->Load (I, ppSelf, pSelfModule, pContext); \
+    pSelfModule->pServer->Load (I, ppSelf, pSelfModule, pContext); \
 }
 
 #define LOAD_DECL(I) Load##I,
-
 
 REPEAT (_COUNT, LOAD_DEF)
 
@@ -264,11 +616,11 @@ MI_CALL Unload##I ( \
     void* pSelf, \
     MI_Context* pContext) \
 { \
-    g_pServer->Unload (I, pSelf, pContext); \
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->Unload ( \
+        I, pSelf, pContext); \
 }
 
 #define UNLOAD_DECL(I) Unload##I,
-
 
 REPEAT (_COUNT, UNLOAD_DEF)
 
@@ -302,93 +654,10 @@ Server::~Server ()
 int
 Server::open ()
 {
-    int rval = SUCCESS;
-    std::ostringstream strm;
-#if (PRINT_BOOKENDS)
-    strm << " Module: \"" << m_ModuleName << "\" (libScriptProvider)";
-    SCX_BOOKEND_EX ("Server::open", strm.str ());
-    strm.str ("");
-    strm.clear ();
-#endif
+    int rval = Server::SUCCESS;
     if (!m_pSocket)
     {
-        int sockets[2];
-        int result = socketpair (AF_UNIX, SOCK_STREAM, 0, sockets);
-        if (-1 != result)
-        {
-            // socketpair succeeded
-            SCX_BOOKEND_PRINT ("socketpair - succeeded");
-            int pid = fork ();
-            if (0 == pid)
-            {
-                // fork succeded, this is the child process
-                SCX_BOOKEND_PRINT ("fork - succeeded: this is the child");
-                // close the parent socket
-                ::close (sockets[1]);
-                // create the argument list including the child socket name as a
-                // command line arg
-                size_t const SOCK_ID_BUF_LEN = 32;
-                char socketID[SOCK_ID_BUF_LEN];
-                snprintf (socketID, SOCK_ID_BUF_LEN, "%d", sockets[0]);
-//                chdir ("/home/[user]/omi-git/Unix/scriptprovider/python");
-//                chdir (CONFIG_PREFIX "/scriptprovider/python");
-                chdir (CONFIG_LIBDIR);
-                char* args[] = { const_cast<char*>(m_Interpreter.c_str ()),
-                                 const_cast<char*>(m_Startup.c_str ()),
-                                 socketID,
-                                 const_cast<char*>(m_ModuleName.c_str ()),
-                                 0 };
-                // exec
-                execvp (args[0], args);
-                SCX_BOOKEND_PRINT ("execvp - failed");
-                // if we got here, exec failed!
-                // check errno { EACCES, ENOEXEC }
-                strm << "Server::open - exec failed: " << errno << ": \""
-                     << errnoText << '\"';
-                SCX_BOOKEND_PRINT (strm.str ());
-                std::cerr << strm.str () << std::endl;
-                strm.str ("");
-                strm.clear ();
-                rval = FORK_FAILED;
-            }
-            else if (-1 != pid)
-            {
-                // fork succeeded, this is the parent process
-                SCX_BOOKEND_PRINT ("fork - succeeded: this is the parent");
-                ::close (sockets[0]);
-                m_pSocket = new socket_wrapper (sockets[1]);
-                rval = SUCCESS;
-            }
-            else
-            {
-                // fork failed
-                // error (check errno { EAGAIN, ENOMEM })
-                strm << "Server::open - fork failed: " << errno
-                     << ": \"" << errnoText << '\"';
-                SCX_BOOKEND_PRINT (strm.str ());
-                std::cerr << strm.str () << std::endl;
-                strm.str ("");
-                strm.clear ();
-                rval = FORK_FAILED;
-            }
-        }
-        else
-        {
-            // socketpair failed
-            // error (check errno { EAFNOSUPPORT, EMFILE, ENFILE, EOPNOTSUPP,
-            //    EPROTONOSUPPORT, EPROTOTYPE, EACCES, ENOBUFS, ENOMEM })
-            strm << "Server::open - socketpair_failed: " << errno
-                 << ": \"" << errnoText << '\"';
-            SCX_BOOKEND_PRINT (strm.str ());
-            std::cerr << strm.str () << std::endl;
-            strm.str ("");
-            strm.clear ();
-            rval = SOCKETPAIR_FAILED;
-        }
-    }
-    else
-    {
-        rval = INVALID_STATE;
+        rval = init ();
     }
     return rval;
 }
@@ -526,9 +795,8 @@ Server::Load (
     strm.clear ();
     strm << "class: " << m_ClassNames[index];
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
 #endif
+    *ppSelf = pSelfModule;
     int rval = SUCCESS;
     if (socket_wrapper::SUCCESS == (
             rval = protocol::send_opcode (protocol::CLASS_LOAD, *m_pSocket)) &&
@@ -579,8 +847,6 @@ Server::Unload (
     strm.clear ();
     strm << "class: " << m_ClassNames[index];
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
 #endif
     int rval = SUCCESS;
     if (socket_wrapper::SUCCESS == (
@@ -638,23 +904,15 @@ Server::EnumerateInstances (
     strm.clear ();
     strm << "className: \"" << className << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
-    if (NULL != pClassDecl)
-    {
-        SCX_BOOKEND_PRINT (strm.str ());
-        strm.str ("");
-        strm.clear ();
-    }
-    else
+    if (NULL == pClassDecl)
     {
         SCX_BOOKEND_PRINT ("classDecl was NOT found");
     }
 #endif
     if (NULL != pClassDecl)
     {
-        // skipping: nameSpace, pPropertySet, pFilter
-        if (socket_wrapper::SUCCESS == (
+        if (SUCCESS == open () &&
+            socket_wrapper::SUCCESS == (
                 rval = protocol::send_opcode (
                     protocol::ENUMERATE_INSTANCES, *m_pSocket)) &&
             socket_wrapper::SUCCESS == (
@@ -671,6 +929,7 @@ Server::EnumerateInstances (
         }
         if (SUCCESS != rval)
         {
+            SCX_BOOKEND_PRINT ("send FAILED somewhere");
             MI_Context_PostResult (pContext, MI_RESULT_FAILED);
         }
     }
@@ -701,15 +960,7 @@ Server::GetInstance (
     strm.clear ();
     strm << "className: \"" << className << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
-    if (NULL != pClassDecl)
-    {
-        SCX_BOOKEND_PRINT (strm.str ());
-        strm.str ("");
-        strm.clear ();
-    }
-    else
+    if (NULL == pClassDecl)
     {
         SCX_BOOKEND_PRINT ("classDecl was NOT found");
     }
@@ -764,15 +1015,7 @@ Server::CreateInstance (
     strm.clear ();
     strm << "className: \"" << className << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
-    if (NULL != pClassDecl)
-    {
-        SCX_BOOKEND_PRINT (strm.str ());
-        strm.str ("");
-        strm.clear ();
-    }
-    else
+    if (NULL == pClassDecl)
     {
         SCX_BOOKEND_PRINT ("classDecl was NOT found");
     }
@@ -845,18 +1088,7 @@ Server::ModifyInstance (
     strm.clear ();
     strm << "className: \"" << className << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
-    if (NULL != pClassDecl)
-    {
-//        strm << "method for ModifyInstance: " <<
-//            (NULL != pClassDecl->scriptFT->ModifyInstance
-//                 ? pClassDecl->scriptFT->ModifyInstance : "NULL");
-        SCX_BOOKEND_PRINT (strm.str ());
-        strm.str ("");
-        strm.clear ();
-    }
-    else
+    if (NULL == pClassDecl)
     {
         SCX_BOOKEND_PRINT ("classDecl was NOT found");
     }
@@ -930,15 +1162,7 @@ Server::DeleteInstance (
     strm.clear ();
     strm << "className: \"" << className << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
-    if (NULL != pClassDecl)
-    {
-        SCX_BOOKEND_PRINT (strm.str ());
-        strm.str ("");
-        strm.clear ();
-    }
-    else
+    if (NULL == pClassDecl)
     {
         SCX_BOOKEND_PRINT ("classDecl was NOT found");
     }
@@ -1016,8 +1240,6 @@ Server::Invoke (
     strm.clear ();
     strm << "methodName: \"" << methodName << '\"';
     SCX_BOOKEND_PRINT (strm.str ());
-    strm.str ("");
-    strm.clear ();
 #endif
     if (NULL != pClassDecl)
     {
@@ -1025,12 +1247,6 @@ Server::Invoke (
             findMethodDecl (pClassDecl, methodName);
         if (NULL != pMethodDecl)
         {
-#if (PRINT_BOOKENDS)
-            strm << "MI_MethodDecl->name: \"" << pMethodDecl->name << '\"';
-            SCX_BOOKEND_PRINT (strm.str ());
-            strm.str ("");
-            strm.clear ();
-#endif
             SCX_BOOKEND_PRINT ("class and method where found");
             MI_Uint32 flags =
                 (pInstance ? protocol::HAS_INSTANCE_FLAG : 0) |
@@ -1130,8 +1346,8 @@ MI_CALL EnumerateInstances (
     MI_Boolean keysOnly,
     MI_Filter const* pFilter)
 {
-    g_pServer->EnumerateInstances (pSelf, pContext, nameSpace, className,
-                                   pPropertySet, keysOnly, pFilter);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->EnumerateInstances (
+        pSelf, pContext, nameSpace, className, pPropertySet, keysOnly, pFilter);
 }
 
 
@@ -1144,8 +1360,8 @@ MI_CALL GetInstance (
     MI_Instance const* pInstanceName,
     MI_PropertySet const* pPropertySet)
 {
-    g_pServer->GetInstance (pSelf, pContext, nameSpace, className,
-                            pInstanceName, pPropertySet);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->GetInstance (
+        pSelf, pContext, nameSpace, className, pInstanceName, pPropertySet);
 }
 
 
@@ -1157,8 +1373,8 @@ MI_CALL CreateInstance (
     MI_Char const* className,
     MI_Instance const* pNewInstance)
 {
-    g_pServer->CreateInstance (pSelf, pContext, nameSpace, className,
-                               pNewInstance);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->CreateInstance (
+        pSelf, pContext, nameSpace, className, pNewInstance);
 }
 
 
@@ -1171,8 +1387,8 @@ MI_CALL ModifyInstance (
     MI_Instance const* pModifiedInstance,
     MI_PropertySet const* pPropertySet)
 {
-    g_pServer->ModifyInstance (pSelf, pContext, nameSpace, className,
-                               pModifiedInstance, pPropertySet);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->ModifyInstance (
+        pSelf, pContext, nameSpace, className, pModifiedInstance, pPropertySet);
 }
 
 
@@ -1184,8 +1400,8 @@ MI_CALL DeleteInstance (
     MI_Char const* className,
     MI_Instance const* pInstanceName)
 {
-    g_pServer->DeleteInstance (pSelf, pContext, nameSpace, className,
-                               pInstanceName);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->DeleteInstance (
+        pSelf, pContext, nameSpace, className, pInstanceName);
 }
 
 
@@ -1296,6 +1512,86 @@ MI_CALL Invoke (
     MI_Instance const* pInputParameters)
 {
     SCX_BOOKEND ("Invoke: server.cpp");
-    g_pServer->Invoke (pSelf, pContext, nameSpace, className, methodName,
-                       pInstance, pInputParameters);
+    reinterpret_cast<MI_Module_Self*>(pSelf)->pServer->Invoke (
+        pSelf, pContext, nameSpace, className, methodName, pInstance,
+        pInputParameters);
+}
+
+
+int
+Server::init ()
+{
+    int rval = SUCCESS;
+#if (PRINT_BOOKENDS)
+    std::ostringstream strm;
+    strm << " Module: \"" << m_ModuleName << "\" (libScriptProvider)";
+    SCX_BOOKEND_EX ("Server::open", strm.str ());
+#endif
+    // generate a key
+    unsigned int key[4];
+    generate_key (key);
+    // bind a socket
+    unsigned short port;
+    int listenerFD = socket_wrapper::INVALID_SOCKET;
+    rval = create_listener (&port, &listenerFD);
+    if (SUCCESS == rval)
+    {
+        util::unique_ptr<int, void (*)(int*)> listener_holder (
+            &listenerFD, close_listener_socket);
+        // fork
+        int pid = fork ();
+        if (0 == pid)
+        {
+            // fork succeded, this is the child process
+            SCX_BOOKEND_PRINT ("fork - succeeded: this is the client");
+            // close the parent socket
+            listener_holder.reset ();
+            // create the argument list including (path, port, key)
+            char portStr[6];
+            sprintf (portStr, "%hu", port);
+            char keyStr[33];
+            sprintf (keyStr, "%08X%08X%08X%08X", key[0], key[1], key[2], key[3]);
+            char* args[] = { const_cast<char*>(m_Interpreter.c_str ()),
+                             const_cast<char*>(m_Startup.c_str ()),
+                             const_cast<char*>(m_ModuleName.c_str ()),
+                             portStr,
+                             keyStr,
+                             0 };
+            // exec
+            chdir (CONFIG_LIBDIR);
+            execvp (args[0], args);
+            SCX_BOOKEND_PRINT ("execvp - failed");
+            // if we got here, exec failed!
+            // check errno { EACCES, ENOEXEC }
+            std::ostringstream strm;
+            strm << "Server::open - exec failed: " << errno << ": \""
+                 << errnoText << '\"';
+            SCX_BOOKEND_PRINT (strm.str ());
+            std::cerr << strm.str () << std::endl;
+            rval = FORK_FAILED;
+        }
+        else if (-1 != pid)
+        {
+            // fork succeeded, this is the parent process
+            SCX_BOOKEND_PRINT ("fork - succeeded: this is the parent");
+            int fd = socket_wrapper::INVALID_SOCKET;
+            rval = wait_for_client (listenerFD, key, &fd);
+            if (SUCCESS == rval)
+            {
+                m_pSocket = new socket_wrapper (fd);
+            }
+        }
+        else
+        {
+            // fork failed
+            // error (check errno { EAGAIN, ENOMEM })
+            std::ostringstream strm;
+            strm << "Server::open - fork failed: " << errno
+                 << ": \"" << errnoText << '\"';
+            SCX_BOOKEND_PRINT (strm.str ());
+            std::cerr << strm.str () << std::endl;
+            rval = FORK_FAILED;
+        }
+    }
+    return rval;
 }
