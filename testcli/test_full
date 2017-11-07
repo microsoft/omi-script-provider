@@ -7,7 +7,7 @@ TMP_2="$LOG_PATH/tmp_2"
 
 function DUMP_STD {
     echo "$1" >> $STDERR_FILE
-    echo "-----------------------------"
+    echo "-----------------------------" >> $STDERR_FILE
     echo "stdout:" >> $STDERR_FILE
     cat $TMP_1 1>> $STDERR_FILE 2>/dev/null
     echo "stderr:" >> $STDERR_FILE
