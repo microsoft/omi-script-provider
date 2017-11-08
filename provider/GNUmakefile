@@ -27,6 +27,10 @@ $(BIN_PATH)/$(LIBRARY) :
 INCLUDE_PATH+=$(INCDIR)
 
 
+PRINT_BOOKENDS?=0
+
+
+CPPFLAGS+=-DPRINT_BOOKENDS=$(PRINT_BOOKENDS)
 CPPFLAGS+=$(addprefix -I,$(INCLUDE_PATH))
 
 
@@ -38,6 +42,7 @@ SOURCES+=mi_instance.cpp
 SOURCES+=mi_main.cpp
 SOURCES+=mi_memory_helper.cpp
 SOURCES+=mi_module.cpp
+SOURCES+=mi_module_self.cpp
 SOURCES+=mi_schema.cpp
 SOURCES+=mi_script_extensions.cpp
 SOURCES+=mi_value.cpp

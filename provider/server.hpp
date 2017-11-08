@@ -31,7 +31,8 @@ public:
     {
         SUCCESS = EXIT_SUCCESS,
         INVALID_STATE,
-        SOCKETPAIR_FAILED,
+        LISTEN_SOCKET_FAILED,
+        CLIENT_FAILED_TO_CONNECT,
         FORK_FAILED,
         SEND_FAILED,
         INVALID_PARAM,
@@ -126,6 +127,7 @@ public:
         MI_Instance const* pInputParameters);
 
 private:
+    int init ();
 
     /*ctor*/ Server (Server const&); // delete
     Server& operator = (Server const&); // delete

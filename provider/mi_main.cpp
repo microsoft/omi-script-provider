@@ -4,6 +4,7 @@
 #include "server_protocol.hpp"
 #include "server.hpp"
 #include "unique_ptr.hpp"
+#include "mi_module_self.hpp"
 #include "mi_value.hpp"
 
 
@@ -11,24 +12,17 @@
 #include <sstream>
 
 
-util::unique_ptr<Server> g_pServer;
-
-
-namespace
-{
-
-MI_Module g_Module;
-
-};
-
-
 void
 MI_CALL Load (
     MI_Module_Self** ppSelf,
     struct _MI_Context* pContext)
 {
-    SCX_BOOKEND ("Load: mi_main.cpp");
-    g_pServer->Module_Load (ppSelf, pContext);
+#if (PRINT_BOOKENDS)
+    std::ostringstream strm;
+    strm << " ModuleName=\"" << (*ppSelf)->ModuleName << "\"";
+    SCX_BOOKEND_EX ("Load: mi_main.cpp", strm.str ().c_str ());
+#endif
+    (*ppSelf)->pServer->Module_Load (ppSelf, pContext);
 }
 
 
@@ -37,8 +31,13 @@ MI_CALL Unload (
     MI_Module_Self* pSelf,
     struct _MI_Context* pContext)
 {
-    SCX_BOOKEND ("Unload: mi_main.cpp");
-    g_pServer->Module_Unload (pSelf, pContext);
+#if (PRINT_BOOKENDS)
+    std::ostringstream strm;
+    strm << " ModuleName=\"" << pSelf->ModuleName << "\"";
+    SCX_BOOKEND_EX ("Unload: mi_main.cpp", strm.str ().c_str ());
+#endif
+    pSelf->pServer->Module_Unload (pSelf, pContext);
+    delete pSelf;
 }
 
 
@@ -47,9 +46,10 @@ Start (
     MI_Server* const pServer,
     char const* const interpreter,
     char const* const startup,
-    char const* const moduleName)
+    char const* const moduleName,
+    MI_Module_Self** ppSelf)
 {
-    SCX_BOOKEND_EX ("Start", " (mi_main.cpp)");
+    SCX_BOOKEND ("Start: mi_main.cpp");
 #if (PRINT_BOOKENDS)
     std::ostringstream strm;
     strm << "interpreter: \"" << interpreter << "\"";
@@ -63,19 +63,26 @@ Start (
     strm << "moduleName: \"" << moduleName << "\"";
     SCX_BOOKEND_PRINT (strm.str ());
 #endif
-    g_Module.version = MI_VERSION;
-    g_Module.generatorVersion = MI_MAKE_VERSION (1,0,8);
-    g_Module.flags =
+    util::unique_ptr<MI_Module_Self> pSelf (new MI_Module_Self (moduleName));
+    pSelf->Module.version = MI_VERSION;
+    pSelf->Module.generatorVersion = MI_MAKE_VERSION (1,0,8);
+    pSelf->Module.flags =
         MI_MODULE_FLAG_STANDARD_QUALIFIERS |
         MI_MODULE_FLAG_CPLUSPLUS;
-    g_Module.charSize = sizeof (MI_Char);
-    g_Module.schemaDecl = NULL;
-    g_Module.Load = Load;
-    g_Module.Unload = Unload;
-    g_Module.dynamicProviderFT = NULL;
-    g_pServer.reset (new Server (interpreter, startup, moduleName));
-    g_pServer->open ();
-    protocol::recv (&(g_Module.schemaDecl), *(g_pServer->getSocket ()));
-    g_pServer->setSchema (g_Module.schemaDecl);
-    return &g_Module;
+    pSelf->Module.charSize = sizeof (MI_Char);
+    pSelf->Module.schemaDecl = NULL;
+    pSelf->Module.Load = Load;
+    pSelf->Module.Unload = Unload;
+    pSelf->Module.dynamicProviderFT = NULL;
+    pSelf->pServer.reset (new Server (interpreter, startup, moduleName));
+    if (Server::SUCCESS == pSelf->pServer->open () &&
+        socket_wrapper::SUCCESS ==
+            protocol::recv (&(pSelf->Module.schemaDecl),
+                            *(pSelf->pServer->getSocket ())))
+    {
+        pSelf->pServer->setSchema (pSelf->Module.schemaDecl);
+        *ppSelf = pSelf.release ();
+        return &((*ppSelf)->Module);
+    }
+    return NULL;
 }
