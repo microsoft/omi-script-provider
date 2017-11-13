@@ -660,7 +660,7 @@ template<TypeID_t TYPE_ID>
 MI_Wrapper<TYPE_ID>::createPyPtr (
     typename MI_Value<TYPE_ID>::Ptr const& pValue)
 {
-    SCX_BOOKEND ("MI_Wrapper::createPyPtr");
+    //SCX_BOOKEND ("MI_Wrapper::createPyPtr");
     PyObjPtr pPyWrapper (s_PyTypeObject.tp_alloc (&s_PyTypeObject, 0));
     if (pPyWrapper)
     {

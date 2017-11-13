@@ -3180,6 +3180,29 @@ def real32_test ():
         BookEndPrint ('----- assign over-range value failed')
         rval = False
 
+    # init to zero
+    try:
+        r28 = MI_Real32 (0)
+    except:
+        BookEndPrint ('----- init to zero failed - exception')
+        rval = False
+    else:
+        if 0 != r28.value:
+            BookEndPrint ('----- init to zero value failed')
+            rval = False
+    
+    # set to zero
+    r29 = MI_Real32 ()
+    try:
+        r29.value = 0
+    except:
+        BookEndPrint ('----- set to zero failed - exception')
+        rval = False
+    else:
+        if 0 != r28.value:
+            BookEndPrint ('----- set to zero value failed')
+            rval = False
+
     if not rval:
         BookEndPrint ('!!!!!  Tests have failed! (MI_Real32)')
 
@@ -3509,6 +3532,29 @@ def real64_test ():
     else:
         BookEndPrint ('----- assign over-range value failed')
         rval = False
+
+    # init to zero
+    try:
+        r28 = MI_Real64 (0)
+    except:
+        BookEndPrint ('----- init to zero failed - exception')
+        rval = False
+    else:
+        if 0 != r28.value:
+            BookEndPrint ('----- init to zero value failed')
+            rval = False
+    
+    # set to zero
+    r29 = MI_Real64 ()
+    try:
+        r29.value = 0
+    except:
+        BookEndPrint ('----- set to zero failed - exception')
+        rval = False
+    else:
+        if 0 != r28.value:
+            BookEndPrint ('----- set to zero value failed')
+            rval = False
 
     if not rval:
         BookEndPrint ('!!!!!  Tests have failed! (MI_Real64)')

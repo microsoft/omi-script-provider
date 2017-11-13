@@ -87,348 +87,356 @@ convertToBase (
     MI_ValueBase::Ptr* ppValueOut)
 {
     int ret = PY_FAILURE;
-    switch (type)
+    if (pValueObj != Py_None)
     {
-    case MI_BOOLEAN:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_BOOLEAN>::getPyTypeObject ()))
+        switch (type)
         {
-            *ppValueOut = new scx::MI_Value<MI_BOOLEAN> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_BOOLEAN>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_UINT8:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_UINT8>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_UINT8> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_UINT8>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_SINT8:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_SINT8>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_SINT8> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_SINT8>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_UINT16:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_UINT16>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_UINT16> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_UINT16>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_SINT16:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_SINT16>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_SINT16> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_SINT16>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_UINT32:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_UINT32>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_UINT32> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_UINT32>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_SINT32:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_SINT32>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_SINT32> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_SINT32>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_UINT64:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_UINT64>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_UINT64> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_UINT64>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_SINT64:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_SINT64>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_SINT64> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_SINT64>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_REAL32:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_REAL32>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_REAL32> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_REAL32>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_REAL64:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_REAL64>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_REAL64> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_REAL64>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_CHAR16:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_CHAR16>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_CHAR16> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_CHAR16>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_STRING:
-        if (PyObject_TypeCheck (
-                pValueObj, scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Value<MI_STRING> (
-                *reinterpret_cast<scx::MI_Wrapper<MI_STRING>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        else
-        {
-            std::ostringstream strm;
-            strm << "PyTypeObject::name: "
-                 << scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()->tp_name;
-            SCX_BOOKEND_PRINT (strm.str ());
-            if (pValueObj && pValueObj != Py_None)
+        case MI_BOOLEAN:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_BOOLEAN>::getPyTypeObject ()))
             {
-                SCX_BOOKEND_PRINT ("pValueObj is not NULL");
+                *ppValueOut = new scx::MI_Value<MI_BOOLEAN> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_BOOLEAN>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT8:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_UINT8>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_UINT8> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_UINT8>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT8:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_SINT8>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_SINT8> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_SINT8>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT16:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_UINT16>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_UINT16> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_UINT16>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT16:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_SINT16>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_SINT16> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_SINT16>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT32:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_UINT32>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_UINT32> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_UINT32>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT32:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_SINT32>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_SINT32> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_SINT32>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT64:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_UINT64>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_UINT64> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_UINT64>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT64:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_SINT64>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_SINT64> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_SINT64>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_REAL32:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_REAL32>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_REAL32> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_REAL32>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_REAL64:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_REAL64>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_REAL64> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_REAL64>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_CHAR16:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_CHAR16>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_CHAR16> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_CHAR16>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_STRING:
+            if (PyObject_TypeCheck (
+                    pValueObj, scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Value<MI_STRING> (
+                    *reinterpret_cast<scx::MI_Wrapper<MI_STRING>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
             }
             else
             {
-                SCX_BOOKEND_PRINT ("pValueObj is NULL");
+                std::ostringstream strm;
+                strm << "PyTypeObject::name: "
+                     << scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()->tp_name;
+                SCX_BOOKEND_PRINT (strm.str ());
+                if (pValueObj && pValueObj != Py_None)
+                {
+                    SCX_BOOKEND_PRINT ("pValueObj is not NULL");
+                }
+                else
+                {
+                    SCX_BOOKEND_PRINT ("pValueObj is NULL");
+                }
+                SCX_BOOKEND_PRINT ("Type is not MI_STRING");
             }
-            SCX_BOOKEND_PRINT ("Type is not MI_STRING");
+            break;
+        case MI_DATETIME:
+            if (PyObject_TypeCheck (
+                    pValueObj, MI_Timestamp_Wrapper::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Timestamp (
+                    *reinterpret_cast<MI_Timestamp_Wrapper*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            else if (PyObject_TypeCheck (
+                         pValueObj, MI_Interval_Wrapper::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Interval (
+                    *reinterpret_cast<MI_Interval_Wrapper*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_INSTANCE:
+            // 3/29/17
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Instance_Wrapper::getPyTypeObject ()))
+            {
+//                *ppValueOut = reinterpret_cast<scx::MI_Instance_Wrapper*>(
+//                    pValueObj)->getInstance ();
+                *ppValueOut = new scx::MI_Instance (
+                    *reinterpret_cast<MI_Instance_Wrapper*>(
+                        pValueObj)->getInstance ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_REFERENCE:
+            SCX_BOOKEND_PRINT ("Encountered an unhandled type");
+            break;
+        case MI_BOOLEANA:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_BOOLEANA>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_BOOLEANA> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_BOOLEANA>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT8A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_UINT8A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_UINT8A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_UINT8A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT8A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_SINT8A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_SINT8A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_SINT8A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT16A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_UINT16A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_UINT16A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_UINT16A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT16A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_SINT16A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_SINT16A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_SINT16A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT32A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_UINT32A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_UINT32A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_UINT32A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT32A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_SINT32A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_SINT32A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_SINT32A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_UINT64A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_UINT64A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_UINT64A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_UINT64A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_SINT64A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_SINT64A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_SINT64A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_SINT64A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_REAL32A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_REAL32A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_REAL32A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_REAL32A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_REAL64A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_REAL64A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_REAL64A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_REAL64A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_CHAR16A:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_CHAR16A>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_CHAR16A> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_CHAR16A>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_DATETIMEA:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_DATETIMEA>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_DATETIMEA> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_STRINGA:
+            if (PyObject_TypeCheck (
+                    pValueObj,
+                    scx::MI_Array_Wrapper<MI_STRINGA>::getPyTypeObject ()))
+            {
+                *ppValueOut = new scx::MI_Array<MI_STRINGA> (
+                    *reinterpret_cast<MI_Array_Wrapper<MI_STRINGA>*>(
+                        pValueObj)->getValue ());
+                ret = PY_SUCCESS;
+            }
+            break;
+        case MI_INSTANCEA:
+        case MI_REFERENCEA:
+        default:
+            SCX_BOOKEND_PRINT ("Encountered an unhandled type");
+            break;
         }
-        break;
-    case MI_DATETIME:
-        if (PyObject_TypeCheck (
-                pValueObj, MI_Timestamp_Wrapper::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Timestamp (
-                *reinterpret_cast<MI_Timestamp_Wrapper*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        else if (PyObject_TypeCheck (
-                     pValueObj, MI_Interval_Wrapper::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Interval (
-                *reinterpret_cast<MI_Interval_Wrapper*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_INSTANCE:
-        // 3/29/17
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Instance_Wrapper::getPyTypeObject ()))
-        {
-//            *ppValueOut = reinterpret_cast<scx::MI_Instance_Wrapper*>(
-//                pValueObj)->getInstance ();
-            *ppValueOut = new scx::MI_Instance (
-                *reinterpret_cast<MI_Instance_Wrapper*>(
-                    pValueObj)->getInstance ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_REFERENCE:
-        SCX_BOOKEND_PRINT ("Encountered an unhandled type");
-        break;
-    case MI_BOOLEANA:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_BOOLEANA>::getPyTypeObject ()))
-        {
-            *ppValueOut = new scx::MI_Array<MI_BOOLEANA> (
-                *reinterpret_cast<MI_Array_Wrapper<MI_BOOLEANA>*>(
-                    pValueObj)->getValue ());
-            ret = PY_SUCCESS;
-        }
-        break;
-    case MI_UINT8A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_UINT8A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_UINT8A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_UINT8A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
     }
-    break;
-    case MI_SINT8A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_SINT8A>::getPyTypeObject ()))
+    else
     {
-        *ppValueOut = new scx::MI_Array<MI_SINT8A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_SINT8A>*>(
-                pValueObj)->getValue ());
+        *ppValueOut = NULL;
         ret = PY_SUCCESS;
-    }
-    break;
-    case MI_UINT16A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_UINT16A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_UINT16A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_UINT16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_SINT16A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_SINT16A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_SINT16A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_SINT16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_UINT32A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_UINT32A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_UINT32A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_UINT32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_SINT32A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_SINT32A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_SINT32A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_SINT32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_UINT64A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_UINT64A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_UINT64A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_UINT64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_SINT64A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_SINT64A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_SINT64A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_SINT64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_REAL32A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_REAL32A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_REAL32A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_REAL32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_REAL64A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_REAL64A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_REAL64A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_REAL64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_CHAR16A:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_CHAR16A>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_CHAR16A> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_CHAR16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_DATETIMEA:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_DATETIMEA>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_DATETIMEA> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_STRINGA:
-        if (PyObject_TypeCheck (
-                pValueObj,
-                scx::MI_Array_Wrapper<MI_STRINGA>::getPyTypeObject ()))
-    {
-        *ppValueOut = new scx::MI_Array<MI_STRINGA> (
-            *reinterpret_cast<MI_Array_Wrapper<MI_STRINGA>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    break;
-    case MI_INSTANCEA:
-    case MI_REFERENCEA:
-    default:
-        SCX_BOOKEND_PRINT ("Encountered an unhandled type");
-        break;
     }
     return ret;
 }
@@ -440,279 +448,287 @@ convertToBase (
     MI_ValueBase::Ptr* ppValueOut)
 {
     int ret = PY_FAILURE;
-    if (PyObject_TypeCheck (
-            pValueObj, scx::MI_Wrapper<MI_BOOLEAN>::getPyTypeObject ()))
+    if (pValueObj != Py_None)
     {
-        //SCX_BOOKEND_PRINT ("MI_BOOLEAN");
-        *ppValueOut = new scx::MI_Value<MI_BOOLEAN> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_BOOLEAN>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
+        if (PyObject_TypeCheck (
+                pValueObj, scx::MI_Wrapper<MI_BOOLEAN>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_BOOLEAN");
+            *ppValueOut = new scx::MI_Value<MI_BOOLEAN> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_BOOLEAN>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_UINT8>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT8");
+            *ppValueOut = new scx::MI_Value<MI_UINT8> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_UINT8>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_SINT8>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT8");
+            *ppValueOut = new scx::MI_Value<MI_SINT8> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_SINT8>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_UINT16>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT16");
+            *ppValueOut = new scx::MI_Value<MI_UINT16> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_UINT16>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_SINT16>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT16");
+            *ppValueOut = new scx::MI_Value<MI_SINT16> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_SINT16>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_UINT32>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT32");
+            *ppValueOut = new scx::MI_Value<MI_UINT32> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_UINT32>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_SINT32>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT32");
+            *ppValueOut = new scx::MI_Value<MI_SINT32> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_SINT32>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_UINT64>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT64");
+            *ppValueOut = new scx::MI_Value<MI_UINT64> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_UINT64>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_SINT64>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT64");
+            *ppValueOut = new scx::MI_Value<MI_SINT64> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_SINT64>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_REAL32>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_REAL32");
+            *ppValueOut = new scx::MI_Value<MI_REAL32> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_REAL32>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_REAL64>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_REAL64");
+            *ppValueOut = new scx::MI_Value<MI_REAL64> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_REAL64>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_CHAR16>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_CHAR16");
+            *ppValueOut = new scx::MI_Value<MI_CHAR16> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_CHAR16>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_STRING");
+            *ppValueOut = new scx::MI_Value<MI_STRING> (
+                *reinterpret_cast<scx::MI_Wrapper<MI_STRING>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, MI_Timestamp_Wrapper::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_Timestamp_Wrapper");
+            *ppValueOut = new scx::MI_Timestamp (
+                *reinterpret_cast<MI_Timestamp_Wrapper*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj, MI_Interval_Wrapper::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_Interval_Wrapper");
+            *ppValueOut = new scx::MI_Interval (
+                *reinterpret_cast<MI_Interval_Wrapper*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_BOOLEANA>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_BOOLEANA");
+            *ppValueOut = new scx::MI_Array<MI_BOOLEANA> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_BOOLEANA>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_UINT8A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT8A");
+            *ppValueOut = new scx::MI_Array<MI_UINT8A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT8A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_SINT8A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT8A");
+            *ppValueOut = new scx::MI_Array<MI_SINT8A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT8A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_UINT16A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT16A");
+            *ppValueOut = new scx::MI_Array<MI_UINT16A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT16A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_SINT16A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT16A");
+            *ppValueOut = new scx::MI_Array<MI_SINT16A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT16A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_UINT32A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT32A");
+            *ppValueOut = new scx::MI_Array<MI_UINT32A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT32A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_SINT32A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT32A");
+            *ppValueOut = new scx::MI_Array<MI_SINT32A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT32A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_UINT64A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_UINT64A");
+            *ppValueOut = new scx::MI_Array<MI_UINT64A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT64A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_SINT64A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_SINT64A");
+            *ppValueOut = new scx::MI_Array<MI_SINT64A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT64A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_REAL32A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_REAL32A");
+            *ppValueOut = new scx::MI_Array<MI_REAL32A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_REAL32A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_REAL64A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_REAL64A");
+            *ppValueOut = new scx::MI_Array<MI_REAL64A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_REAL64A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_CHAR16A>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_CHAR16A");
+            *ppValueOut = new scx::MI_Array<MI_CHAR16A> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_CHAR16A>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_DATETIMEA>::getPyTypeObject ()))
+        {
+            SCX_BOOKEND_PRINT ("MI_DATETIMEA");
+            *ppValueOut = new scx::MI_Array<MI_DATETIMEA> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_DATETIMEA>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
+        else if (PyObject_TypeCheck (
+                     pValueObj,
+                     scx::MI_Array_Wrapper<MI_STRINGA>::getPyTypeObject ()))
+        {
+            //SCX_BOOKEND_PRINT ("MI_STRINGA");
+            *ppValueOut = new scx::MI_Array<MI_STRINGA> (
+                *reinterpret_cast<scx::MI_Array_Wrapper<MI_STRINGA>*>(
+                    pValueObj)->getValue ());
+            ret = PY_SUCCESS;
+        }
     }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_UINT8>::getPyTypeObject ()))
+    else
     {
-        //SCX_BOOKEND_PRINT ("MI_UINT8");
-        *ppValueOut = new scx::MI_Value<MI_UINT8> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_UINT8>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_SINT8>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT8");
-        *ppValueOut = new scx::MI_Value<MI_SINT8> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_SINT8>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_UINT16>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT16");
-        *ppValueOut = new scx::MI_Value<MI_UINT16> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_UINT16>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_SINT16>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT16");
-        *ppValueOut = new scx::MI_Value<MI_SINT16> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_SINT16>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_UINT32>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT32");
-        *ppValueOut = new scx::MI_Value<MI_UINT32> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_UINT32>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_SINT32>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT32");
-        *ppValueOut = new scx::MI_Value<MI_SINT32> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_SINT32>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_UINT64>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT64");
-        *ppValueOut = new scx::MI_Value<MI_UINT64> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_UINT64>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_SINT64>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT64");
-        *ppValueOut = new scx::MI_Value<MI_SINT64> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_SINT64>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_REAL32>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_REAL32");
-        *ppValueOut = new scx::MI_Value<MI_REAL32> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_REAL32>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_REAL64>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_REAL64");
-        *ppValueOut = new scx::MI_Value<MI_REAL64> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_REAL64>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_CHAR16>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_CHAR16");
-        *ppValueOut = new scx::MI_Value<MI_CHAR16> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_CHAR16>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, scx::MI_Wrapper<MI_STRING>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_STRING");
-        *ppValueOut = new scx::MI_Value<MI_STRING> (
-            *reinterpret_cast<scx::MI_Wrapper<MI_STRING>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, MI_Timestamp_Wrapper::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_Timestamp_Wrapper");
-        *ppValueOut = new scx::MI_Timestamp (
-            *reinterpret_cast<MI_Timestamp_Wrapper*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj, MI_Interval_Wrapper::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_Interval_Wrapper");
-        *ppValueOut = new scx::MI_Interval (
-            *reinterpret_cast<MI_Interval_Wrapper*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_BOOLEANA>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_BOOLEANA");
-        *ppValueOut = new scx::MI_Array<MI_BOOLEANA> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_BOOLEANA>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_UINT8A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT8A");
-        *ppValueOut = new scx::MI_Array<MI_UINT8A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT8A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_SINT8A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT8A");
-        *ppValueOut = new scx::MI_Array<MI_SINT8A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT8A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_UINT16A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT16A");
-        *ppValueOut = new scx::MI_Array<MI_UINT16A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_SINT16A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT16A");
-        *ppValueOut = new scx::MI_Array<MI_SINT16A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_UINT32A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT32A");
-        *ppValueOut = new scx::MI_Array<MI_UINT32A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_SINT32A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT32A");
-        *ppValueOut = new scx::MI_Array<MI_SINT32A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_UINT64A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_UINT64A");
-        *ppValueOut = new scx::MI_Array<MI_UINT64A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_UINT64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_SINT64A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_SINT64A");
-        *ppValueOut = new scx::MI_Array<MI_SINT64A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_SINT64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_REAL32A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_REAL32A");
-        *ppValueOut = new scx::MI_Array<MI_REAL32A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_REAL32A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_REAL64A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_REAL64A");
-        *ppValueOut = new scx::MI_Array<MI_REAL64A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_REAL64A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_CHAR16A>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_CHAR16A");
-        *ppValueOut = new scx::MI_Array<MI_CHAR16A> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_CHAR16A>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_DATETIMEA>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_DATETIMEA");
-        *ppValueOut = new scx::MI_Array<MI_DATETIMEA> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_DATETIMEA>*>(
-                pValueObj)->getValue ());
-        ret = PY_SUCCESS;
-    }
-    else if (PyObject_TypeCheck (
-                 pValueObj,
-                 scx::MI_Array_Wrapper<MI_STRINGA>::getPyTypeObject ()))
-    {
-        //SCX_BOOKEND_PRINT ("MI_STRINGA");
-        *ppValueOut = new scx::MI_Array<MI_STRINGA> (
-            *reinterpret_cast<scx::MI_Array_Wrapper<MI_STRINGA>*>(
-                pValueObj)->getValue ());
+        *ppValueOut = NULL;
         ret = PY_SUCCESS;
     }
     return ret;
@@ -859,9 +875,12 @@ MI_Instance_Wrapper::getValue (
             ret = pInstance->m_pInstance->getValue (name, &pValue);
             if (0 == ret)
             {
-                //SCX_BOOKEND_PRINT ("Name is a member of MI_ClassDecl");
+                //std::ostringstream strm;
+                //strm << "MI_ClassDecl contains: " << name;
+                //SCX_BOOKEND_PRINT (strm.str ().c_str ());
                 if (pValue)
                 {
+                    //SCX_BOOKEND_PRINT ("value is not NULL");
                     switch (pValue->getType ())
                     {
                     case MI_BOOLEAN:
@@ -970,6 +989,7 @@ MI_Instance_Wrapper::getValue (
                 }
                 else
                 {
+                    //SCX_BOOKEND_PRINT ("value is NULL");
                     Py_INCREF (Py_None);
                     rval = Py_None;
                 }
@@ -1028,25 +1048,25 @@ MI_Instance_Wrapper::setValue (
                 if (pParameterDecl)
                 {
                     //SCX_BOOKEND_PRINT ("A parameter was found for Name");
-                    std::ostringstream strm;
-                    strm << "A parameter was found for " << name;
-                    SCX_BOOKEND_PRINT (strm.str ());
-                    strm.str ("");
-                    strm.clear ();
-                    strm << "parameter name: "
-                         << pParameterDecl->getName ()->getValue ();
-                    SCX_BOOKEND_PRINT (strm.str ());
-                    strm.str ("");
-                    strm.clear ();
-                    strm << "type: "
-                         << (pParameterDecl->getType ()->getValue ());
-                    SCX_BOOKEND_PRINT (strm.str ());
+                    //std::ostringstream strm;
+                    //strm << "A parameter was found for " << name;
+                    //SCX_BOOKEND_PRINT (strm.str ());
+                    //strm.str ("");
+                    //strm.clear ();
+                    //strm << "parameter name: "
+                    //     << pParameterDecl->getName ()->getValue ();
+                    //SCX_BOOKEND_PRINT (strm.str ());
+                    //strm.str ("");
+                    //strm.clear ();
+                    //strm << "type: "
+                    //     << (pParameterDecl->getType ()->getValue ());
+                    //SCX_BOOKEND_PRINT (strm.str ());
                     MI_ValueBase::Ptr pValue;
                     ret = convertToBase (pParameterDecl->getType ()->getValue (),
                                          pValueObj, &pValue);
                     if (PY_SUCCESS == ret)
                     {
-                        SCX_BOOKEND_PRINT ("to_MI_ValueBase succeeded");
+                        //SCX_BOOKEND_PRINT ("to_MI_ValueBase succeeded");
                         pInstance->m_pInstance->setValue (name, pValue);
                         rval = Py_None;
                     }
@@ -1063,10 +1083,8 @@ MI_Instance_Wrapper::setValue (
             else
             {
                 //SCX_BOOKEND_PRINT ("There is no MI_ObjectDecl");
-                
                 MI_ValueBase::Ptr pValue;
                 ret = convertToBase (pValueObj, &pValue);
-
                 if (pValue)
                 {
                     //SCX_BOOKEND_PRINT ("Value is a MI_Type");
