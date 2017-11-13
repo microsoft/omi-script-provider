@@ -421,8 +421,9 @@ PyConverter_Real<T>::fromPyObject (
     if (PyFloat_Check (pSource))
     {
         double value = PyFloat_AS_DOUBLE (pSource);
-        if (MI_Limits<Type_to_ID<T>::ID>::min () <= fabs (value) &&
-            MI_Limits<Type_to_ID<T>::ID>::max () >= fabs (value))
+        if ((MI_Limits<Type_to_ID<T>::ID>::min () <= fabs (value) &&
+             MI_Limits<Type_to_ID<T>::ID>::max () >= fabs (value)) ||
+             (0.0 == fabs (value)))
         {
             *pValueOut = static_cast<T>(value);
             rval = PY_SUCCESS;
