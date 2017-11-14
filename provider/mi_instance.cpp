@@ -541,9 +541,9 @@ MI_Instance::recv_values (
                 }
                 case MI_DATETIMEA:
                 {
-                    rval = EXIT_FAILURE;
                     MI_Array<MI_DATETIMEA>::Ptr pTemp;
                     rval = MI_Array<MI_DATETIMEA>::recv (&pTemp, sock);
+                    pValue = pTemp.get ();
                     break;
                 }
                 case MI_STRINGA:
@@ -566,6 +566,9 @@ MI_Instance::recv_values (
                 }
                 if (socket_wrapper::SUCCESS == rval)
                 {
+                    //std::ostringstream strm;
+                    //strm << "adding value: " << pValueName->getValue ();
+                    //SCX_BOOKEND_PRINT (strm.str ().c_str ());
                     std::pair<value_map_t::iterator, bool> ret =
                         values.insert (
                             std::make_pair (pValueName->getValue (), pValue));
@@ -606,7 +609,9 @@ MI_Instance::confirm_values (
             pObjectDecl->getParameterDecl (pos->first);
         if (!pParameterDecl)
         {
-            SCX_BOOKEND_PRINT ("the parameter does not exist");
+            //std::ostringstream strm;
+            //strm << "the parameter does not exist: " << pos->first;
+            //SCX_BOOKEND_PRINT (strm.str ().c_str ());
             rval = EXIT_FAILURE;
         }
         else if (pParameterDecl->getType ()->getValue () !=

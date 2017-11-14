@@ -450,7 +450,7 @@ template<>
 MI_Wrapper<MI_BOOLEAN>::createPyPtr (
     MI_Value<MI_BOOLEAN>::Ptr const& pValue)
 {
-    SCX_BOOKEND ("MI_Wrapper<MI_BOOLEAN>::createPyPtr");
+    //SCX_BOOKEND ("MI_Wrapper<MI_BOOLEAN>::createPyPtr");
     if (s_PyTypeObject.tp_alloc)
     {
         SCX_BOOKEND_PRINT ("tp_alloc is not NULL");
@@ -2279,7 +2279,7 @@ MI_Array_Wrapper<MI_DATETIMEA>::_append (
     PyObject* args,
     PyObject* keywords)
 {
-    SCX_BOOKEND ("MI_Array_Wrapper<MI_DATETIMEA>::_append");
+    //SCX_BOOKEND ("MI_Array_Wrapper<MI_DATETIMEA>::_append");
     PyObject* rval = NULL;
     PyObject* pValueObj = NULL;
     char const* KEYWORDS[] = {
@@ -2289,13 +2289,13 @@ MI_Array_Wrapper<MI_DATETIMEA>::_append (
     if (PyArg_ParseTupleAndKeywords (
             args, keywords, "O", const_cast<char **>(KEYWORDS), &pValueObj))
     {
-        SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
+        //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords succeeded");
         MI_Array_Wrapper<MI_DATETIMEA>* pArray =
             reinterpret_cast<MI_Array_Wrapper<MI_DATETIMEA>*>(pSelf);
         if (PyObject_TypeCheck (
                 pValueObj, MI_Timestamp_Wrapper::getPyTypeObject ()))
         {
-            SCX_BOOKEND_PRINT ("push_back new MI_Timestamp");
+            //SCX_BOOKEND_PRINT ("push_back new MI_Timestamp");
             pArray->m_pArray->push_back (
 //                reinterpret_cast<MI_Timestamp_Wrapper*>(
 //                    pValueObj)->getValue ());
@@ -2306,7 +2306,7 @@ MI_Array_Wrapper<MI_DATETIMEA>::_append (
         else if (PyObject_TypeCheck (
                      pValueObj, MI_Interval_Wrapper::getPyTypeObject ()))
         {
-            SCX_BOOKEND_PRINT ("push_back new MI_Interval");
+            //SCX_BOOKEND_PRINT ("push_back new MI_Interval");
             pArray->m_pArray->push_back (
 //                reinterpret_cast<MI_Interval_Wrapper*>(
 //                    pValueObj)->getValue ());
@@ -2316,13 +2316,13 @@ MI_Array_Wrapper<MI_DATETIMEA>::_append (
         }
         else
         {
-            SCX_BOOKEND_PRINT ("unhandled type");
+            //SCX_BOOKEND_PRINT ("unhandled type");
             PyErr_SetString (PyExc_ValueError, "incompatible value type.");
         }
     }
     else
     {
-        SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords failed");
+        //SCX_BOOKEND_PRINT ("PyArg_ParseTupleAndKeywords failed");
         PyErr_SetString (PyExc_ValueError, "invalid arguments.");
     }
     Py_XINCREF (rval);
