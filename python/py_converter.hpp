@@ -421,8 +421,9 @@ PyConverter_Real<T>::fromPyObject (
     if (PyFloat_Check (pSource))
     {
         double value = PyFloat_AS_DOUBLE (pSource);
-        if (MI_Limits<Type_to_ID<T>::ID>::min () <= fabs (value) &&
-            MI_Limits<Type_to_ID<T>::ID>::max () >= fabs (value))
+        if ((MI_Limits<Type_to_ID<T>::ID>::min () <= fabs (value) &&
+             MI_Limits<Type_to_ID<T>::ID>::max () >= fabs (value)) ||
+            T(0) == fabs (value))
         {
             *pValueOut = static_cast<T>(value);
             rval = PY_SUCCESS;
@@ -430,6 +431,39 @@ PyConverter_Real<T>::fromPyObject (
         else
         {
             //SCX_BOOKEND_PRINT ("value out of range");
+        }
+    }
+    else if (PyLong_Check (pSource))
+    {
+        //SCX_BOOKEND_PRINT ("PyLong");
+        unsigned long long value = PyLong_AsUnsignedLongLong (pSource);
+        if ((unsigned long long)-1 != value ||
+            NULL == PyErr_Occurred ())
+        {
+            // succeeded
+            *pValueOut = static_cast<T>(value);
+            rval = PY_SUCCESS;
+        }
+        else
+        {
+            // failed
+            //SCX_BOOKEND_PRINT ("PyLong_AsUnsignedLongLong failed");
+        }
+    }
+    else if (PyInt_Check (pSource))
+    {
+        //SCX_BOOKEND_PRINT ("PyInt");
+        long value = PyInt_AsLong (pSource);
+        if (-1 != value ||
+            NULL == PyErr_Occurred ())
+        {
+            *pValueOut = static_cast<T>(value);
+            rval = PY_SUCCESS;
+        }
+        else
+        {
+            // failed
+            //SCX_BOOKEND_PRINT ("PyInt_AsLong failed");
         }
     }
     else
