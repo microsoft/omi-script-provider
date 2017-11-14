@@ -844,9 +844,7 @@ MI_Array<TYPE_ID>::send (
              pos != endPos;
          ++pos)
     {
-        rval = sock.send (
-            reinterpret_cast<socket_wrapper::byte_t const*> (&(*pos)),
-            sizeof (Value_t));
+        rval = protocol::send (*pos, sock);
     }
     return rval;
 }
@@ -864,6 +862,9 @@ MI_Array<TYPE_ID>::recv (
     int rval = protocol::recv_item_count (&count, sock);
     if (socket_wrapper::SUCCESS == rval)
     {
+        //std::ostringstream strm;
+        //strm << "count: " << count;
+        //SCX_BOOKEND_PRINT (strm.str ().c_str ());
         Array_t array;
         array.reserve (count);
         for (protocol::item_count_t i = 0;
@@ -875,6 +876,7 @@ MI_Array<TYPE_ID>::recv (
             rval = protocol::recv (&value, sock);
             if (socket_wrapper::SUCCESS == rval)
             {
+                //SCX_BOOKEND_PRINT ("--- add value");
                 array.push_back (value);
             }
         }
