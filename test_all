@@ -8,9 +8,10 @@ pushd testcli 1>/dev/null 2>&1
 
 CLI_SAMPLES=`ls ../samples`
 TESTS_PASSED=0
+LOG_PATH=$1
 
 for DIRECTORY in $CLI_SAMPLES; do
-    ./test $DIRECTORY
+    ./test $DIRECTORY $LOG_PATH
     TEST_RESULT=$?
     if [ "$TEST_RESULT" = "0" ]; then
         echo "Test $DIRECTORY passed!"
@@ -23,7 +24,7 @@ for DIRECTORY in $CLI_SAMPLES; do
 done
 
 
-sudo ./test_full
+sudo ./test_full $LOG_PATH
 TEST_RESULT=$?
 if [ "$TEST_RESULT" = "0" ]; then
     echo "Full CLI Test passed!"
