@@ -338,3 +338,81 @@ The value of this parameter is the path to the mi_main.py and schema.py files fo
 This path is relative to the Provider File location (see above). In the XYZ_Frog example,
 the XYZ_Frog.reg file tells the OMI Server to look for
 mi_main.py and schema.py at "[omi-source-root]/omi/Unix/output/lib/XYZ_Frog/".
+
+### Building for dev and debugging
+
+Here will be described the extra actions that need to be done in order to setup a development environment.
+
+#### Building
+
+When building the OMI component, the configuration must be run with **./configure --dev**
+When building the OMIScriptProvider component, before **./configure** and **make** commands are issued,
+the **python/omi_setup.py** file must be changed:
+```
+- define_macros = [('PRINT_BOOKENDS','0')] #this will not produce debug messages for the script provider
++ define_macros = [('PRINT_BOOKENDS','1')] #this will add the debug messages for the script provider
+```
+
+Afterwards the commands follow normally:
+```
+./configure
+make
+sudo make install
+```
+
+#### Running
+
+For development purposes only, the OMI server will be started as root, directly from the CLI,
+preferably in a separate shell.
+
+#### Debugging C++ code
+
+There are two possible SCX_BOOKEND debug messages that can be used
+```
+SCX_BOOKEND ("title");
+```
+From the point where the BOOKEND is declared, up until it gets of scope,
+all the messages that are create in between, will be grouped in a separated tag.
+```
+SCX_BOOKEND_PRINT ("message");
+```
+Will write a new message and will be indented by the surrounding SCX_BOOKEND blocks.
+
+The **SCX_BOOKEND** is not mandatory to be used.
+
+#### Debugging Python code
+
+Whenever an exception is risen in the Python code, it is being caught by the server
+and if PRINT_BOOKENDS is enabled the trace will be prompted in the server's stdout.
+
+The trace on the server side:
+```
+Traceback (most recent call last):
+  File "/home/devuser/scriptprovider/mypythonprovider/mi_main.py", line 27, in XYZ_Class_EnumerateInstances
+    comtext.PostResult (MI_RESULT_OK)
+NameError: global name 'comtext' is not defined
+```
+
+The error on the client side:
+```
+instance of OMI_Error
+{
+    OwningEntity=OMI:CIMOM
+    MessageID=OMI:MI_Result:1
+    Message=A general error occurred, not covered by a more specific error code.
+    MessageArguments={}
+    PerceivedSeverity=7
+    ProbableCause=0
+    ProbableCauseDescription=Unknown
+    CIMStatusCode=1
+    OMI_Code=1
+    OMI_Category=0
+    OMI_Type=MI
+    OMI_ErrorMessage=A general error occurred, not covered by a more specific error code.
+}
+```
+
+Notice that on client side, the debugging information is lost. This is by design,
+the finished product should treat exceptions internally, in the Python code and
+this presented feature is for development only.
+Client side error do not suffice this need.
