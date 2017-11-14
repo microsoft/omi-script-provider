@@ -22,6 +22,32 @@ using namespace scx;
 namespace scx
 {
 
+void evaluatePythonErrorState(int& rval, PyObjPtr& pRval){
+    if (!pRval)
+    {
+#if(PRINT_BOOKENDS == 1)
+        PyObject* p_Error = PyErr_Occurred();
+        if(p_Error){
+            PyErr_Print();
+        }
+#endif
+
+        rval = EXIT_FAILURE;
+    }
+    else
+    {
+        if (Py_None == pRval.get ())
+        {
+            SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
+        }
+        else
+        {
+            SCX_BOOKEND_PRINT (
+                "an object was returned (not Py_None)");
+        }
+    }
+}
+
 
 class U_Functor
 {
@@ -54,23 +80,7 @@ public:
                                  reinterpret_cast<PyObject*>(pyContext.get ()));
                 PyObjPtr pRval (PyObject_CallObject (
                                     m_pFn.get (), pArgs.get ()));
-                if (!pRval)
-                {
-                    SCX_BOOKEND_PRINT ("Error returned from call");
-                    rval = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (Py_None == pRval.get ())
-                    {
-                        SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
-                    }
-                    else
-                    {
-                        SCX_BOOKEND_PRINT (
-                            "an object was returned (not Py_None)");
-                    }
-                }
+                evaluatePythonErrorState(rval, pRval);
             }
         }
         else
@@ -157,23 +167,8 @@ public:
                 }
                 PyObjPtr pRval (PyObject_CallObject (
                                     m_pFn.get (), pArgs.get ()));
-                if (!pRval)
-                {
-                    SCX_BOOKEND_PRINT ("Error returned from call");
-                    rval = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (Py_None == pRval.get ())
-                    {
-                        SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
-                    }
-                    else
-                    {
-                        SCX_BOOKEND_PRINT (
-                            "an object was returned (not Py_None)");
-                    }
-                }
+
+                evaluatePythonErrorState(rval, pRval);
             }
         }
         else
@@ -241,23 +236,8 @@ public:
                     reinterpret_cast<PyObject*>(pyInstance.get ()));
                 PyObjPtr pRval (PyObject_CallObject (
                                     m_pFn.get (), pArgs.get ()));
-                if (!pRval)
-                {
-                    SCX_BOOKEND_PRINT ("Error returned from call");
-                    rval = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (Py_None == pRval.get ())
-                    {
-                        SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
-                    }
-                    else
-                    {
-                        SCX_BOOKEND_PRINT (
-                            "an object was returned (not Py_None)");
-                    }
-                }
+
+                evaluatePythonErrorState(rval, pRval);
             }
         }
         else
@@ -343,23 +323,7 @@ public:
                     reinterpret_cast<PyObject*>(pyKeysOnly.get ()));
                 PyObjPtr pRval (PyObject_CallObject (
                                     m_pFn.get (), pArgs.get ()));
-                if (!pRval)
-                {
-                    SCX_BOOKEND_PRINT ("Error returned from call");
-                    rval = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (Py_None == pRval.get ())
-                    {
-                        SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
-                    }
-                    else
-                    {
-                        SCX_BOOKEND_PRINT (
-                            "an object was returned (not Py_None)");
-                    }
-                }
+                evaluatePythonErrorState(rval, pRval);
             }
         }
         else
@@ -442,23 +406,8 @@ public:
                     reinterpret_cast<PyObject*>(pyInputParameters.get ()));
                 PyObjPtr pRval (PyObject_CallObject (
                                     m_pFn.get (), pArgs.get ()));
-                if (!pRval)
-                {
-                    SCX_BOOKEND_PRINT ("Error returned from call");
-                    rval = EXIT_FAILURE;
-                }
-                else
-                {
-                    if (Py_None == pRval.get ())
-                    {
-                        SCX_BOOKEND_PRINT ("an object was returned (Py_None)");
-                    }
-                    else
-                    {
-                        SCX_BOOKEND_PRINT (
-                            "an object was returned (not Py_None)");
-                    }
-                }
+
+                evaluatePythonErrorState(rval, pRval);
             }
         }
         else

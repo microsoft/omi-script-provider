@@ -62,7 +62,12 @@ Load_Unload_Functor::operator () (
             PyObjPtr pRval (PyObject_CallObject (m_pFn.get (), pArgs.get ()));
             if (!pRval)
             {
-                SCX_BOOKEND_PRINT ("Error returned from call");
+#if(PRINT_BOOKENDS == 1)
+                PyObject* p_Error = PyErr_Occurred();
+                if(p_Error){
+                    PyErr_Print();
+                }
+#endif
                 rval = EXIT_FAILURE;
             }
             else
