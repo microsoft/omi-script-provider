@@ -1,6 +1,9 @@
 #!/bin/bash
 
 REGRESS_RESULT=0
+LOG_PATH=`pwd` #path were the stderr result and where stdout and stderr dummy files will be stored temporarly
+
+echo "Stderr dump start" >> "$LOG_PATH/stderr_out"
 
 function run_command {
     $1
@@ -16,7 +19,7 @@ function run_command {
 run_command "./build.sh"
 run_command "./output/bin/test"
 run_command "python ./python/test/test.py"
-run_command "./test_all"
+run_command "./test_all $LOG_PATH"
 
 
 echo "************************"
@@ -32,5 +35,18 @@ echo "***                  ***"
 echo "************************"
 echo "************************"
 echo "************************"
+
+
+pushd ../omi/Unix/output/var/log 1>/dev/null 2>&1
+LOG_FILES=`ls`
+LOG_FILES="$LOG_FILES $LOG_PATH/stderr_out"
+for LOG_FILE in $LOG_FILES; do
+    echo "---------------------------"
+    echo $LOG_FILE
+    cat $LOG_FILE
+done
+popd 1>/dev/null 2>&1
+
+rm "$LOG_PATH/stderr_out"
 
 exit $REGRESS_RESULT
