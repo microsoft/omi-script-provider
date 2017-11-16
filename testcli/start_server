@@ -1,5 +1,12 @@
 #!/bin/bash
 
+LOG_PATH=$2
+STDERR_FILE="$LOG_PATH/stderr_out"
+
 export PYTHONPATH=$1
 ../../../omi/Unix/output/bin/omiserver -d
+
+echo "start_server" >> $STDERR_FILE
+echo "-----------------------------" >> $STDERR_FILE
+
 sleep 1
