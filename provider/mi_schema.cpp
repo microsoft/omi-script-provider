@@ -776,6 +776,7 @@ MI_MethodDecl::MI_MethodDecl (
     , m_pReturnType (pReturnType)
     , m_pOrigin (pOrigin)
     , m_pPropagator (pPropagator)
+    , m_pSchemaDecl (NULL)
     , m_pInvokeFn (pInvokeFn)
 {
     METH_BOOKEND ("MI_MethodDecl::ctor");
@@ -916,6 +917,7 @@ MI_ClassDecl::MI_ClassDecl (
         propertyDeclsCount)
     , m_pSuperClassName (pSuperClassName)
     , m_MethodDecls (ppMethodDeclsBegin, ppMethodDeclsBegin + methodDeclsCount)
+    , m_pSchemaDecl (NULL)
     , m_pFunctionTable (pFunctionTable)
 {
     CLASS_BOOKEND ("MI_ClassDecl::ctor");
@@ -1000,10 +1002,10 @@ MI_ClassDecl::getMethodDecls () const
 }
 
 
-MI_SchemaDecl::ConstPtr const&
+MI_SchemaDecl::ConstPtr
 MI_ClassDecl::getSchemaDecl () const
 {
-    return m_pSchemaDecl;
+    return MI_SchemaDecl::ConstPtr (m_pSchemaDecl);
 }
 
 
@@ -1122,22 +1124,6 @@ MI_SchemaDecl::MI_SchemaDecl (
 MI_SchemaDecl::~MI_SchemaDecl ()
 {
     SCHEMA_BOOKEND ("MI_SchemaDecl::dtor");
-    // remove the references from the class decls
-    for (std::vector<MI_ClassDecl::Ptr>::iterator pos = m_ClassDecls.begin (),
-             endPos = m_ClassDecls.end ();
-         pos != endPos;
-         ++pos)
-    {
-        (*pos)->m_pSchemaDecl.reset ();
-        for (std::vector<MI_MethodDecl::Ptr>::iterator
-                 methodPos = (*pos)->m_MethodDecls.begin (),
-                 methodEndPos = (*pos)->m_MethodDecls.end ();
-             methodPos != methodEndPos;
-             ++methodPos)
-        {
-            (*methodPos)->m_pSchemaDecl.reset ();
-        }
-    }
 }
 
 

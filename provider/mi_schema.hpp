@@ -271,7 +271,7 @@ private:
     MI_Value<MI_UINT32>::ConstPtr const m_pReturnType;
     MI_Value<MI_STRING>::ConstPtr const m_pOrigin;
     MI_Value<MI_STRING>::ConstPtr const m_pPropagator;
-    util::internal_counted_ptr<MI_SchemaDecl const> m_pSchemaDecl;
+    MI_SchemaDecl const* m_pSchemaDecl;
     InvokeFn::ConstPtr const m_pInvokeFn;
 
     friend class MI_SchemaDecl;
@@ -312,7 +312,7 @@ public:
     MI_Value<MI_STRING>::ConstPtr const& getSuperClassName () const;
     MI_ClassDecl::ConstPtr const& getSuperClassDecl () const;
     std::vector<MI_MethodDecl::Ptr> const& getMethodDecls () const;
-    util::internal_counted_ptr<MI_SchemaDecl const> const&
+    util::internal_counted_ptr<MI_SchemaDecl const>
     getSchemaDecl () const;
     MI_FunctionTable::ConstPtr const& getFunctionTable () const;
     MI_ClassDecl::ConstPtr const& getOwningClassDecl () const;
@@ -327,7 +327,7 @@ private:
     MI_Value<MI_STRING>::ConstPtr const m_pSuperClassName;
     MI_ClassDecl::ConstPtr m_pSuperClassDecl;
     std::vector<MI_MethodDecl::Ptr> m_MethodDecls;
-    util::internal_counted_ptr<MI_SchemaDecl const> m_pSchemaDecl;
+    MI_SchemaDecl const* m_pSchemaDecl;
     MI_FunctionTable::ConstPtr m_pFunctionTable;
     MI_ClassDecl::ConstPtr m_pOwningClassDecl;
 
