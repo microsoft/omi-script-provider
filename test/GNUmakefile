@@ -57,8 +57,8 @@ OBJECTS:=$(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
 $(OBJECTS) : | $(OBJ_PATH)
 
 
-LDFLAGS+=-L$(LIBDIR)
 LDFLAGS+=-L$(BIN_PATH)
+LDFLAGS+=-L$(LIBDIR)
 LDFLAGS+=-Wl,-R/$(BIN_PATH)
 LIBS+=-lOMIScriptProvider
 LIBS+=-lbase
