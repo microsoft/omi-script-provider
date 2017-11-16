@@ -3,7 +3,7 @@
 
 ### Additional Resources
 
-- [Script Provider Getting Started Guide](/doc/ScriptProviderGettingStarted.pdf)
+- [Script Provider Getting Started Guide](/doc/gettingStarted.md)
 
 ### Supported Linux Operating Systems
 
@@ -80,7 +80,7 @@ Creating "mi_main.py"
 The omigen_py tool will generate the files ```schema.py``` and ```mi_main.py```.
 
 The file mi_main.py will be edited in order to implement the custom python provider.
-Please refer to [Script Provider Getting Started Guide](/doc/ScriptProviderGettingStarted.pdf) for more details.
+Please refer to [Script Provider Getting Started Guide](/doc/gettingStarted.md) for more details.
 
 We can now register the Python Provider using the omireg command:
 ```
