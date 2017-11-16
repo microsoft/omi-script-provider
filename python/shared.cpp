@@ -23,8 +23,8 @@ void Zero_PyTypeObject (PyTypeObject* pObjOut)
         pObjOut->tp_getattr = NULL;
         pObjOut->tp_setattr = NULL;
         #if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION > 4
-            // Called tp_as_sync in Python 3 ( > 3.4)
-            pObjOut->tp_as_sync = NULL;
+            // Called tp_as_async in Python 3 ( > 3.4)
+            pObjOut->tp_as_async = NULL;
         #elif PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 4
             // Called tp_reserved in Python 3 (3 - 3.4)
             pObjOut->tp_reserved = NULL;
