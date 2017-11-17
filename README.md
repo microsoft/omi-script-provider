@@ -88,6 +88,81 @@ We can now register the Python Provider using the omireg command:
 Created /home/ubuntu/docs_update/Build-omi-script-provider/omi/Unix/output/etc/omiregister/root-cimv2/XYZ_Frog.reg
 ```
 
+### Supported operations for OMI Python Script Provider
+
+Currently, OMI Python Script Provider supports these operations: enumerate, create, modify, get, delete, invoke.
+
+**enumerate operation:**
+```
+/opt/omi/bin/omicli ei root/cimv2 Hosts
+instance of Hosts
+{
+    [Key] FQDN=localhost
+    IPAddress=127.0.0.1
+}
+instance of Hosts
+{
+    [Key] FQDN=omi64ub16-dev1
+    IPAddress=10.226.210.177
+}
+instance of Hosts
+{
+    [Key] FQDN=localhost ip6-localhost ip6-loopback
+    IPAddress=::1
+}
+instance of Hosts
+{
+    [Key] FQDN=ip6-allnodes
+    IPAddress=ff02::1
+}
+instance of Hosts
+{
+    [Key] FQDN=ip6-allrouters
+    IPAddress=ff02::2
+}
+```
+
+**create operation:**
+```
+/opt/omi/bin/omicli ci root/cimv2 { Hosts FQDN 'omi64-cent7-01.scx.com' IPAddress '10.226.158.99' }
+```
+
+**modify operation:**
+```
+/opt/omi/bin/omicli mi root/cimv2 { Hosts FQDN 'omi64-cent7-01.scx.com' IPAddress '10.226.158.100' }
+instance of Hosts
+{
+    [Key] FQDN=omi64-cent7-01.scx.com
+    IPAddress=10.226.158.100
+}
+```
+
+**get operation:**
+```
+/opt/omi/bin/omicli gi root/cimv2 { Hosts FQDN 'omi64-cent7-01.scx.com' }
+instance of Hosts
+{
+    [Key] FQDN=omi64-cent7-01.scx.com
+    IPAddress=10.226.158.100
+}
+```
+
+**delete operation:**
+```
+/opt/omi/bin/omicli di root/cimv2 { Hosts FQDN 'omi64-cent7-01.scx.com' }
+```
+
+**invoke operation:**
+```
+/opt/omi/bin/omicli iv root/cimv2 { OMI_Tester *Key "ONE" } Func1 { In1 "test" }
+instance of Func1
+{
+    Out1=ONE
+    Out2=1
+    Out3=true
+    ReturnValue=0
+}
+```
 
 # Contributing
 
