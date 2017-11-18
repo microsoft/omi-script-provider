@@ -103,6 +103,7 @@ def Hosts_CreateInstance (
                     fqdn.value + '\n')
         fout.close ()
         os.rename (TEMP_HOST_FILE_NAME, HOST_FILE_NAME)
+        context.PostInstance (instance)
         context.PostResult (MI_RESULT_OK)
     else:
         fout.close ()
