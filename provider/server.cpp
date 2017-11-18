@@ -1034,26 +1034,12 @@ Server::CreateInstance (
             socket_wrapper::SUCCESS == (
                 rval = protocol::send (*pNewInstance, *m_pSocket)))
         {
-            protocol::opcode_t opcode;
-            rval = protocol::recv_opcode (&opcode, *m_pSocket);
-            if (socket_wrapper::SUCCESS == rval)
+            SCX_BOOKEND ("send succeeded");
+            rval = handle_return (pContext, m_pSchemaDecl.get (), NULL,
+                                  *m_pSocket);
+            if (SUCCESS != rval)
             {
-                if (protocol::POST_RESULT == opcode)
-                {
-                    SCX_BOOKEND_PRINT ("rec'ved POST_RESULT");
-                    rval = handle_post_result (pContext, *m_pSocket);
-                }
-                else
-                {
-                    SCX_BOOKEND_PRINT ("rec'd unhandled opcode");
-                    // todo: error
-                }
-            }
-            else
-            {
-                SCX_BOOKEND_PRINT ("socket error");
-                // socket error
-                // todo: error
+                MI_Context_PostResult (pContext, MI_RESULT_FAILED);
             }
         }
         if (SUCCESS != rval)
