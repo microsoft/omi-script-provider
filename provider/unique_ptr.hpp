@@ -139,9 +139,8 @@ private:
 
     typename unique_ptr<T, D>::pointer m_pT;
     typename unique_ptr<T, D>::deleter_type m_deleter;
-    
+
     friend class unique_ptr<T, D>;
-    friend class unique_ptr<T[], D>;
 };
 
 
@@ -172,6 +171,65 @@ template<typename T, typename D>
 /*ctor*/
 unique_ptr_move<T, D>::unique_ptr_move (
     typename unique_ptr<T, D>::pointer pT,
+    typename conditional<is_reference<D>::value, D, D const&>::type del)
+  : m_pT (pT)
+  , m_deleter (del)
+{
+    // empty
+}
+
+
+// unique_ptr_move (array specialization)
+//------------------------------------------------------------------------------
+template<typename T, typename D>
+struct unique_ptr_move<T[], D>
+{
+public:
+    /*ctor*/ unique_ptr_move (unique_ptr_move const& ref);
+
+    /*dtor*/ ~unique_ptr_move ();
+
+private:
+    /*ctor*/ unique_ptr_move (
+        typename unique_ptr<T[], D>::pointer pT,
+        typename conditional<is_reference<D>::value, D, D const&>::type del);
+
+    unique_ptr_move& operator = (unique_ptr_move const&); // = delete
+
+    typename unique_ptr<T[], D>::pointer m_pT;
+    typename unique_ptr<T[], D>::deleter_type m_deleter;
+
+    friend class unique_ptr<T[], D>;
+};
+
+
+// unique_ptr_move defs (array specialization)
+//------------------------------------------------------------------------------
+template<typename T, typename D>
+/*ctor*/
+unique_ptr_move<T[], D>::unique_ptr_move (
+    unique_ptr_move const& ref)
+  : m_pT (ref.m_pT)
+  , m_deleter (ref.m_deleter)
+{
+    unique_ptr_move& r = const_cast<unique_ptr_move&>(ref);
+    r.m_pT = 0;
+}
+
+template<typename T, typename D>
+/*dtor*/
+unique_ptr_move<T[], D>::~unique_ptr_move ()
+{
+    if (0 != m_pT)
+    {
+        m_deleter (m_pT);
+    }
+}
+
+template<typename T, typename D>
+/*ctor*/
+unique_ptr_move<T[], D>::unique_ptr_move (
+    typename unique_ptr<T[], D>::pointer pT,
     typename conditional<is_reference<D>::value, D, D const&>::type del)
   : m_pT (pT)
   , m_deleter (del)
