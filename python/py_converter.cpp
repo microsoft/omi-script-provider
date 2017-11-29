@@ -479,7 +479,13 @@ PyConverter<MI_Type<MI_STRING>::type_t>::fromPyObject (
     assert (NULL != pValueOut);
     if (PyString_Check (pSource))
     {
-        *pValueOut = PyString_AsString (pSource);
+        #if PY_MAJOR_VERSION >= 3
+            PyObject* tmp = PyUnicode_AsEncodedString (pSource, "utf-8", "strict");
+            *pValueOut = PyBytes_AsString (tmp);
+            Py_DECREF(tmp);
+        #else
+            *pValueOut = PyString_AsString (pSource);
+        #endif
         rval = PY_SUCCESS;
     }
     else

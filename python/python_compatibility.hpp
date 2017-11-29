@@ -15,7 +15,14 @@
 
     // Python 3 has now separate types for String, which doesn't exist anymore.
     // The new types are PyBytes and PyUnicode.
-    #define PyString_AsString(x) PyBytes_AsString(PyUnicode_AsEncodedString(x, "utf-8", "strict"))
+    // Using the following line will cause a memory leak on Python 3.
+    // PyUnicode_AsEncodedString returns a new reference which needs to be
+    // freed after the conversion
+    // #define PyString_AsString(x) PyBytes_AsString(PyUnicode_AsEncodedString(x, "utf-8", "strict"))
+    // Correct version to be used in the code:
+    // PyObject* tmp = PyUnicode_AsEncodedString(x, "utf-8", "strict");
+    // result = PyBytes_AsString(tmp);
+    // Py_DECREF(tmp);
     #define PyString_Check PyUnicode_Check
     #define PyString_FromString PyUnicode_FromString
 #endif
