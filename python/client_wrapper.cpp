@@ -177,7 +177,13 @@ Client_Wrapper::init (
                  ++i)
             {
                 PyObject* pPathItem = PyList_GET_ITEM (pSysPath, i);
-                strm << "    " << PyString_AsString (pPathItem);
+                #if PY_MAJOR_VERSION >= 3
+                    PyObject* tmp = PyUnicode_AsEncodedString (pPathItem, "utf-8", "strict");
+                    strm << "    " << PyBytes_AsString (tmp);
+                    Py_DECREF(tmp);
+                #else
+                    strm << "    " << PyString_AsString (pPathItem);
+                #endif
                 CLIENT_INIT_BOOKEND_PRINT (strm.str ().c_str ());
             }
         }
