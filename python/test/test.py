@@ -113,14 +113,14 @@ def bool_test ():
     v8.value = None
     if v8.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a literal value to None
     v9 = MI_Boolean ()
     v9.value = True
     if v9.value != True:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Boolean (None) to None
     v10 = MI_Boolean ()
@@ -129,7 +129,7 @@ def bool_test ():
         v10.value = t10
         if v10.value != t10.value:
             BookEndPrint ('----- MI_Boolean (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v10.value = t10
@@ -146,7 +146,7 @@ def bool_test ():
         v11.value = t11
         if v11.value != t11.value:
             BookEndPrint ('----- MI_Boolean assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v11.value = t11
@@ -193,14 +193,14 @@ def bool_test ():
     v15.value = None
     if v15.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     v16 = MI_Boolean (False)
     v16.value = True
     if v16.value != True:
         BookEndPrint ('----- literal value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Boolean (None)
     v17 = MI_Boolean (True)
@@ -209,7 +209,7 @@ def bool_test ():
         v17.value = t17
         if v17.value != t17.value:
             BookEndPrint ('----- MI_Boolean (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v17.value = t17
@@ -226,7 +226,7 @@ def bool_test ():
         v18.value = t18
         if v18.value != t18.value:
             BookEndPrint ('----- MI_Boolean assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v18.value = t18
@@ -385,7 +385,7 @@ def uint8_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Uint8 ()
@@ -393,7 +393,7 @@ def uint8_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint8 (None) to None
     v12 = MI_Uint8 ()
@@ -402,7 +402,7 @@ def uint8_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Uint8 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -419,7 +419,7 @@ def uint8_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Uint8 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -486,7 +486,7 @@ def uint8_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (0, 0xFF)
@@ -497,7 +497,7 @@ def uint8_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint8 (None)
     v21 = MI_Uint8 (random.randint (0, 0xFF))
@@ -506,7 +506,7 @@ def uint8_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Uint8 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -527,7 +527,7 @@ def uint8_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Uint8 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -706,7 +706,7 @@ def sint8_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Sint8 ()
@@ -714,7 +714,7 @@ def sint8_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint8 (None) to None
     v12 = MI_Sint8 ()
@@ -723,7 +723,7 @@ def sint8_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Sint8 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -740,7 +740,7 @@ def sint8_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Sint8 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -807,7 +807,7 @@ def sint8_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (-0x80, 0x7F)
@@ -818,7 +818,7 @@ def sint8_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint8 (None)
     v21 = MI_Sint8 (random.randint (-0x80, 0x7F))
@@ -827,7 +827,7 @@ def sint8_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Sint8 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -848,7 +848,7 @@ def sint8_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Sint8 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -1027,7 +1027,7 @@ def uint16_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Uint16 ()
@@ -1035,7 +1035,7 @@ def uint16_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint16 (None) to None
     v12 = MI_Uint16 ()
@@ -1044,7 +1044,7 @@ def uint16_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Uint16 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -1061,7 +1061,7 @@ def uint16_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Uint16 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -1128,7 +1128,7 @@ def uint16_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (0, 0xFFFF)
@@ -1139,7 +1139,7 @@ def uint16_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint16 (None)
     v21 = MI_Uint16 (random.randint (0, 0xFFFF))
@@ -1148,7 +1148,7 @@ def uint16_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Uint16 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -1169,7 +1169,7 @@ def uint16_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Uint16 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -1348,7 +1348,7 @@ def sint16_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Sint16 ()
@@ -1356,7 +1356,7 @@ def sint16_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint16 (None) to None
     v12 = MI_Sint16 ()
@@ -1365,7 +1365,7 @@ def sint16_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Sint16 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -1382,7 +1382,7 @@ def sint16_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Sint16 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -1449,7 +1449,7 @@ def sint16_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (-0x8000, 0x7FFF)
@@ -1460,7 +1460,7 @@ def sint16_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint16 (None)
     v21 = MI_Sint16 (random.randint (-0x8000, 0x7FFF))
@@ -1469,7 +1469,7 @@ def sint16_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Sint16 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -1490,7 +1490,7 @@ def sint16_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Sint16 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -1669,7 +1669,7 @@ def uint32_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Uint32 ()
@@ -1677,7 +1677,7 @@ def uint32_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint32 (None) to None
     v12 = MI_Uint32 ()
@@ -1686,7 +1686,7 @@ def uint32_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Uint32 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -1703,7 +1703,7 @@ def uint32_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Uint32 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -1770,7 +1770,7 @@ def uint32_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (0, 0xFFFFFFFF)
@@ -1781,7 +1781,7 @@ def uint32_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint32 (None)
     v21 = MI_Uint32 (random.randint (0, 0xFFFFFFFF))
@@ -1790,7 +1790,7 @@ def uint32_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Uint32 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -1811,7 +1811,7 @@ def uint32_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Uint32 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -1990,7 +1990,7 @@ def sint32_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Sint32 ()
@@ -1998,7 +1998,7 @@ def sint32_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint32 (None) to None
     v12 = MI_Sint32 ()
@@ -2007,7 +2007,7 @@ def sint32_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Sint32 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -2024,7 +2024,7 @@ def sint32_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Sint32 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -2091,7 +2091,7 @@ def sint32_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (-0x80000000, 0x7FFFFFFF)
@@ -2102,7 +2102,7 @@ def sint32_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint32 (None)
     v21 = MI_Sint32 (random.randint (-0x80000000, 0x7FFFFFFF))
@@ -2111,7 +2111,7 @@ def sint32_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Sint32 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -2132,7 +2132,7 @@ def sint32_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Sint32 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -2311,7 +2311,7 @@ def uint64_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Uint64 ()
@@ -2319,7 +2319,7 @@ def uint64_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint64 (None) to None
     v12 = MI_Uint64 ()
@@ -2328,7 +2328,7 @@ def uint64_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Uint64 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -2345,7 +2345,7 @@ def uint64_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Uint64 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -2412,7 +2412,7 @@ def uint64_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (0, 0xFFFFFFFFFFFFFFFF)
@@ -2423,7 +2423,7 @@ def uint64_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Uint64 (None)
     v21 = MI_Uint64 (random.randint (0, 0xFFFFFFFFFFFFFFFF))
@@ -2432,7 +2432,7 @@ def uint64_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Uint64 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -2453,7 +2453,7 @@ def uint64_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Uint64 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -2632,7 +2632,7 @@ def sint64_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Sint64 ()
@@ -2640,7 +2640,7 @@ def sint64_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint64 (None) to None
     v12 = MI_Sint64 ()
@@ -2649,7 +2649,7 @@ def sint64_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Sint64 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -2666,7 +2666,7 @@ def sint64_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Sint64 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -2733,7 +2733,7 @@ def sint64_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (-0x8000000000000000, 0x7FFFFFFFFFFFFFFF)
@@ -2744,7 +2744,7 @@ def sint64_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Sint64 (None)
     v21 = MI_Sint64 (random.randint (-0x8000000000000000, 0x7FFFFFFFFFFFFFFF))
@@ -2753,7 +2753,7 @@ def sint64_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Sint64 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -2774,7 +2774,7 @@ def sint64_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Sint64 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -2968,7 +2968,7 @@ def real32_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a value to None
     r11 = ctypes.c_float (random.uniform (-1e37, 1e37))
@@ -2976,7 +2976,7 @@ def real32_test ():
     v11.value = r11.value
     if not float_eq (v11.value, r11.value):
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Real32 (None) to None
     v12 = MI_Real32 ()
@@ -2985,7 +2985,7 @@ def real32_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Real32 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -3003,7 +3003,7 @@ def real32_test ():
         v13.value = t13
         if not float_eq (v13.value, t13.value):
             BookEndPrint ('----- MI_Real32 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -3071,7 +3071,7 @@ def real32_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = ctypes.c_float (random.uniform (-1e37, 1e37))
@@ -3082,7 +3082,7 @@ def real32_test ():
     v20.value = r20b.value
     if not float_eq (v20.value, r20b.value):
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Real32 (None)
     r21 = ctypes.c_float (random.uniform (-1e37, 1e37))
@@ -3092,7 +3092,7 @@ def real32_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Real32 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -3113,7 +3113,7 @@ def real32_test ():
         v22.value = t22
         if not float_eq (v22.value, t22.value):
             BookEndPrint ('----- MI_Real32 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -3341,7 +3341,7 @@ def real64_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a value to None
     r11 = random.uniform (-1e307, 1e307)
@@ -3349,7 +3349,7 @@ def real64_test ():
     v11.value = r11
     if not float_eq (v11.value, r11):
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Real64 (None) to None
     v12 = MI_Real64 ()
@@ -3358,7 +3358,7 @@ def real64_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Real64 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -3376,7 +3376,7 @@ def real64_test ():
         v13.value = t13
         if not float_eq (v13.value, t13.value):
             BookEndPrint ('----- MI_Real64 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -3444,7 +3444,7 @@ def real64_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.uniform (-1e307, 1e307)
@@ -3455,7 +3455,7 @@ def real64_test ():
     v20.value = r20b
     if not float_eq (v20.value, r20b):
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Real64 (None)
     r21 = random.uniform (-1e307, 1e307)
@@ -3465,7 +3465,7 @@ def real64_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Real64 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -3486,7 +3486,7 @@ def real64_test ():
         v22.value = t22
         if not float_eq (v22.value, t22.value):
             BookEndPrint ('----- MI_Real64 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -3714,7 +3714,7 @@ def char16_test ():
     v10.value = None
     if v10.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v11 = MI_Char16 ()
@@ -3722,7 +3722,7 @@ def char16_test ():
     v11.value = r11
     if v11.value != r11:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_Char16 (None) to None
     v12 = MI_Char16 ()
@@ -3731,7 +3731,7 @@ def char16_test ():
         v12.value = t12
         if v12.value != t12.value:
             BookEndPrint ('----- MI_Char16 (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v12.value = t12
@@ -3748,7 +3748,7 @@ def char16_test ():
         v13.value = t13
         if v13.value != t13.value:
             BookEndPrint ('----- MI_Char16 assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v13.value = t13
@@ -3815,7 +3815,7 @@ def char16_test ():
     v19.value = None
     if v19.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     r20a = random.randint (0, 0xFFFF)
@@ -3826,7 +3826,7 @@ def char16_test ():
     v20.value = r20b
     if v20.value != r20b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_Char16 (None)
     v21 = MI_Char16 (random.randint (0, 0xFFFF))
@@ -3835,7 +3835,7 @@ def char16_test ():
         v21.value = t21
         if v21.value != t21.value:
             BookEndPrint ('----- MI_Char16 (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v21.value = t21
@@ -3856,7 +3856,7 @@ def char16_test ():
         v22.value = t22
         if v22.value != t22.value:
             BookEndPrint ('----- MI_Char16 assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v22.value = t22
@@ -5206,7 +5206,7 @@ def string_test ():
     v8.value = None
     if v8.value is not None:
         BookEndPrint ('----- None assignment to None failed')
-        rval = false
+        rval = False
 
     # assign a  value to None
     v9 = MI_String ()
@@ -5214,7 +5214,7 @@ def string_test ():
     v9.value = r9
     if v9.value != r9:
         BookEndPrint ('----- literal value assignment to None failed')
-        rval = false
+        rval = False
 
     # assign MI_String (None) to None
     v10 = MI_String ()
@@ -5223,7 +5223,7 @@ def string_test ():
         v10.value = t10
         if v10.value != t10.value:
             BookEndPrint ('----- MI_String (None) assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v10.value = t10
@@ -5240,7 +5240,7 @@ def string_test ():
         v11.value = t11
         if v11.value != t11.value:
             BookEndPrint ('----- MI_String assignment to None failed')
-            rval = false
+            rval = False
     else:
         try:
             v11.value = t11
@@ -5287,7 +5287,7 @@ def string_test ():
     v15.value = None
     if v15.value is not None:
         BookEndPrint ('----- None assignment failed')
-        rval = false
+        rval = False
 
     # assign a literal value
     i16 = random.randint (0, len (vals) - 2)
@@ -5297,7 +5297,7 @@ def string_test ():
     v16.value = r16b
     if v16.value != r16b:
         BookEndPrint ('----- value assignment failed')
-        rval = false
+        rval = False
 
     # assign MI_String (None)
     v17 = MI_String (vals[random.randint (0, len (vals) - 1)])
@@ -5306,7 +5306,7 @@ def string_test ():
         v17.value = t17
         if v17.value != t17.value:
             BookEndPrint ('----- MI_String (None) assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v17.value = t17
@@ -5330,7 +5330,7 @@ def string_test ():
         v18.value = t18
         if v18.value != t18.value:
             BookEndPrint ('----- MI_String assignment failed')
-            rval = false
+            rval = False
     else:
         try:
             v18.value = t18
