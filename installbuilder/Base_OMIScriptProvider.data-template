@@ -1,0 +1,43 @@
+%Variables
+SHELL_HEADER: '#!/bin/sh'
+SHORT_NAME_PREFIX: 'MSFT'
+VENDOR: 'MSFT'
+GROUP: 'MSFT'
+LICENSE: 'MSFT'
+MAINTAINER: 'Microsoft'
+COPYRIGHT_FILE: 'Copyright Microsoft'
+SHLIB_EXT: 'so'
+
+
+%Files
+/opt/omi/lib/libOMIScriptProvider.so; output/bin/libOMIScriptProvider.so; 755; ${{RUN_AS_USER}}; root
+/opt/omi/lib/client.py; python/client.py; 755; ${{RUN_AS_USER}}; root
+/opt/omi/bin/PythonOMIWrapper.so; output/python/lib/__PYTHON_EXTENSION_NAME__; 755; ${{RUN_AS_USER}}; root
+/opt/omi/bin/omigen_py; output/bin/omigen_py; 755; ${{RUN_AS_USER}}; root
+
+
+%Directories
+/opt/omi/;      755; root; root; sysdir
+/opt/omi/lib;   755; root; root; sysdir
+/opt/omi/bin;   755; root; root; sysdir
+
+
+%Links
+
+
+%Dependencies
+
+
+%Postinstall_10
+SITE_PKG=$(__PYTHON_VERSION__ -c "import site; print (site.getsitepackages()[0])")
+mv /opt/omi/bin/PythonOMIWrapper.so $SITE_PKG/__PYTHON_EXTENSION_NAME__
+
+%Postinstall_20
+grep -cq 'script=--python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--python:__PYTHON_VERSION__:client.py' >> /etc/opt/omi/conf/omireg.conf
+
+%Postinstall_30
+grep -cq 'script=--Python:' /etc/opt/omi/conf/omireg.conf || echo 'script=--Python:__PYTHON_VERSION__:client.py' >> /etc/opt/omi/conf/omireg.conf
+
+%Postuninstall_10
+SITE_PKG=$(__PYTHON_VERSION__ -c "import site; print (site.getsitepackages()[0])")
+rm $SITE_PKG/__PYTHON_EXTENSION_NAME__
