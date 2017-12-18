@@ -70,6 +70,10 @@ do
       outputdirname=$arg
       ;;
 
+    --python-version=*)
+      pythonversion=$arg
+      ;;
+
 
     *)
         echo "$0: unknown option:  $opt"
@@ -100,9 +104,72 @@ OPTIONS:
     --outputdirname         The name of the output directory where the binary
                             files are placed. This name must not contain
                             slashes.
+    --python-version        The python version for which to compile the
+                            package. The name should contain only the version.
+                            Example: "--python-version 2.7"
 EOF
     exit 0
 fi
+
+
+##==============================================================================
+##
+## Check if the given Python version is supported. Defaults to version 2.7
+## Update the files with the given python version
+##
+##==============================================================================
+
+if [ -z "$pythonversion" ]; then
+    pythonversion=2.7
+fi
+
+supported_python_versions="2.6 2.7 3.4 3.5 3.6"
+echo "$supported_python_versions" | grep $pythonversion 2>&1 > /dev/null
+if [ $? != 0 ]; then
+    echo "Python version $pythonversion is not supported"
+    echo "Supported python versions: $supported_python_versions"
+    exit 1
+fi
+
+python_name="python$pythonversion"
+
+command -v $python_name 2>&1 > /dev/null
+if [ $? != 0 ]; then
+    echo "Python version $pythonversion was not found on the system"
+    exit 1
+fi
+
+files_to_update="
+    $root/provider/GNUmakefile-template
+    $root/python/client.py-template
+    $root/installbuilder/Base_OMIScriptProvider.data-template
+    $root/GNUmakefile-template
+"
+for file in $files_to_update
+do
+    # Remove "-template" from the filename to get the target file
+    target_file=`echo -n "$file" | head -c -9`
+    if [ -f $target_file ]; then
+        echo "Warning! This will replace the existing file $target_file"
+        read -r -p "Are you sure? [Y/n]" response
+        response=`echo $response | tr '[:upper:]' '[:lower:]'`
+        if echo $response | grep -Eq '(no|n)'; then
+            echo "configure stopped!"
+            exit 1
+        fi
+    fi
+    cp $file $target_file
+    sed -i"*" "s|__PYTHON_VERSION__|$python_name|g" $target_file
+    if [ "$(basename $target_file)" = "Base_OMIScriptProvider.data" ]; then
+        # Replace the extension name inside the package data
+        # Python 3 adds an extra string in the file name (ex: omi.cpython-34m.so)
+        python_extension_name=`$python_name -c "import sysconfig; print (sysconfig.get_config_var('SO'))"`
+        python_extension_name="omi$python_extension_name"
+        sed -i"*" "s|__PYTHON_EXTENSION_NAME__|$python_extension_name|g" $target_file
+    fi
+done
+
+echo "configured for Python $pythonversion"
 
 
 ##==============================================================================
@@ -139,6 +206,7 @@ CONFIG_MINOR=$minor
 CONFIG_REVISION=$revision
 CONFIG_OMI_SCRIPTPROVIDER_VERSION_BUILD=$patch_level
 CONFIG_DATE=$date
+CONFIG_PYTHON_VERSION=$pythonversion
 
 CONFIG_MAK=1
 
