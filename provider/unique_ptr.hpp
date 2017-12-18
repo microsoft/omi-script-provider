@@ -80,7 +80,7 @@ public:
     typedef T element_type;
     typedef D deleter_type;
     typedef T* pointer;
-    typedef unique_ptr_move<T[], D>  move_type;
+    typedef unique_ptr_move<T, D>  move_type;
 
     /*ctor*/ unique_ptr ();
     explicit /*ctor*/ unique_ptr (pointer pT);
@@ -384,7 +384,7 @@ unique_ptr<T[], D>::unique_ptr (
 template<typename T, typename D>
 inline /*ctor*/
 unique_ptr<T[], D>::unique_ptr (
-    unique_ptr_move<T[], D> const& move_ref)
+    unique_ptr<T[], D>::move_type const& move_ref)
   : m_pT (move_ref.m_pT)
   , m_deleter (move_ref.m_deleter)
 {
