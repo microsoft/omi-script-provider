@@ -286,29 +286,36 @@ create_listener (
             sockaddr_in addr;
             memset (&addr, 0, sizeof (addr));
             addr.sin_family = AF_INET;
-            addr.sin_addr.s_addr = INADDR_ANY;
-            unsigned short port = 5999;
-            int local_result;
-            do
-            {
-                ++port;
-                addr.sin_port = htons (port);
-                local_result =
-                    bind (listener_fd, reinterpret_cast<sockaddr*>(&addr),
-                          sizeof (addr));
-            } while (-1 == local_result &&
-                     EADDRINUSE == errno);
+            addr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
+            addr.sin_port = htons (0);
+            int local_result =
+                bind (listener_fd, reinterpret_cast<sockaddr*>(&addr),
+                      sizeof (addr));
             if (0 == local_result)
             {
                 local_result = listen (listener_fd, 5);
                 if (0 == local_result)
                 {
-                    *pPortOut = port;
-                    *pListenerFDOut = listener_fd;
-                    listener_holder.release ();
-                    result = Server::SUCCESS;
-                }
+                    socklen_t addrlen = sizeof (addr);
+                    local_result =
+                        getsockname (listener_fd,
+                                     reinterpret_cast<sockaddr*>(&addr),
+                                     &addrlen);
+                    if (0 == local_result)
+                    {
+                        *pPortOut = ntohs (addr.sin_port);
+                        *pListenerFDOut = listener_fd;
+                        listener_holder.release ();
+                        result = Server::SUCCESS;
+                    }
 #if (PRINT_BOOKENDS)
+                    else
+                    {
+                        std::ostringstream strm;
+                        strm << "getsockname failed: " << errnoText;
+                        SCX_BOOKEND_PRINT (strm.str ().c_str ());
+                    }
+                }
                 else
                 {
                     std::ostringstream strm;
