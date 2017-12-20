@@ -17,6 +17,15 @@ said, our formal tested matrix of Linux platforms includes the following:
 - SUSE Linux Enteprise Server 12 x64
 - Ubuntu 12.04 LTS, 14.04 LTS, and 16.04 LTS (x86 and x64)
 
+#### New Python versions beta support
+
+The master branch of omi-script-provider now includes beta support for the
+following Python versions:
+- Python 2.6
+- Python 3.4
+- Python 3.5
+- Python 3.6
+
 ### How to build
 
 #### Dependencies to build OMI Python Script Provider:

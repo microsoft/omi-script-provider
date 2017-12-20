@@ -4,3 +4,9 @@ python/build
 python/lib
 *.swp
 output/
+
+# changes should be made on the templates for those files
+/GNUmakefile
+/provider/GNUmakefile
+/python/client.py
+/installbuilder/Base_OMIScriptProvider.data
