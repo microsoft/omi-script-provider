@@ -344,6 +344,7 @@ create_listener (
         SCX_BOOKEND_PRINT (strm.str ().c_str ());
     }
 #else // PRINT_BOOKENDS
+                }
             }
         }
     }
