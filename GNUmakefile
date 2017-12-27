@@ -14,8 +14,8 @@ SCRIPTPROVIDER :
 
 .phony : PYTHONWRAPPER
 PYTHONWRAPPER :
-	cd $(TOP)/scriptprovider/python && __PYTHON_VERSION__ omi_setup.py build \
-		--build-temp $(OSP_OUTPUTDIR)/python/build
+	cd $(TOP)/scriptprovider/python && $(CONFIG_PYTHON_NAME) omi_setup.py \
+       build --build-temp $(OSP_OUTPUTDIR)/python/build
 
 
 .phony : OMIGEN_PY
@@ -33,7 +33,7 @@ TEST :
 .phony : clean
 clean :
 	$(MAKE) -C $(TOP)/scriptprovider/provider clean
-	cd $(TOP)/scriptprovider/python && __PYTHON_VERSION__ omi_setup.py clean
+	cd $(TOP)/scriptprovider/python && $(CONFIG_PYTHON_NAME) omi_setup.py clean
 	$(MAKE) -C $(TOP)/scriptprovider/omigen_py clean
 	$(MAKE) -C $(TOP)/scriptprovider/test clean
 
@@ -41,7 +41,8 @@ clean :
 .phony : install
 install :
 	$(MAKE) -C $(TOP)/scriptprovider/provider install
-	cd $(TOP)/scriptprovider/python && __PYTHON_VERSION__ omi_setup.py install
+	cd $(TOP)/scriptprovider/python && $(CONFIG_PYTHON_NAME) omi_setup.py \
+       install
 	$(MAKE) -C $(TOP)/scriptprovider/omigen_py install
 
 

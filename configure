@@ -140,10 +140,8 @@ if [ $? != 0 ]; then
 fi
 
 files_to_update="
-    $root/provider/GNUmakefile-template
     $root/python/client.py-template
     $root/installbuilder/Base_OMIScriptProvider.data-template
-    $root/GNUmakefile-template
 "
 for file in $files_to_update
 do
@@ -207,6 +205,7 @@ CONFIG_REVISION=$revision
 CONFIG_OMI_SCRIPTPROVIDER_VERSION_BUILD=$patch_level
 CONFIG_DATE=$date
 CONFIG_PYTHON_VERSION=$pythonversion
+CONFIG_PYTHON_NAME=$python_name
 
 CONFIG_MAK=1
 

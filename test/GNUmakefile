@@ -59,10 +59,13 @@ $(OBJECTS) : | $(OBJ_PATH)
 
 LDFLAGS+=-L$(BIN_PATH)
 LDFLAGS+=-L$(LIBDIR)
+LDFLAGS+=-L$(OPENSSLLIBDIR)
 LDFLAGS+=-Wl,-R/$(BIN_PATH)
 LIBS+=-lOMIScriptProvider
 LIBS+=-lbase
 LIBS+=-lpal
+LIBS+=-lcrypto
+
 
 CPPFLAGS+=$(INCLUDES)
 
