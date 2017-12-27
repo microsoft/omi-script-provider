@@ -59,6 +59,9 @@ OBJECTS:=$(addprefix $(OBJ_PATH)/,$(SOURCES:.cpp=.o))
 $(OBJECTS) : | $(OBJ_PATH)
 
 
+LIBS+=-lcrypto
+
+
 CPPFLAGS+=$(INCLUDES)
 
 
@@ -76,7 +79,7 @@ $(OBJ_PATH)/%.o : %.cpp
 $(BIN_PATH)/$(LIBRARY) : \
 	$(OBJECTS) | $(BIN_PATH)
 	@echo ...linking: $(LIBRARY)
-	$(CXX) -shared -o $@ $^
+	$(CXX) -shared -o $@ $^ $(LIBS)
 
 
 # a rule to make root bin directory
@@ -93,10 +96,10 @@ install : $(BIN_PATH)/$(LIBRARY)
 	@echo ...installing: $(LIBRARY)
 	@$(COPY) $(BIN_PATH)/$(LIBRARY) $(CONFIG_LIBDIR)/$(LIBRARY)
 	@grep -cq '^\W*script=\-\-Python:' $(CONFIG_SYSCONFDIR)/omireg.conf || \
-		echo 'script=--Python:__PYTHON_VERSION__:client.py' >> \
+		echo 'script=--Python:$(CONFIG_PYTHON_NAME):client.py' >> \
 		$(CONFIG_SYSCONFDIR)/omireg.conf
 	@grep -cq '^\W*script=\-\-python:' $(CONFIG_SYSCONFDIR)/omireg.conf || \
-		echo 'script=--python:__PYTHON_VERSION__:client.py' >> \
+		echo 'script=--python:$(CONFIG_PYTHON_NAME):client.py' >> \
 		$(CONFIG_SYSCONFDIR)/omireg.conf
 
 
