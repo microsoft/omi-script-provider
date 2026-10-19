@@ -88,6 +88,17 @@ $(BIN_PATH)/$(EXECUTABLE) : \
 	$(LINK.cpp) -o $@ $^ $(LIBS)
 
 
+$(BIN_PATH)/python_string_test : python_string_test.cpp python_string.hpp | $(BIN_PATH)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) python_string_test.cpp -o $@
+
+
+PYTHON?=python
+.PHONY: test
+test : $(BIN_PATH)/$(EXECUTABLE) $(BIN_PATH)/python_string_test
+	$(PYTHON) test_python_strings.py --emitter $(BIN_PATH)/python_string_test \
+	    --generator $(BIN_PATH)/$(EXECUTABLE) -v
+
+
 # a rule to make root bin directory
 $(BIN_PATH) :
 	$(MKDIR) $(BIN_PATH)
@@ -120,7 +131,7 @@ clean-text :
 .phony : clean-action
 clean-action :
 	@$(RM) $(BIN_PATH)/$(EXECUTABLE) \
-	$(OBJECTS) $(OBJECTS:.o=.P)
+	$(OBJECTS) $(OBJECTS:.o=.P) $(BIN_PATH)/python_string_test
 
 
 # master clean target
