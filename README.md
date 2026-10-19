@@ -103,6 +103,26 @@ Creating "mi_main.py"
 ```
 The omigen_py tool will generate the files ```schema.py``` and ```mi_main.py```.
 
+MOF string defaults and qualifier values are emitted as escaped Python string
+literals. Generated schemas declare UTF-8 encoding, preserving UTF-8 text on
+both Python 2 and Python 3. The generator preserves the string bytes supplied
+by the OMI parser rather than interpreting backslash escapes again.
+Regenerate existing schemas with the fixed generator;
+updating the generator does not repair previously generated Python files.
+Only generate and deploy providers from trusted MOF sources.
+
+After building, run the generator string regression tests with:
+```
+make -C omigen_py test PYTHON=python
+```
+These tests check literal round trips, control characters, UTF-8, and that
+injection-shaped values remain data. They also generate and execute a schema
+with a test double for the `omi` module, covering property defaults, string
+arrays, qualifier defaults, and qualifier instances without starting a service.
+The test runner uses standard-library APIs available in Python 2.6 and later.
+When invoked directly without `--generator`, it explicitly reports that the
+generator tests are omitted and runs only the literal tests.
+
 The file mi_main.py will be edited in order to implement the custom python provider.
 Please refer to [Script Provider Getting Started Guide](/doc/gettingStarted.md) for more details.
 

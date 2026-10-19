@@ -1,18 +1,17 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // Licensed under the MIT license.
 #include "py_gen.hpp"
+#include "python_string.hpp"
 
 
 #include <pal/dir.h>
 #include <base/types.h>
 #include <algorithm>
 #include <cassert>
-#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <gen/QualifierDecls.h>
-#include <iomanip>
 #include <iostream>
 #include <set>
 #include <sstream>
@@ -508,23 +507,7 @@ public:
             strm << *reinterpret_cast<MI_Real64 const*>(m_pValue);
             break;
         case MI_STRING:
-            strm << '\'';
-            for (char const* pos =
-                     reinterpret_cast<char const*>(m_pValue);
-                 *pos;
-                 ++pos)
-            {
-                if (isprint (*pos))
-                {
-                    strm << *pos;
-                }
-                else
-                {
-                    strm << '\\' << std::setw (4) << std::setfill ('0')
-                         << static_cast<int const>(*pos);
-                }
-            }
-            strm << '\'';
+            strm << PythonString (reinterpret_cast<char const*>(m_pValue));
             break;
         case MI_CHAR16:
             strm << *reinterpret_cast<MI_Char16 const*>(m_pValue);
@@ -659,7 +642,8 @@ GenQualifierDecl (
     if (EXIT_SUCCESS == rval)
     {
         strm << name << " = MI_QualifierDecl (" << std::endl;
-        strm << "    \'" << pQualifierDecl->name << "\', # name" << std::endl;
+        strm << "    " << PythonString (pQualifierDecl->name)
+             << ", # name" << std::endl;
         strm << "    " << GenTYPE (static_cast<MI_Type>(pQualifierDecl->type))
              << ", # type" << std::endl;
         strm << "    " << GenScope (pQualifierDecl->scope) << ", # scope"
@@ -757,7 +741,8 @@ GenQualifier (
         if (EXIT_SUCCESS == rval)
         {
             strm << qualifierName << " = MI_Qualifier (" << std::endl;
-            strm << "    \'" << pQualifier->name << "\'," << std::endl;
+            strm << "    " << PythonString (pQualifier->name)
+                 << "," << std::endl;
             strm << "    " << GenTYPE (static_cast<MI_Type>(pQualifier->type))
                  << "," << std::endl;
             strm << "    " << GenFlavor (pQualifier->flavor) <<"," << std::endl;
@@ -868,15 +853,17 @@ GenPropertyDecl (
         strm << propertyName.str () << "_prop = MI_PropertyDecl (" << std::endl;
         strm << "    " << GenFlags (pPropertyDecl->flags) << ", # flags"
              << std::endl;
-        strm << "    \'" << pPropertyDecl->name << "\', # name" << std::endl;
+        strm << "    " << PythonString (pPropertyDecl->name)
+             << ", # name" << std::endl;
         strm << "    " << propertyName.str () << "_quals, # qualifiers"
              << std::endl;
         strm << "    " << GenTYPE (static_cast<MI_Type>(pPropertyDecl->type))
              << ", # type" << std::endl;
         strm << "    None, # className" << std::endl;
-        strm << "    \'" << pPropertyDecl->origin << "\', # origin"
+        strm << "    " << PythonString (pPropertyDecl->origin) << ", # origin"
              << std::endl;
-        strm << "    \'" << pPropertyDecl->propagator << "\', # propagator"
+        strm << "    " << PythonString (pPropertyDecl->propagator)
+             << ", # propagator"
              << std::endl;
         strm << "    ";
         if (pPropertyDecl->value)
@@ -947,7 +934,8 @@ GenParameterDecl (
         strm << paramName << "_param = MI_ParameterDecl (" << std::endl;
         strm << "    " << GenFlags (pParameterDecl->flags) << ", # flags"
              << std::endl;
-        strm << "    \'" << pParameterDecl->name << "\', # name" << std::endl;
+        strm << "    " << PythonString (pParameterDecl->name)
+             << ", # name" << std::endl;
         strm << "    " << paramName << "_quals, # qualifiers" << std::endl;
         strm << "    ";
         if (MI_STRING != static_cast<MI_Type>(pParameterDecl->type) ||
@@ -1044,16 +1032,19 @@ GenMethodDecl (
         strm << name << "_method = MI_MethodDecl (" << std::endl;
         strm << "    " << GenFlags (pMethodDecl->flags) << ", # flags"
              << std::endl;
-        strm << "    \'" << pMethodDecl->name << "\', # name" << std::endl;
+        strm << "    " << PythonString (pMethodDecl->name)
+             << ", # name" << std::endl;
         strm << "    " << name << "_quals, # qualifiers" << std::endl;
         strm << "    " << name << "_params, # parameters" << std::endl;
         strm << "    "
              << GenTYPE (static_cast<MI_Type>(pMethodDecl->returnType))
              << ", # returnType" << std::endl;
-        strm << "    \'" << pMethodDecl->origin << "\', # origin" << std::endl;
-        strm << "    \'" << pMethodDecl->propagator << "\', # propagator"
+        strm << "    " << PythonString (pMethodDecl->origin)
+             << ", # origin" << std::endl;
+        strm << "    " << PythonString (pMethodDecl->propagator)
+             << ", # propagator"
              << std::endl;
-        strm << "    \'" << name << "\' # method" << std::endl;
+        strm << "    " << PythonString (name) << " # method" << std::endl;
         strm << "    )" << std::endl << std::endl;
     }
     return rval;
@@ -1097,14 +1088,19 @@ GenFunctionTable (
 {
     int rval = EXIT_SUCCESS;
     strm << pClassDecl->name << "_functions = MI_FunctionTable (" << std::endl;
-    strm << "    \'" << pClassDecl->name << "_Load\'," << std::endl;
-    strm << "    \'" << pClassDecl->name << "_Unload\'," << std::endl;
-    strm << "    \'" << pClassDecl->name << "_GetInstance\'," << std::endl;
-    strm << "    \'" << pClassDecl->name << "_EnumerateInstances\',"
+    std::string const className (pClassDecl->name);
+    strm << "    " << PythonString (className + "_Load") << "," << std::endl;
+    strm << "    " << PythonString (className + "_Unload") << "," << std::endl;
+    strm << "    " << PythonString (className + "_GetInstance")
+         << "," << std::endl;
+    strm << "    " << PythonString (className + "_EnumerateInstances") << ","
          << std::endl;
-    strm << "    \'" << pClassDecl->name << "_CreateInstance\'," << std::endl;
-    strm << "    \'" << pClassDecl->name << "_ModifyInstance\'," << std::endl;
-    strm << "    \'" << pClassDecl->name << "_DeleteInstance\'," << std::endl;
+    strm << "    " << PythonString (className + "_CreateInstance")
+         << "," << std::endl;
+    strm << "    " << PythonString (className + "_ModifyInstance")
+         << "," << std::endl;
+    strm << "    " << PythonString (className + "_DeleteInstance")
+         << "," << std::endl;
     strm << "    None," << std::endl;
     strm << "    None," << std::endl;
     strm << "    None," << std::endl;
@@ -1169,14 +1165,15 @@ GenClassDecl (
             strm << pClassDecl->name << "_class = MI_ClassDecl (" << std::endl;
             strm << "    " << GenFlags (pClassDecl->flags) << ", # flags"
                  << std::endl;
-            strm << "    \'" << pClassDecl->name << "\', # name" << std::endl;
+            strm << "    " << PythonString (pClassDecl->name)
+                 << ", # name" << std::endl;
             strm << "    " << pClassDecl->name << "_quals, # qualifiers"
                  << std::endl;
             strm << "    " << pClassDecl->name << "_properties, # properties"
                  << std::endl;
             if (pClassDecl->superClass)
             {
-                strm << "    \'" << pClassDecl->superClass << "\'";
+                strm << "    " << PythonString (pClassDecl->superClass);
             }
             else
             {
@@ -1355,6 +1352,7 @@ GenSchemaSourceFile_Py (
             std::cout << "Creating \"" << outputFileName << "\"" << std::endl;
         }
         outputFile << STATIC_MARKER << std::endl;
+        outputFile << "# -*- coding: utf-8 -*-" << std::endl;
         outputFile << CommentBox (WARNING_TEXT);
         outputFile << "import omi" << std::endl;
         outputFile << "from omi import *" << std::endl << std::endl;
